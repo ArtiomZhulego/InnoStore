@@ -1,0 +1,47 @@
+﻿version: "3.9"
+
+services:
+  innostore:
+    image: innostore
+    build:
+      context: .
+      dockerfile: InnoStore/Dockerfile
+    container_name: innostore
+    depends_on:
+      - innostore-db
+    env_file:
+      - .env
+    environment:
+      DB_HOST: innostore-db
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - innostore-net
+    ports:
+      - "${APP_PORT}:8080"
+
+  innostore-db:
+    image: postgres:15
+    container_name: innostore-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - innostore-pg-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - innostore-net
+
+volumes:
+  innostore-pg-data:
+
+networks:
+  innostore-net:
+    driver: bridge
