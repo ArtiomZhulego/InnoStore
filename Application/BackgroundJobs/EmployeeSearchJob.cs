@@ -12,10 +12,6 @@ namespace Application.BackgroundJobs;
 //Smart HRM system let us get only 2000 employees once, we need to send at least 2 queries. 
 public sealed class EmployeeSearchJob(IEmployeeApiClient employeeApiClient, IUserRepository userRepository, ILogger<EmployeeSearchJob> logger) : IJob
 {
-    private bool HasMoreItems { get; set; } = true;
-
-    private int Index { get; set; }
-    
     private const int PageSize = 2000;
     
     public async Task Execute(IJobExecutionContext context)
@@ -31,27 +27,10 @@ public sealed class EmployeeSearchJob(IEmployeeApiClient employeeApiClient, IUse
             };
 
             string[] sort = { "lastNameRu,asc", "firstNameRu,asc" };
-            var allEmployees = new List<EmployeeModel>();
             
-            while (HasMoreItems)
-            {
-                var pageResult = await employeeApiClient.GetEmployeesAsync(searchRequest, Index, PageSize, sort);
-            
-                allEmployees.AddRange(pageResult.Content);
-                
-                if (pageResult.Content.Count < PageSize)
-                {
-                    HasMoreItems = false;
-                }
-                
-                Index++;
-            }
+            var allEmployees = await LoadAllEmployeesAsync(searchRequest);
 
-            var existingEmployeeIds = await userRepository.GetUserIdsAsync(CancellationToken.None);
-
-            var newEmployees = allEmployees
-                .Where(e => !existingEmployeeIds.Contains(e.Id))
-                .ToList();
+            var newEmployees = await GetNewEmployeesAsync(allEmployees);
 
             var users = newEmployees.ToUsers();
             
@@ -66,5 +45,37 @@ public sealed class EmployeeSearchJob(IEmployeeApiClient employeeApiClient, IUse
         {
             logger.LogError(ex, "An error occurred while executing {JobName}", nameof(EmployeeSearchJob));
         }
+    }
+    
+    private async Task<List<EmployeeModel>> GetNewEmployeesAsync(List<EmployeeModel> allEmployees)
+    {
+        var existingEmployeeIds = await userRepository.GetUserIdsAsync(CancellationToken.None);
+
+        return allEmployees
+            .Where(e => !existingEmployeeIds.Contains(e.Id))
+            .ToList();
+    }
+    
+    private async Task<List<EmployeeModel>> LoadAllEmployeesAsync(EmployeeSearchRequest request)
+    {
+        var result = new List<EmployeeModel>();
+        var index = 0;
+        var hasMoreItems = true;
+
+        string[] sort = { "lastNameRu,asc", "firstNameRu,asc" };
+
+        while (hasMoreItems)
+        {
+            var pageResult = await employeeApiClient.GetEmployeesAsync(request, index, PageSize, sort);
+
+            result.AddRange(pageResult.Content);
+
+            if (pageResult.Content.Count < PageSize)
+                hasMoreItems = false;
+
+            index++;
+        }
+
+        return result;
     }
 }
