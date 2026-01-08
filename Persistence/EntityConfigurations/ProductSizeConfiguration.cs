@@ -12,5 +12,11 @@ internal class ProductSizeConfiguration : IEntityTypeConfiguration<ProductSize>
                .WithMany(p => p.Sizes)
                .HasForeignKey(ps => ps.ProductId)
                .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(ps => ps.Localizations)
+            .WithOne(pl => pl.ProductSize)
+            .HasForeignKey(pl => pl.ProductSizeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

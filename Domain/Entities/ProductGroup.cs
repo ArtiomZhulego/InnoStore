@@ -3,6 +3,6 @@
 public class ProductGroup : BaseEntity
 {
     public Guid Id { get; set; }
-    public required string Name { get; set; } = string.Empty;
-    public IEnumerable<Product> Products { get; set; } = new List<Product>();
+    public IEnumerable<Product> Products { get; set; } = [];
+    public IEnumerable<ProductGroupLocalization> Localizations { get; set; } = [];
 }
