@@ -31,29 +31,13 @@ builder.Services.AddRepositories();
 builder.Services.ConfigureLogger(builder.Configuration);
 
 builder.Services.AddOpenApi();
-
-builder.Services.AddQuartz(q =>
-{
-    var jobKey = new JobKey(nameof(EmployeeSearchJob));
-    q.AddJob<EmployeeSearchJob>(opts => opts.WithIdentity(jobKey));
-
-    q.AddTrigger(opts => opts
-        .ForJob(jobKey)
-        .WithIdentity($"{nameof(EmployeeSearchJob)}-trigger")
-        .WithCronSchedule("0 0 0 * * ?"));
-});
-
 builder.Services.AddLogging();
 
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.AddQuartzJobs(builder.Configuration);
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<InnoStoreContext>();
-    dbContext.Database.Migrate(); 
-}
+app.ApplyMigrations();
 
 app.UseCors();
 

@@ -25,8 +25,6 @@ public sealed class EmployeeSearchJob(IEmployeeApiClient employeeApiClient, IUse
                 DismissalStatus = new DismissalStatusFilter { Equals = "ACTUAL" },
                 EmployeeManagers = []
             };
-
-            string[] sort = { "lastNameRu,asc", "firstNameRu,asc" };
             
             var allEmployees = await LoadAllEmployeesAsync(searchRequest);
 
@@ -49,7 +47,7 @@ public sealed class EmployeeSearchJob(IEmployeeApiClient employeeApiClient, IUse
     
     private async Task<List<EmployeeModel>> GetNewEmployeesAsync(List<EmployeeModel> allEmployees)
     {
-        var existingEmployeeIds = await userRepository.GetUserIdsAsync(CancellationToken.None);
+        var existingEmployeeIds = await userRepository.GetUserHrmIdsAsync(CancellationToken.None);
 
         return allEmployees
             .Where(e => !existingEmployeeIds.Contains(e.Id))

@@ -1,6 +1,6 @@
 namespace Application.Abstractions.DTOs.Entities;
 
-public sealed class UserDTO
+public record UserDTO
 {
     public int Id { get; init; }
     

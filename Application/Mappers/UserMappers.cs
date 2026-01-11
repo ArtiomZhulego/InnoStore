@@ -7,7 +7,12 @@ public static class UserMappers
 {
     public static IEnumerable<User> ToUsers(this IEnumerable<EmployeeModel> employeeModels)
     {
-        return employeeModels.Select(employeeModel => new User
+        return employeeModels.Select(e => e.ToUser());
+    }
+    
+    public static User ToUser(this EmployeeModel employeeModel)
+    {
+        return new User
         {
             HrmId = employeeModel.Id,
             FirstNameRU = employeeModel.FirstNameRU,
@@ -23,6 +28,6 @@ public static class UserMappers
             LinkProfilePictureMini = employeeModel.LinkProfilePictureMini,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
-        });
+        };
     }
 }

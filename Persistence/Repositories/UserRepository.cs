@@ -6,7 +6,7 @@ namespace Persistence.Repositories;
 
 public sealed class UserRepository(InnoStoreContext context) : IUserRepository
 {
-    public async Task<IEnumerable<int>> GetUserIdsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<int>> GetUserHrmIdsAsync(CancellationToken cancellationToken)
     {
         return await context.Users.Select(x => x.HrmId).ToListAsync(cancellationToken);
     }
