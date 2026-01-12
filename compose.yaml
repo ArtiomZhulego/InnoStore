@@ -12,6 +12,7 @@ services:
     env_file:
       - .env
     environment:
+      ConnectionStrings__DefaultConnection: "Host=${DB_HOST:-innostore-db};Port=${POSTGRES_PORT:-5432};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
       DB_HOST: innostore-db
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
