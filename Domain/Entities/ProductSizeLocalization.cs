@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities;
 
-public class ProductSizaLocalization
+public class ProductSizeLocalization
 {
     public Guid Id { get; set; }
     public required string Name { get; set; } = string.Empty;

@@ -6,5 +6,5 @@ public class ProductSize : BaseEntity
     public required string Size { get; set; } = string.Empty;
     public required Guid ProductId { get; set; }
     public Product? Product { get; set; }
-    public List<ProductSizaLocalization> Localizations { get; set; } = [];
+    public List<ProductSizeLocalization> Localizations { get; set; } = [];
 }

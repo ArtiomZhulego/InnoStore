@@ -20,9 +20,23 @@ internal class ProductRepository : IProductRepository
         return product;
     }
 
+    public Task DeleteAsync(Product product, CancellationToken cancellationToken)
+    {
+        _context.Products.Remove(product);
+        return _context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<IEnumerable<Product>> GetAllAsync(string languageCode, CancellationToken cancellationToken)
     {
         return await _context.Products
+            .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Product>> GetByGroupIdAsync(Guid groupId, string languageCode, CancellationToken cancellationToken)
+    {
+        return await _context.Products
+            .Where(x => x.ProductGroupId == groupId)
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .ToListAsync(cancellationToken);
     }
@@ -31,6 +45,12 @@ internal class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.Products
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 

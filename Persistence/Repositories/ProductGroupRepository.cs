@@ -13,6 +13,11 @@ internal class ProductGroupRepository : IProductGroupRepository
         _context = context;
     }
 
+    public async Task<bool> ExistAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.ProductGroups.AnyAsync(x => x.Id == id, cancellationToken);
+    }
+
     public async Task<IEnumerable<ProductGroup>> GetAllAsync(string languageCode, CancellationToken cancellationToken)
     {
         return await _context.ProductGroups
