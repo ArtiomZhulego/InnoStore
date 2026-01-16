@@ -1,12 +1,9 @@
 using System.Text.Json.Serialization;
-using Application.BackgroundJobs;
-using InnoStore.Extensions;
-using Presentation.Controllers;
 using Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
+using InnoStore.Extensions;
+using InnoStore.Middlewares;
 using Persistence.Extensions;
-using Quartz;
+using Presentation.Controllers;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +22,11 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddPersistenceServices(builder.Configuration, "DefaultConnection");
+builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddInterceptors();
+builder.Services.AddInitiaizers();
+builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);
 
@@ -38,6 +38,7 @@ builder.Services.AddQuartzJobs(builder.Configuration);
 var app = builder.Build();
 
 app.ApplyMigrations();
+await app.ApplyDataInitializers();
 
 app.UseCors();
 
@@ -46,6 +47,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 app.Run();
