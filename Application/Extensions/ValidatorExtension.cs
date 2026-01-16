@@ -5,9 +5,9 @@ namespace Application.Extensions;
 
 public static class ValidatorExtension
 {
-    public static async Task EnsureValidAsync<T>(this IValidator<T> validator, T model)
+    public static async Task EnsureValidAsync<T>(this IValidator<T> validator, T model, CancellationToken cancellationToken = default)
     {
-        var result = await validator.ValidateAsync(model);
+        var result = await validator.ValidateAsync(model, cancellationToken);
 
         if(result.IsValid)
         {

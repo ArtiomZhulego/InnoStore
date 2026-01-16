@@ -38,6 +38,8 @@ internal class ProductRepository : IProductRepository
         return await _context.Products
             .Where(x => x.ProductGroupId == groupId)
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.ProductGroup)
+                .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .ToListAsync(cancellationToken);
     }
 
@@ -45,6 +47,8 @@ internal class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.ProductGroup)
+                .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 

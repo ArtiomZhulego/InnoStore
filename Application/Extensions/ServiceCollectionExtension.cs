@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.ProductAggregate;
+using Application.Abstractions.ProductGroupAggregate;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtension
             services.AddHrm(configuration);
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductGroupService, ProductGroupService>();
         }
 
         public void AddQuartzJobs(IConfiguration configuration)

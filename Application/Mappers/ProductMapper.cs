@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.ProductAggregate;
+﻿using System.Linq;
+using Application.Abstractions.ProductAggregate;
 using Domain.Entities;
 
 namespace Application.Mappers;
@@ -15,8 +16,20 @@ public static class ProductMapper
             Description = localization.Description,
             Price = product.Price,
             ProductGroupId = product.ProductGroupId,
-            ProductGroup = product.ProductGroup?.ToDTO(),
+            ProductGroup = product.ProductGroup?.ToInformation(),
             Images = product.Images.Select(image => image.ToDTO()),
+        };
+    }
+
+    public static ProductInformation ToInformation(this Product product)
+    {
+        var localization = product.Localizations.First();
+        return new ProductInformation
+        {
+            Id = product.Id,
+            Name = localization.Name,
+            Description = localization.Description,
+            Price = product.Price
         };
     }
 
@@ -37,16 +50,19 @@ public static class ProductMapper
         product.Price = model.Price;
         product.ProductGroupId = model.ProductGroupId;
 
-        foreach (var localization in product.Localizations)
+        foreach (var localizationModel in model.Localizations)
         {
-            var updatedLocalization = model.Localizations
-                .FirstOrDefault(loc => loc.LanguageISOCode == localization.LanguageISOCode);
-            if (updatedLocalization is null)
+            var localization = product.Localizations
+                .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
+            
+            if (localization != null)
             {
-                continue;
+                localization.Name = localizationModel.Name;
             }
-
-            localization.Name = updatedLocalization.Name;
+            else
+            {
+                product.Localizations.Add(localizationModel.ToEntity(product.Id));
+            }
         }
 
         return product;

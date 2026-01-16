@@ -6,5 +6,5 @@ public sealed class ProductGroupDTO
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public IEnumerable<ProductDTO> Products { get; set; } = [];
+    public IEnumerable<ProductInformation> Products { get; set; } = [];
 }
