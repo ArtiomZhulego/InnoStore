@@ -1,29 +1,43 @@
-﻿using Serilog;
+﻿using Microsoft.EntityFrameworkCore;
+using Persistence;
+using Serilog;
 
 namespace InnoStore.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static void ConfigureCors(this IServiceCollection services, IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        services.AddCors(opt =>
+        public void ConfigureCors(IConfiguration configuration)
         {
-            opt.AddDefaultPolicy(policy =>
+            services.AddCors(opt =>
             {
-                policy.AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowAnyOrigin();
+                opt.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin();
+                });
             });
-        });
+        }
+
+        public void ConfigureLogger(IConfiguration configuration)
+        {
+            services.AddSerilog((context, loggerConfiguration) =>
+            {
+                loggerConfiguration
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(Serilog.Events.LogEventLevel.Information);
+            });
+        }
     }
 
-    public static void ConfigureLogger(this IServiceCollection services, IConfiguration configuration)
+    public static IApplicationBuilder ApplyMigrations(this IApplicationBuilder app)
     {
-        services.AddSerilog((context, loggerConfiguration) =>
-        {
-            loggerConfiguration
-                .Enrich.FromLogContext()
-                .WriteTo.Console(Serilog.Events.LogEventLevel.Information);
-        });
+        using var scope = app.ApplicationServices.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<InnoStoreContext>();
+        dbContext.Database.Migrate();
+
+        return app;
     }
 }
