@@ -1,14 +1,10 @@
-using System.Text.Json.Serialization;
-using Application.BackgroundJobs;
-using InnoStore.Extensions;
-using Presentation.Controllers;
 using Application.Extensions;
+using InnoStore.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Persistence;
 using Persistence.Extensions;
-using Quartz;
+using Presentation.Controllers;
 using Scalar.AspNetCore;
-
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
@@ -34,6 +30,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddLogging();
 
 builder.Services.AddQuartzJobs(builder.Configuration);
+
+builder.ConfigureCampusHandler();
 
 var app = builder.Build();
 

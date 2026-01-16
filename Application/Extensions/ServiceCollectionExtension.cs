@@ -1,5 +1,7 @@
-﻿using Application.BackgroundJobs;
+﻿using Application.Abstractions.Services;
+using Application.BackgroundJobs;
 using Application.Clients.HRM;
+using Application.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -13,6 +15,7 @@ public static class ServiceCollectionExtension
         public void AddApplicationServices(IConfiguration configuration)
         {
             services.AddHrm(configuration);
+            services.AddServices();
         }
 
         public void AddQuartzJobs(IConfiguration configuration)
@@ -33,6 +36,11 @@ public static class ServiceCollectionExtension
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+        }
+
+        private void AddServices()
+        {
+            services.AddTransient<IPassedEventService, PassedEventService>();
         }
     }
 }
