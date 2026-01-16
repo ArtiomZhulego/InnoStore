@@ -1,11 +1,11 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Persistence.EntityConfigurations;
-using Persistence.Configurations;
 
 namespace Persistence;
 
-public class InnoStoreContext(DbContextOptions options) : DbContext(options)
+public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor>? interceptors) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductGroup> ProductGroups { get; set; }
@@ -16,6 +16,13 @@ public class InnoStoreContext(DbContextOptions options) : DbContext(options)
     public DbSet<ProductLocalization> ProductLocalizations { get; set; }
     public DbSet<User> Users { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (interceptors is not null && interceptors.Any())
+        {
+            optionsBuilder.AddInterceptors(interceptors);
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

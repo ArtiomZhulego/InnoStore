@@ -13,6 +13,7 @@ public static class ProductLocalizationMapper
             Id = id,
             ProductId = productId,
             LanguageISOCode = model.LanguageISOCode,
+            Description = model.Description,
             Name = model.Name
         };
     }

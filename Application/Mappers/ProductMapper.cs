@@ -7,10 +7,12 @@ public static class ProductMapper
 {
     public static ProductDTO ToDTO(this Product product)
     {
+        var localization = product.Localizations.First();
         return new ProductDTO
         {
             Id = product.Id,
-            Name = product.Localizations.First().Name,
+            Name = localization.Name,
+            Description = localization.Description,
             Price = product.Price,
             ProductGroupId = product.ProductGroupId,
             ProductGroup = product.ProductGroup?.ToDTO(),

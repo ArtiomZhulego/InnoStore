@@ -8,7 +8,7 @@ internal class ProductSizeConfiguration : IEntityTypeConfiguration<ProductSize>
 {
     public void Configure(EntityTypeBuilder<ProductSize> builder)
     {
-        builder.HasOne<Product>()
+        builder.HasOne(p => p.Product)
                .WithMany(p => p.Sizes)
                .HasForeignKey(ps => ps.ProductId)
                .OnDelete(DeleteBehavior.Restrict);

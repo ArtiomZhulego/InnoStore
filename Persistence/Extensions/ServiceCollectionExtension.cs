@@ -1,8 +1,10 @@
 ﻿using Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using Persistence.Interceptors;
 using Persistence.Repositories;
 
 namespace Persistence.Extensions;
@@ -29,5 +31,10 @@ public static class ServiceCollectionExtension
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+    }
+
+    public static void AddInterceptors(this IServiceCollection services)
+    {
+        services.AddScoped<IInterceptor, SetEntityDetailsInterceptor>();
     }
 }
