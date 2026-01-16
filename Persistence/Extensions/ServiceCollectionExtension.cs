@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using Persistence.DataInitializers;
+using Persistence.DataInitializers.Abstractions;
 using Persistence.Interceptors;
 using Persistence.Repositories;
 
@@ -39,5 +41,10 @@ public static class ServiceCollectionExtension
     public static void AddInterceptors(this IServiceCollection services)
     {
         services.AddScoped<IInterceptor, SetEntityDetailsInterceptor>();
+    }
+
+    public static void AddInitiaizers(this IServiceCollection services)
+    {
+        services.AddScoped<IDataInitializer, ProductGroupInitializer>();
     }
 }

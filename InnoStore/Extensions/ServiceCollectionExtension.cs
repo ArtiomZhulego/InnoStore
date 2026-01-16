@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.DataInitializers.Abstractions;
 using Serilog;
 
 namespace InnoStore.Extensions;
@@ -37,6 +38,18 @@ public static class ServiceCollectionExtension
         using var scope = app.ApplicationServices.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<InnoStoreContext>();
         dbContext.Database.Migrate();
+
+        return app;
+    }
+
+    public static async Task<IApplicationBuilder> ApplyDataInitializers(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
+        foreach (var initializer in dataInitializers)
+        {
+            await initializer.InitializeAsync();
+        }
 
         return app;
     }

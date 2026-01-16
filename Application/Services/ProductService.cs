@@ -24,7 +24,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDTO> CreateAsync(CreateProductModel createProductModel, CancellationToken cancellationToken = default)
     {
-        await _createValidator.EnsureValidAsync(createProductModel);
+        await _createValidator.EnsureValidAsync(createProductModel, cancellationToken: cancellationToken);
 
         var productGroupExist = await _productGroupRepository.ExistAsync(createProductModel.ProductGroupId, cancellationToken);
 
@@ -67,7 +67,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDTO> UpdateAsync(Guid id, UpdateProductModel updateProductModel, CancellationToken cancellationToken = default)
     {
-        await _updateValidator.EnsureValidAsync(updateProductModel);
+        await _updateValidator.EnsureValidAsync(updateProductModel, cancellationToken: cancellationToken);
 
         var product = await _productRepository.GetByIdAsync(id, cancellationToken) ?? throw new ProductNotFoundException(id);
 

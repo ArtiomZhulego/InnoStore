@@ -25,6 +25,7 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddRepositories();
 builder.Services.AddInterceptors();
+builder.Services.AddInitiaizers();
 builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);
@@ -37,6 +38,7 @@ builder.Services.AddQuartzJobs(builder.Configuration);
 var app = builder.Build();
 
 app.ApplyMigrations();
+await app.ApplyDataInitializers();
 
 app.UseCors();
 

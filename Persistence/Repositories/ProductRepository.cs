@@ -55,6 +55,9 @@ internal class ProductRepository : IProductRepository
     public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Products
+            .Include(x => x.Localizations)
+            .Include(x => x.ProductGroup)
+                .ThenInclude(x => x.Localizations)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
