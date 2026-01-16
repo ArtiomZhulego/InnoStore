@@ -1,12 +1,28 @@
 ﻿using Application.Abstractions.DTOs.Entities;
 using Application.Abstractions.Services;
+using Application.Mappers;
+using Domain.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
-internal class PassedEventService : IPassedEventService
+internal class PassedEventService(
+    IPassedEventRepository passedEventRepository,
+    ILogger<PassedEventService> logger
+) : IPassedEventService
 {
-    public Task SavePassedEventAsync(PassedEventDTO passedEvent, CancellationToken cancellationToken)
+    public async Task SavePassedEventIdempotentAsync(PassedEventDTO passedEventDTO, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var doesEventExist = await passedEventRepository.AnyAsync(passedEventDTO.Id, cancellationToken);
+
+        if (doesEventExist)
+        {
+            logger.LogInformation("Event with ID {PassedEventId} already exists. Skipping save operation.", passedEventDTO.Id);
+            return;
+        }
+
+        var passedEvent = passedEventDTO.ToPassedEvent();
+
+        await passedEventRepository.AddAsync(passedEvent, cancellationToken);
     }
 }
