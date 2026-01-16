@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.DTOs.Entities;
+﻿using InnoStore.CampusInegration;
 using Presentation.Exceptions;
 using Presentation.Handlers;
 using Wolverine;
@@ -25,8 +25,13 @@ internal static class WebApplicationBuilderExtension
                         config.GroupId = configuration.GroupId;
                     });
 
+                var campusMessageSerializer = new CampusMessageSerializer();
+
                 options.ListenToKafkaTopic(configuration.PassedEventTopic)
-                    .ReceiveRawJson<PassedEventDTO>();
+                    .DefaultSerializer(campusMessageSerializer)
+                    .DefaultIncomingMessage<string>()
+                    .ReceiveRawJson<string>()
+                    .AddStickyHandler(typeof(PassedEventHandler));
 
                 options.Policies
                     .OnException<PassedEventException>()
@@ -36,7 +41,7 @@ internal static class WebApplicationBuilderExtension
                     .And(async (runtime, context, exception) =>
                     {
                         runtime.Logger.LogInformation($"Sending to {configuration.DeadLetterQueueTopic}.");
-                        await context.BroadcastToTopicAsync(configuration.DeadLetterQueueTopic, context.Envelope.Message);
+                        await context.BroadcastToTopicAsync(configuration.DeadLetterQueueTopic, context.Envelope?.Message!);
                     });
             });
 
