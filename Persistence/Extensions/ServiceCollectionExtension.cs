@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ namespace Persistence.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration, string connectionStringSectionName)
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
         var builder = new NpgsqlConnectionStringBuilder
         {
@@ -31,6 +32,8 @@ public static class ServiceCollectionExtension
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IProductGroupRepository, ProductGroupRepository>();
     }
 
     public static void AddInterceptors(this IServiceCollection services)

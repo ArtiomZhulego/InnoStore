@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.ProductAggregate;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Models.ErrorModels;
 
 namespace Presentation.Controllers;
 
@@ -16,8 +17,8 @@ public class ProductController : ControllerBase
 
     [HttpGet("{languageCode}/{id}")]
     [ProducesResponseType(typeof(ProductDTO), 200)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(500)]
+    [ProducesResponseType(typeof(ErrorDetails), 404)]
+    [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> GetProductById(Guid id, string languageCode, CancellationToken cancellationToken)
     {
         var product = await _productService.GetByIdAsync(id, languageCode, cancellationToken);
@@ -26,9 +27,9 @@ public class ProductController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(typeof(ProductDTO), 201)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(500)]
+    [ProducesResponseType(typeof(ErrorDetails), 404)]
+    [ProducesResponseType(typeof(ErrorDetails), 400)]
+    [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductModel createProductModel, CancellationToken cancellationToken)
     {
         var product = await _productService.CreateAsync(createProductModel, cancellationToken);
@@ -37,9 +38,9 @@ public class ProductController : ControllerBase
 
     [HttpPut("{productId}")]
     [ProducesResponseType(typeof(ProductDTO), 201)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(500)]
+    [ProducesResponseType(typeof(ErrorDetails), 404)]
+    [ProducesResponseType(typeof(ErrorDetails), 400)]
+    [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid productId,[FromBody] UpdateProductModel updateProductModel, CancellationToken cancellationToken)
     {
         var product = await _productService.UpdateAsync(productId, updateProductModel, cancellationToken);
@@ -47,9 +48,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{productId}")]
-    [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(500)]
+    [ProducesResponseType( 204)]
+    [ProducesResponseType(typeof(ErrorDetails), 404)]
+    [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> DeleteProduct([FromRoute] Guid productId, CancellationToken cancellationToken)
     {
         await _productService.DeleteAsync(productId, cancellationToken);
@@ -58,8 +59,8 @@ public class ProductController : ControllerBase
 
     [HttpGet("{languageCode}/group/{groupId}")]
     [ProducesResponseType(typeof(IEnumerable<ProductDTO>), 200)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(500)]
+    [ProducesResponseType(typeof(ErrorDetails), 404)]
+    [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> GetProducts(Guid groupId,string languageCode, CancellationToken cancellationToken)
     {
         var product = await _productService.GetByGroupAsync(groupId, languageCode, cancellationToken);
