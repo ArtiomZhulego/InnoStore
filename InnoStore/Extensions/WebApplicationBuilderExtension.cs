@@ -56,7 +56,6 @@ internal static class WebApplicationBuilderExtension
         var passedEventTopic = GetEnvironmentVariable(builder, "KAFKA_EVENTS_TOPIC");
         var deadLetterQueueTopic = GetEnvironmentVariable(builder, "KAFKA_EVENTS_DLQ_TOPIC");
 
-
         var configuration = new KafkaCampusConfiguration
         {
             Server = server,

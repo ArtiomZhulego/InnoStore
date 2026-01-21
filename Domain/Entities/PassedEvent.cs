@@ -2,7 +2,9 @@
 
 public sealed class PassedEvent
 {
-    public required Guid Id { get; init; }
+    public Guid Id { get; set; }
+
+    public required Guid EventId { get; init; }
 
     public required string Name { get; init; }
 

@@ -13,11 +13,11 @@ internal class PassedEventService(
 {
     public async Task SavePassedEventIdempotentAsync(PassedEventDTO passedEventDTO, CancellationToken cancellationToken)
     {
-        var doesEventExist = await passedEventRepository.AnyAsync(passedEventDTO.Id, cancellationToken);
+        var doesEventExist = await passedEventRepository.AnyAsync(passedEventDTO.EventId, cancellationToken);
 
         if (doesEventExist)
         {
-            logger.LogInformation("Event with ID {PassedEventId} already exists. Skipping save operation.", passedEventDTO.Id);
+            logger.LogInformation("Event with ID {PassedEventId} already exists. Skipping save operation.", passedEventDTO.EventId);
             return;
         }
 

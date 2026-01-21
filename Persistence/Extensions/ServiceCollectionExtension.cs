@@ -29,5 +29,6 @@ public static class ServiceCollectionExtension
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPassedEventRepository, PassedEventRepository>();
     }
 }

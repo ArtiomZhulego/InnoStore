@@ -2,9 +2,9 @@
 
 public sealed class PassedEventParticipant
 {
-    public required int HrmId { get; init; }
+    public int Id { get; set; }
 
-    public required string Email { get; init; }
+    public required int HrmId { get; init; }
 
     public required PassedEventParticipantRole Role { get; init; }
 

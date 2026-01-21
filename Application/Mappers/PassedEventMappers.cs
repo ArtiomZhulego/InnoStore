@@ -11,11 +11,11 @@ internal static class PassedEventMappers
         {
             return new PassedEvent
             {
-                Id = passedEventDTO.Id,
+                EventId = passedEventDTO.EventId,
                 EventType = passedEventDTO.EventType.ToPassedEventType(),
                 Name = passedEventDTO.Name,
                 Participants = passedEventDTO.Participants
-                    .Select(x => x.ToPassedEventParticipant(passedEventDTO.Id))
+                    .Select(x => x.ToPassedEventParticipant(passedEventDTO.EventId))
                     .ToArray(),
             };
         }
@@ -28,7 +28,6 @@ internal static class PassedEventMappers
             return new PassedEventParticipant
             {
                 HrmId = passedEventParticipantDTO.HrmId,
-                Email = passedEventParticipantDTO.Email,
                 Role = passedEventParticipantDTO.Role.ToPassedEventParticipantRole(),
                 PassedEventId = passedEventId,
             };

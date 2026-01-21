@@ -9,7 +9,13 @@ internal sealed class PassedEventParticipantConfiguration : IEntityTypeConfigura
     public void Configure(EntityTypeBuilder<PassedEventParticipant> builder)
     {
         builder.ToTable("PassedEventParticipants")
-            .HasKey(x => x.HrmId);
+            .HasKey(x => x.Id);
+
+        builder.HasIndex(x => x.Id)
+            .IsUnique();
+
+        builder.Property(x => x.Id)
+            .ValueGeneratedOnAdd();
 
         builder.HasIndex(x => x.HrmId)
             .IsUnique();

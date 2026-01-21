@@ -2,7 +2,7 @@
 
 public record PassedEventDTO
 {
-    public required Guid Id { get; init; }
+    public required Guid EventId { get; init; }
 
     public required string Name { get; init; }
 
