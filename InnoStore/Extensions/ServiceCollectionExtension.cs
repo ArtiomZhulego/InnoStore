@@ -33,24 +33,27 @@ public static class ServiceCollectionExtension
         }
     }
 
-    public static IApplicationBuilder ApplyMigrations(this IApplicationBuilder app)
+    extension(IApplicationBuilder app)
     {
-        using var scope = app.ApplicationServices.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<InnoStoreContext>();
-        dbContext.Database.Migrate();
-
-        return app;
-    }
-
-    public static async Task<IApplicationBuilder> ApplyDataInitializers(this IApplicationBuilder app)
-    {
-        using var scope = app.ApplicationServices.CreateScope();
-        var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
-        foreach (var initializer in dataInitializers)
+        public IApplicationBuilder ApplyMigrations()
         {
-            await initializer.InitializeAsync();
+            using var scope = app.ApplicationServices.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<InnoStoreContext>();
+            dbContext.Database.Migrate();
+
+            return app;
         }
 
-        return app;
+        public async Task<IApplicationBuilder> ApplyDataInitializers()
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
+            foreach (var initializer in dataInitializers)
+            {
+                await initializer.InitializeAsync();
+            }
+
+            return app;
+        }
     }
 }

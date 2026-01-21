@@ -4,22 +4,15 @@ using Presentation.Models.ErrorModels;
 
 namespace InnoStore.Middlewares;
 
-public class ExceptionMiddleware
+public class ExceptionMiddleware(RequestDelegate next)
 {
-    private const string DEFAULT_UNHANDLED_ERROR_MESSAGE = "Server failed to handle this request.";
-
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    private const string DefaultUnhandledErrorMessage = "Server failed to handle this request.";
 
     public async Task InvokeAsync(HttpContext httpContext, ILogger<ExceptionMiddleware> logger)
     {
         try
         {
-            await _next(httpContext);
+            await next(httpContext);
         }
         catch (Exception ex)
         {
@@ -27,7 +20,7 @@ public class ExceptionMiddleware
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ExceptionMiddleware> logger)
+    private static async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ExceptionMiddleware> logger)
     {
         context.Response.ContentType = "application/json";
 
@@ -42,7 +35,7 @@ public class ExceptionMiddleware
 
         if (statusCode == HttpStatusCode.InternalServerError)
         {
-            await context.Response.WriteAsync(new ErrorDetails((int)statusCode, DEFAULT_UNHANDLED_ERROR_MESSAGE).ToString());
+            await context.Response.WriteAsync(new ErrorDetails((int)statusCode, DefaultUnhandledErrorMessage).ToString());
             logger.LogError(exception, exception.Message);
         }
         else

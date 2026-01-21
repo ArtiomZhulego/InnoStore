@@ -45,7 +45,7 @@ public static class ServiceCollectionExtension
 
         public void AddValidators()
         {
-            services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
+            services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
         }
     }
 }

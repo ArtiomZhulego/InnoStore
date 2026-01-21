@@ -7,10 +7,9 @@ public static class ProductLocalizationMapper
 {
     public static ProductLocalization ToEntity(this ProductLocalizationModel model, Guid productId)
     {
-        var id = Guid.NewGuid();
         return new ProductLocalization
         {
-            Id = id,
+            Id = Guid.NewGuid(),
             ProductId = productId,
             LanguageISOCode = model.LanguageISOCode,
             Description = model.Description,

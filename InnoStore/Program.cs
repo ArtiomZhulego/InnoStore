@@ -3,6 +3,7 @@ using Application.Extensions;
 using InnoStore.Extensions;
 using InnoStore.Middlewares;
 using Persistence.Extensions;
+using Presentation;
 using Presentation.Controllers;
 using Scalar.AspNetCore;
 
@@ -16,7 +17,7 @@ builder.Configuration
 builder.Services.ConfigureCors(builder.Configuration);
 
 builder.Services.AddControllers()
-                .AddApplicationPart(typeof(HealthController).Assembly)
+                .AddApplicationPart(typeof(AssemblyMarker).Assembly)
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddEndpointsApiExplorer();

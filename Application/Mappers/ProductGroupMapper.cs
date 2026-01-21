@@ -5,23 +5,26 @@ namespace Application.Mappers;
 
 public static class ProductGroupMapper
 {
-    public static ProductGroupDTO ToDTO(this ProductGroup productGroup)
+    extension(ProductGroup productGroup)
     {
-        return new ProductGroupDTO
+        public ProductGroupDTO ToDTO()
         {
-            Id = productGroup.Id,
-            Name = productGroup.Localizations.First().Name,
-            Products = productGroup.Products.Select(x => x.ToInformation())
-        };
-    }
+            return new ProductGroupDTO
+            {
+                Id = productGroup.Id,
+                Name = productGroup.Localizations.First().Name,
+                Products = productGroup.Products.Select(x => x.ToInformation())
+            };
+        }
 
-    public static ProductGroupInformation ToInformation(this ProductGroup productGroup)
-    {
-        return new ProductGroupInformation
+        public ProductGroupInformation ToInformation()
         {
-            Id = productGroup.Id,
-            Name = productGroup.Localizations.First().Name
-        };
+            return new ProductGroupInformation
+            {
+                Id = productGroup.Id,
+                Name = productGroup.Localizations.First().Name
+            };
+        }
     }
 
     public static ProductGroup ToEntity(this CreateProductGroupModel model)
@@ -40,7 +43,8 @@ public static class ProductGroupMapper
         {
             var localization = productGroup.Localizations
                 .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
-            if (localization != null)
+            
+            if (localization is not null)
             {
                 localization.Name = localizationModel.Name;
             }

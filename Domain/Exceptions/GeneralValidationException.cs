@@ -1,8 +1,3 @@
 ﻿namespace Domain.Exceptions;
 
-public class GeneralValidationException : BadRequestException
-{
-    public GeneralValidationException(string message) : base(message)
-    {
-    }
-}
+public class GeneralValidationException(string message) : BadRequestException(message);

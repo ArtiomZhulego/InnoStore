@@ -1,8 +1,3 @@
 ﻿namespace Domain.Exceptions;
 
-public class ProductNotFoundException : NotFoundException
-{
-    public ProductNotFoundException(Guid id) : base($"Product with ID {id} was not found")
-    {
-    }
-}
+public class ProductNotFoundException(Guid id) : NotFoundException($"Product with ID {id} was not found");

@@ -1,9 +1,12 @@
 ﻿namespace Application.Abstractions.ProductAggregate;
 
-public class ProductInformation
+public sealed class ProductInformation
 {
     public Guid Id { get; set; }
-    public required string Name { get; set; } = string.Empty;
-    public required string Description { get; set; } = string.Empty;
+    
+    public required string Name { get; set; }
+    
+    public required string Description { get; set; }
+    
     public required decimal Price { get; set; }
 }

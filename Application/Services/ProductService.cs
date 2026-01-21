@@ -1,8 +1,8 @@
 ﻿using Application.Abstractions.ProductAggregate;
 using Application.Extensions;
 using Application.Mappers;
+using Domain.Abstractions;
 using Domain.Exceptions;
-using Domain.Interfaces;
 using FluentValidation;
 
 namespace Application.Services;

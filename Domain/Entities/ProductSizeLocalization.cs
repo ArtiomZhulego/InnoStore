@@ -3,8 +3,11 @@
 public class ProductSizeLocalization
 {
     public Guid Id { get; set; }
+    
     public required string Name { get; set; } = string.Empty;
+    
     public required Guid ProductSizeId { get; set; }
+    
     public ProductSize? ProductSize { get; set; }
 
     /// <summary>

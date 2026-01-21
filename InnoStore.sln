@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{A2913DF2-534D-4DC7-860B-54E074D69B87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{F41622D0-3676-4087-B899-83D07CE405FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F41622D0-3676-4087-B899-83D07CE405FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F41622D0-3676-4087-B899-83D07CE405FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2913DF2-534D-4DC7-860B-54E074D69B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2913DF2-534D-4DC7-860B-54E074D69B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2913DF2-534D-4DC7-860B-54E074D69B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2913DF2-534D-4DC7-860B-54E074D69B87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{6FE3BEF7-25AA-45CB-89C5-FA8774BD403D} = {2F4A35E3-9370-4A9C-887E-44CF0B914A32}
 		{642ACE19-6567-4AA0-8937-EB1BD043A06E} = {7C2650AD-8B60-4F2C-9840-AF302CCACFA4}
 		{F41622D0-3676-4087-B899-83D07CE405FF} = {7C2650AD-8B60-4F2C-9840-AF302CCACFA4}
+		{A2913DF2-534D-4DC7-860B-54E074D69B87} = {E25C6E16-3A54-445C-A1AD-7515830677B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {868D0751-061B-4C52-B621-8C59D09E2446}
