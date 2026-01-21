@@ -1,0 +1,18 @@
+﻿using Application.Abstractions.ProductGroupAggregate;
+using FluentValidation;
+using Shared.Constants;
+
+namespace Application.Validation;
+
+public class ProductGroupLocalizationValidator : AbstractValidator<ProductGroupLocalizationModel>
+{
+    public ProductGroupLocalizationValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Product group name is required.")
+            .MaximumLength(ProductGroupLocalizationValidationConstants.ProductGroupNameMaxLength).WithMessage("Product group name must not exceed 200 characters.");
+        RuleFor(x => x.LanguageISOCode)
+            .NotEmpty().WithMessage("Language ISO code is required.")
+            .Length(ProductGroupLocalizationValidationConstants.LocalizationIsoMaxLenght).WithMessage("Language ISO code must be exactly 2 characters.");
+    }
+}

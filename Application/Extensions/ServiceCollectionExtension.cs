@@ -1,6 +1,11 @@
-﻿using Application.Abstractions.Services;
+﻿using Application.Abstractions.ProductAggregate;
+using Application.Abstractions.ProductGroupAggregate;
+using Application.Abstractions.Services;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
+using Application.Services;
+using Application.Validation;
+using FluentValidation;
 using Application.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +20,7 @@ public static class ServiceCollectionExtension
         public void AddApplicationServices(IConfiguration configuration)
         {
             services.AddHrm(configuration);
+
             services.AddServices();
         }
 
@@ -38,9 +44,16 @@ public static class ServiceCollectionExtension
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
 
+        public void AddValidators()
+        {
+            services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
+        }
+
         private void AddServices()
         {
             services.AddTransient<IPassedEventService, PassedEventService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductGroupService, ProductGroupService>();
         }
     }
 }

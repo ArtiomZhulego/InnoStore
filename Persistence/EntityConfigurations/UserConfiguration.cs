@@ -2,7 +2,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace Persistence.EntityConfigurations;
 
 public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {

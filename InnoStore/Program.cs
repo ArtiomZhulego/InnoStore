@@ -1,7 +1,9 @@
+using System.Text.Json.Serialization;
 using Application.Extensions;
 using InnoStore.Extensions;
-using Microsoft.EntityFrameworkCore;
+using InnoStore.Middlewares;
 using Persistence.Extensions;
+using Presentation;
 using Presentation.Controllers;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -15,14 +17,17 @@ builder.Configuration
 builder.Services.ConfigureCors(builder.Configuration);
 
 builder.Services.AddControllers()
-                .AddApplicationPart(typeof(HealthController).Assembly)
+                .AddApplicationPart(typeof(AssemblyMarker).Assembly)
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddPersistenceServices(builder.Configuration, "DefaultConnection");
+builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddInterceptors();
+builder.Services.AddInitiaizers();
+builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);
 
@@ -36,6 +41,7 @@ builder.ConfigureCampusHandler();
 var app = builder.Build();
 
 app.ApplyMigrations();
+await app.ApplyDataInitializers();
 
 app.UseCors();
 
@@ -44,6 +50,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 app.Run();
