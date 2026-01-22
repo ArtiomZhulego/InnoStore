@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.ProductAggregate;
 using FluentValidation;
+using Shared.Constants;
 
 namespace Application.Validation;
 
@@ -9,9 +10,9 @@ public class ProductLocalizationValidator : AbstractValidator<ProductLocalizatio
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Product name is required.")
-            .MaximumLength(200).WithMessage("Product name must not exceed 200 characters.");
+            .MaximumLength(ValidationConstants.ProductNameMaxLength).WithMessage("Product name must not exceed 200 characters.");
         RuleFor(x => x.LanguageISOCode)
             .NotEmpty().WithMessage("Language ISO code is required.")
-            .Length(2).WithMessage("Language ISO code must be exactly 2 characters.");
+            .Length(ValidationConstants.LocalizationIsoMaxLenght).WithMessage("Language ISO code must be exactly 2 characters.");
     }
 }

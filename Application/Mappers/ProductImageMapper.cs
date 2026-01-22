@@ -14,4 +14,19 @@ public static class ProductImageMapper
             ProductId = productImage.ProductId
         };
     }
+
+    public static ProductImage ToEntity(this CreateProductImageModel createProductImage, Guid productId)
+    {
+        return new ProductImage
+        {
+            ImageUrl = createProductImage.ImageUrl,
+            ProductId = productId
+        };
+    }
+
+    public static ProductImage UpdateEntity(this UpdateProductImageModel updateProductImage, ProductImage productImage)
+    {
+        productImage.ImageUrl = updateProductImage.ImageUrl;
+        return productImage;
+    }
 }

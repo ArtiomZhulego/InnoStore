@@ -8,16 +8,17 @@ public static class ProductMapper
 {
     public static ProductDTO ToDTO(this Product product)
     {
-        var localization = product.Localizations.First();
+        var localization = product.Localizations.FirstOrDefault();
         return new ProductDTO
         {
             Id = product.Id,
-            Name = localization.Name,
-            Description = localization.Description,
+            Name = localization?.Name ?? "Unknown",
+            Description = localization?.Description ?? "Unknown",
             Price = product.Price,
             ProductGroupId = product.ProductGroupId,
             ProductGroup = product.ProductGroup?.ToInformation(),
             Images = product.Images.Select(image => image.ToDTO()),
+            Sizes = product.Sizes.Select(size => size.ToDTO())
         };
     }
 
@@ -41,7 +42,9 @@ public static class ProductMapper
             Id = id,
             Price = model.Price,
             ProductGroupId = model.ProductGroupId,
-            Localizations = [.. model.Localizations.Select(loc => loc.ToEntity(id))]
+            Localizations = [.. model.Localizations.Select(loc => loc.ToEntity(id))],
+            Sizes = [.. model.Sizes.Select(size => size.ToEntity(id))],
+            Images = [.. model.Images.Select(image => image.ToEntity(id))],
         };
     }
 
