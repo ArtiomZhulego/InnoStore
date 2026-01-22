@@ -31,6 +31,11 @@ public static class ServiceCollectionExtension
                     .WriteTo.Console(Serilog.Events.LogEventLevel.Information);
             });
         }
+
+        public void ConfigureLocalization()
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+        }
     }
 
     extension(IApplicationBuilder app)

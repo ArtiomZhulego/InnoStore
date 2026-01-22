@@ -16,4 +16,15 @@ public sealed class UserRepository(InnoStoreContext context) : IUserRepository
         await context.Users.AddRangeAsync(users, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<User[]> GetAllByHrmIdsAsync(int[] hrmIds, CancellationToken cancellationToken)
+    {
+        var users = await context.Users
+            .AsQueryable()
+            .AsNoTracking()
+            .Where(x => hrmIds.Contains(x.HrmId))
+            .ToArrayAsync(cancellationToken);
+
+        return users;
+    }
 }

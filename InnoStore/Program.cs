@@ -4,9 +4,7 @@ using InnoStore.Extensions;
 using InnoStore.Middlewares;
 using Persistence.Extensions;
 using Presentation;
-using Presentation.Controllers;
 using Scalar.AspNetCore;
-using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
@@ -21,6 +19,8 @@ builder.Services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.ConfigureLocalization();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
@@ -52,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseRequestLocalization();
 
 app.MapControllers();
 app.Run();
