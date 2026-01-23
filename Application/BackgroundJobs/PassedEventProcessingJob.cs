@@ -18,7 +18,7 @@ public sealed class PassedEventProcessingJob(
 {
     private const int PassedEventPageSize = 20;
 
-    private const int ProcessingDurationInMilliseconds = 1000000000;
+    private const int ProcessingDurationInMilliseconds = 10000;
 
     private static SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
@@ -49,14 +49,13 @@ public sealed class PassedEventProcessingJob(
         var cancellationToken = cancellationTokenSource.Token;
 
         var unprocessedEvents = await GetUnprocessedEventsAsync(PassedEventPageSize, pageNumber, cancellationToken);
-        var presentUserHrmIds = await userRepository.GetUserHrmIdsAsync(cancellationToken);
 
         while (unprocessedEvents.Any())
         {
             try
             {
                 await transactionManager.BeginAsync(cancellationToken);
-                await ProcessEventsAsync(unprocessedEvents, presentUserHrmIds, cancellationToken);
+                await ProcessEventsAsync(unprocessedEvents, cancellationToken);
                 await transactionManager.CommitAsync(cancellationToken);
             }
             catch
@@ -83,7 +82,7 @@ public sealed class PassedEventProcessingJob(
         return unprocessedEvents;
     }
 
-    private async Task ProcessEventsAsync(PassedEvent[] passedEvents, IEnumerable<int> presentUsersHrmIds, CancellationToken cancellationToken)
+    private async Task ProcessEventsAsync(PassedEvent[] passedEvents, CancellationToken cancellationToken)
     {
         var transactions = new List<Transaction>();
 
