@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Application.Abstractions.ProductSizeAggregate;
 using Domain.Entities;
+using Shared.Constants;
 
 namespace Application.Mappers;
 
@@ -11,7 +12,7 @@ public static class ProductSizeMapper
        return new ProductSizeDTO
        {
            Id = productSize.Id,
-           Size = productSize.Localizations.FirstOrDefault()?.Name ?? "Unknown",
+           Size = productSize.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
            ProductId = productSize.ProductId
        };
     }

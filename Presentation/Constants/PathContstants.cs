@@ -25,4 +25,10 @@ public static class PathConstants
         public const string Delete = "{productGroupId:guid}";
         public const string GetAll = "{languageCode}";
     }
+
+    public static class Files
+    {
+        public const string Controller = ApiBase + "/File";
+        public const string Upload = "upload";
+    }
 }

@@ -2,5 +2,5 @@
 
 public interface IFileService
 {
-    public UploadFileResponse UploadFile(UploadFileModel request);
+    public Task<UploadFileResponse> UploadFileAsync(UploadFileModel request, CancellationToken cancellationToken = default);
 }

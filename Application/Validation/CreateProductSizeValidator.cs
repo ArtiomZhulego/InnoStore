@@ -7,8 +7,6 @@ public class CreateProductSizeValidator : AbstractValidator<CreateProductSizeMod
 {
     public CreateProductSizeValidator()
     {
-        RuleFor(x => x.Size)
-            .NotEmpty().WithMessage("Size is required.");
         RuleForEach(x => x.Localizations)
             .SetValidator(new ProductSizeLocalizationValidator());
     }

@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.ProductGroupAggregate;
 using Domain.Entities;
+using Shared.Constants;
 
 namespace Application.Mappers;
 
@@ -12,7 +13,7 @@ public static class ProductGroupMapper
             return new ProductGroupDTO
             {
                 Id = productGroup.Id,
-                Name = productGroup.Localizations.First().Name,
+                Name = productGroup.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
                 Products = productGroup.Products.Select(x => x.ToInformation())
             };
         }
@@ -22,7 +23,7 @@ public static class ProductGroupMapper
             return new ProductGroupInformation
             {
                 Id = productGroup.Id,
-                Name = productGroup.Localizations.First().Name
+                Name = productGroup.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation
             };
         }
     }

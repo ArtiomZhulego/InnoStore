@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Application.Abstractions.ProductAggregate;
 using Domain.Entities;
+using Shared.Constants;
 
 namespace Application.Mappers;
 
@@ -12,8 +13,8 @@ public static class ProductMapper
         return new ProductDTO
         {
             Id = product.Id,
-            Name = localization?.Name ?? "Unknown",
-            Description = localization?.Description ?? "Unknown",
+            Name = localization?.Name ?? LocalizationConstants.DefaultTranslation,
+            Description = localization?.Description ?? LocalizationConstants.DefaultTranslation,
             Price = product.Price,
             ProductGroupId = product.ProductGroupId,
             ProductGroup = product.ProductGroup?.ToInformation(),
@@ -24,12 +25,12 @@ public static class ProductMapper
 
     public static ProductInformation ToInformation(this Product product)
     {
-        var localization = product.Localizations.First();
+        var localization = product.Localizations.FirstOrDefault();
         return new ProductInformation
         {
             Id = product.Id,
-            Name = localization.Name,
-            Description = localization.Description,
+            Name = localization?.Name ?? LocalizationConstants.DefaultTranslation,
+            Description = localization?.Description ?? LocalizationConstants.DefaultTranslation,
             Price = product.Price
         };
     }
