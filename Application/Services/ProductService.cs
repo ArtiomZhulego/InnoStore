@@ -51,7 +51,7 @@ public class ProductService : IProductService
         var product = createProductModel.ToEntity();
         await _productRepository.CreateAsync(product, cancellationToken);
 
-        var images = product.Images.AsParallel();
+        var images = product.Images;
         foreach (var image in images)
         {
             image.ImageUrl = await _storageService.GetQuickAccessUrlAsync(image.ImageUrl);
@@ -77,7 +77,7 @@ public class ProductService : IProductService
 
         var products = await _productRepository.GetByGroupIdAsync(groupId, languageCode, cancellationToken) ?? throw new ProductNotFoundException(groupId);
 
-        var images = products.SelectMany(p => p.Images).AsParallel();
+        var images = products.SelectMany(p => p.Images);
         foreach (var image in images)
         {
             image.ImageUrl = await _storageService.GetQuickAccessUrlAsync(image.ImageUrl);
@@ -90,7 +90,7 @@ public class ProductService : IProductService
     {
         var product = await _productRepository.GetByIdAsync(id, languageCode, cancellationToken) ?? throw new ProductNotFoundException(id);
 
-        var images = product.Images.AsParallel();
+        var images = product.Images;
         foreach (var image in images)
         {
             image.ImageUrl = await _storageService.GetQuickAccessUrlAsync(image.ImageUrl);
