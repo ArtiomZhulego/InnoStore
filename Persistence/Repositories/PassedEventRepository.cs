@@ -13,11 +13,11 @@ internal sealed class PassedEventRepository(InnoStoreContext context) : IPassedE
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<bool> AnyAsync(Guid eventId, CancellationToken cancellationToken)
     {
         var result = await context.Set<PassedEvent>()
             .AsQueryable()
-            .AnyAsync(x => x.Id == id, cancellationToken);
+            .AnyAsync(x => x.EventId == eventId, cancellationToken);
 
         return result;
     }
@@ -38,6 +38,6 @@ internal sealed class PassedEventRepository(InnoStoreContext context) : IPassedE
     {
         await context.PassedEvents
             .Where(x => ids.Contains(x.Id))
-            .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.IsProcessed, true);
+            .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.IsProcessed, true));
     }
 }

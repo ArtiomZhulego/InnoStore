@@ -10,7 +10,7 @@ public sealed class PassedEvent
 
     public required PassedEventType EventType { get; init; }
 
-    public required PassedEventParticipant[] Participants { get; init; }
+    public required ICollection<PassedEventParticipant> Participants { get; init; }
 
     public bool IsProcessed { get; set; }
 }

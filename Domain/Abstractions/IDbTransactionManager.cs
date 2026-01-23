@@ -1,7 +1,9 @@
 ﻿namespace Domain.Abstractions;
 
-public interface ITransactionManager
+public interface IDatabaseTransactionManager
 {
+    void BeginSerializable();
+
     Task BeginAsync(CancellationToken cancellationToken = default);
 
     Task CommitAsync(CancellationToken cancellationToken = default);

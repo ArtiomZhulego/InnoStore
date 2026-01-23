@@ -1,12 +1,7 @@
-﻿using Application.Abstractions.DTOs.Clients.HRM;
-using Application.Abstractions.DTOs.Clients.HRM.Employees;
-using Application.Abstractions.Services;
-using Application.Contsants;
-using Application.Mappers;
+﻿using Application.Mappers;
 using Domain.Abstractions;
 using Domain.Common;
 using Domain.Entities;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
@@ -17,19 +12,35 @@ public sealed class PassedEventProcessingJob(
     IUserRepository userRepository,
     IPassedEventCostRepository passedEventCostRepository,
     ITransactionRepository transactionRepository,
-    IEmployeeService employeeService,
-    ITransactionManager transactionManager,
-    IStringLocalizer stringLocalizer,
+    IDatabaseTransactionManager transactionManager,
     ILogger<PassedEventProcessingJob> logger
 ) : IJob
 {
     private const int PassedEventPageSize = 20;
 
-    private const int EmployeesPageSize = 100;
+    private const int ProcessingDurationInMilliseconds = 1000000000;
 
-    private const int ProcessingDurationInMilliseconds = 10000;
+    private static SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
     public async Task Execute(IJobExecutionContext context)
+    {
+        await SemaphoreSlim.WaitAsync();
+
+        try
+        {
+            await ExecutePassedEventsProcessingAsync();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error during processing batch of passed events.");
+        }
+        finally
+        {
+            SemaphoreSlim.Release();
+        }
+    }
+
+    private async Task ExecutePassedEventsProcessingAsync()
     {
         var pageNumber = 0;
 
@@ -44,10 +55,6 @@ public sealed class PassedEventProcessingJob(
         {
             try
             {
-                await transactionManager.BeginAsync(cancellationToken);
-                await EnsureAllParticipantsArePresentAsync(unprocessedEvents, presentUserHrmIds, cancellationToken);
-                await transactionManager.CommitAsync(cancellationToken);
-
                 await transactionManager.BeginAsync(cancellationToken);
                 await ProcessEventsAsync(unprocessedEvents, presentUserHrmIds, cancellationToken);
                 await transactionManager.CommitAsync(cancellationToken);
@@ -82,8 +89,6 @@ public sealed class PassedEventProcessingJob(
 
         var costs = await passedEventCostRepository.GetAllAsync(cancellationToken);
 
-        var descriptionFormat = stringLocalizer["ParticipatingInEvent_MessageFormat"];
-
         foreach (var passedEvent in passedEvents)
         {
             var cost = costs.FirstOrDefault(x => x.EventType == passedEvent.EventType);
@@ -99,12 +104,16 @@ public sealed class PassedEventProcessingJob(
 
             var passedEventUsers = await userRepository.GetAllByHrmIdsAsync(participantsHrmIds, cancellationToken);
 
+            if (passedEventUsers.Length != participantsHrmIds.Length)
+            {
+                throw new Exception("Not all participants are present in the system.");
+            }
+
             foreach (var user in passedEventUsers)
             {
                 var transaction = new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    Description = string.Format(descriptionFormat, passedEvent.Name),
                     Type = TransactionType.ParticipatingInEvent,
                     UserId = user.Id!.Value,
                     Amount = cost.Amount,
@@ -117,59 +126,5 @@ public sealed class PassedEventProcessingJob(
         await transactionRepository.AddRangeAsync(transactions, cancellationToken);
         var processedEventIds = passedEvents.Select(x => x.Id).ToArray();
         await passedEventRepository.MarkAsProcessedAsync(processedEventIds, cancellationToken);
-    }
-
-    private async Task EnsureAllParticipantsArePresentAsync(PassedEvent[] events, IEnumerable<int> presentUsersHrmIds, CancellationToken cancellationToken)
-    {
-        var participants = events.SelectMany(x => x.Participants).ToArray();
-
-        var missingParticipants = participants
-            .Where(x => !presentUsersHrmIds.Contains(x.HrmId))
-            .Distinct()
-            .ToArray();
-
-        if (!missingParticipants.Any())
-        {
-            return;
-        }
-
-        var emails = missingParticipants.Select(x => x.Email)
-            .ToArray();
-
-        var searchRequest = GetEmployeeSearchRequest(emails);
-
-        var employees = await employeeService.LoadEmployeesAsync(searchRequest, EmployeesPageSize, cancellationToken);
-
-        var users = employees.ToUsers();
-
-        await userRepository.AddRangeAsync(users, cancellationToken);
-
-        LogAddedUsers(users);
-    }
-
-    private EmployeeSearchRequest GetEmployeeSearchRequest(string[] emails)
-    {
-        var searchRequest = new EmployeeSearchRequest
-        {
-            DismissalStatus = new DismissalStatusFilter
-            {
-                Equals = EmployeeConstants.DismissalStatus_Actual
-            },
-            EmployeeManagers = [],
-            Email = new EmailFilter
-            {
-                In = emails
-            }
-        };
-
-        return searchRequest;
-    }
-
-    private void LogAddedUsers(IEnumerable<User> users)
-    {
-        foreach (var user in users)
-        {
-            logger.LogInformation("Added user: HrmId={HrmId}, Email={Email}", user.HrmId, user.Email);
-        }
     }
 }

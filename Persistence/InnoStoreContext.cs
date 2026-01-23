@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Persistence.EntityConfigurations;
 
 namespace Persistence;
 
@@ -41,11 +40,7 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new PassedEventConfiguration());
-        modelBuilder.ApplyConfiguration(new PassedEventParticipantConfiguration());
-
         base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyMarker).Assembly);
     }
 }

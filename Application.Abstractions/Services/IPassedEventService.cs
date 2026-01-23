@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.DTOs.Entities;
+﻿using Application.Abstractions.DTOs.Entities.PassedEvent.V1;
 
 namespace Application.Abstractions.Services;
 

@@ -20,13 +20,12 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.ConfigureLocalization();
-
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddRepositories();
 builder.Services.AddInterceptors();
 builder.Services.AddInitiaizers();
+builder.Services.AddDatabaseManagers();
 builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);

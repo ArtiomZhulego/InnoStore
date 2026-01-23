@@ -5,5 +5,5 @@ public enum PassedEventType
     Unspecified = 0,
     OpenMeetUp = 1,
     InternalMeetUp = 2,
-    MasterClass = 3,
+    UniversityMeetUp = 3,
 }

@@ -4,9 +4,7 @@ using Application.Abstractions.Services;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
-using Application.Validation;
 using FluentValidation;
-using Application.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -26,20 +24,8 @@ public static class ServiceCollectionExtension
 
         public void AddQuartzJobs(IConfiguration configuration)
         {
-            services.AddQuartz(q =>
-            {
-                var jobKey = new JobKey(nameof(EmployeeSearchJob));
-                q.AddJob<EmployeeSearchJob>(opts => opts.WithIdentity(jobKey));
-
-                var cron = configuration["Quartz:EmployeeSearchJobCron"];
-                if (string.IsNullOrWhiteSpace(cron))
-                    throw new InvalidOperationException("Quartz cron expression is not configured.");
-
-                q.AddTrigger(opts => opts
-                    .ForJob(jobKey)
-                    .WithIdentity($"{nameof(EmployeeSearchJob)}-trigger")
-                    .WithCronSchedule(cron));
-            });
+            services.AddEmployeeSearchJob(configuration);
+            services.AddPassedEventProcessingJob(configuration);
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
@@ -54,6 +40,43 @@ public static class ServiceCollectionExtension
             services.AddTransient<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+        }
+
+        private void AddEmployeeSearchJob(IConfiguration configuration)
+        {
+            services.AddQuartz(q =>
+            {
+                var jobKey = new JobKey(nameof(EmployeeSearchJob));
+                q.AddJob<EmployeeSearchJob>(opts => opts.WithIdentity(jobKey));
+
+                var cron = configuration["Quartz:EmployeeSearchJobCron"];
+                if (string.IsNullOrWhiteSpace(cron))
+                    throw new InvalidOperationException("Quartz cron expression is not configured.");
+
+                q.AddTrigger(opts => opts
+                    .ForJob(jobKey)
+                    .WithIdentity($"{nameof(EmployeeSearchJob)}-trigger")
+                    .WithCronSchedule(cron));
+            });
+        }
+
+        private void AddPassedEventProcessingJob(IConfiguration configuration)
+        {
+            services.AddQuartz(q =>
+            {
+                var jobKey = new JobKey(nameof(PassedEventProcessingJob));
+                q.AddJob<PassedEventProcessingJob>(opts => opts.WithIdentity(jobKey));
+
+                var cron = configuration["Quartz:PassedEventProcessingJobCron"];
+                if (string.IsNullOrWhiteSpace(cron))
+                    throw new InvalidOperationException("Quartz cron expression is not configured.");
+
+                q.AddTrigger(opts => opts
+                    .ForJob(jobKey)
+                    .WithIdentity($"{nameof(PassedEventProcessingJob)}-trigger")
+                    .WithCronSchedule(cron));
+            });
         }
     }
 }

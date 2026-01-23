@@ -17,8 +17,7 @@ internal sealed class PassedEventParticipantConfiguration : IEntityTypeConfigura
         builder.Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
-        builder.HasIndex(x => x.HrmId)
-            .IsUnique();
+        builder.HasIndex(x => x.HrmId);
 
         builder.HasOne<PassedEvent>()
             .WithMany(x => x.Participants)

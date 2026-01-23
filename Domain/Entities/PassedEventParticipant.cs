@@ -8,7 +8,5 @@ public sealed class PassedEventParticipant
 
     public required PassedEventParticipantRole Role { get; init; }
 
-    public required string Email { get; init; }
-
     public required Guid PassedEventId { get; init; }
 }

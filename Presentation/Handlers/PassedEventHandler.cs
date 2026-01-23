@@ -1,7 +1,9 @@
-﻿using Application.Abstractions.DTOs.Entities;
+﻿using Application.Abstractions.DTOs.Entities.PassedEvent.V1;
 using Application.Abstractions.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Presentation.Constants;
 using Presentation.Exceptions;
 using Wolverine;
 using Wolverine.Attributes;
@@ -18,19 +20,39 @@ public class PassedEventHandler(
     {
         try
         {
-            var passedEvent = JsonConvert.DeserializeObject<PassedEventDTO>(message);
+            var eventVersion = GetEventVersion(message);
 
-            if (passedEvent is null)
+            switch (eventVersion)
             {
-                throw new Exception("Passed event deserialization resulted in null object.");
+                case EventVersions.V1:
+                    await HandleEventV1Async(message);
+                    break;
+                default:
+                    throw new Exception($"Unsupported event version: {eventVersion}");
             }
-
-            await passedEventService.SavePassedEventIdempotentAsync(passedEvent);
         }
         catch (Exception exception)
         {
             logger.LogError(exception, "Error handling passed event.");
             throw new PassedEventException($"Error handling passed event.", exception);
         }
+    }
+
+    private string GetEventVersion(string message)
+    {
+        var jsonObject = JObject.Parse(message);
+        return jsonObject["EventVersion"]?.ToString() ?? string.Empty;
+    }
+
+    private async Task HandleEventV1Async(string message)
+    {
+        var passedEvent = JsonConvert.DeserializeObject<PassedEventDTO>(message);
+
+        if (passedEvent is null)
+        {
+            throw new Exception($"Event deserialization for version {EventVersions.V1} resulted in null object.");
+        }
+
+        await passedEventService.SavePassedEventIdempotentAsync(passedEvent);
     }
 }

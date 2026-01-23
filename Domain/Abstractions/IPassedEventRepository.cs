@@ -5,7 +5,7 @@ namespace Domain.Abstractions;
 
 public interface IPassedEventRepository
 {
-    Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken);
+    Task<bool> AnyAsync(Guid eventId, CancellationToken cancellationToken);
 
     Task AddAsync(PassedEvent passedEvent, CancellationToken cancellationToken);
 

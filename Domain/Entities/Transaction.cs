@@ -4,8 +4,6 @@ public sealed class Transaction : BaseEntity
 {
     public Guid Id { get; set; }
 
-    public required string Description { get; set; }
-
     public required TransactionType Type { get; init; }
 
     public required Guid UserId { get; init; }
