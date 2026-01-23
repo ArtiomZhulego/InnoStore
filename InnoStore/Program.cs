@@ -52,7 +52,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseRequestLocalization();
-
 app.MapControllers();
 app.Run();

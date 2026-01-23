@@ -3,5 +3,5 @@
 public enum TransactionType
 {
     Unspecified = 0,
-    ParticipatingInEvent = 1,
+    AddForParticipatingInEvent = 1,
 }

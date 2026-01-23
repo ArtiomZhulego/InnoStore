@@ -73,7 +73,7 @@ public sealed class PassedEventProcessingJob(
     {
         var page = new Page
         {
-            Size = PassedEventPageSize,
+            Size = pageSize,
             Number = pageNumber
         };
 
@@ -113,7 +113,7 @@ public sealed class PassedEventProcessingJob(
                 var transaction = new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    Type = TransactionType.ParticipatingInEvent,
+                    Type = TransactionType.AddForParticipatingInEvent,
                     UserId = user.Id!.Value,
                     Amount = cost.Amount,
                 };

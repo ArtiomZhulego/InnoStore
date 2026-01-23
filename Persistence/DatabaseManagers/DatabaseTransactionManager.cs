@@ -1,16 +1,9 @@
 ﻿using Domain.Abstractions;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Persistence.DatabaseManagers;
 
 public sealed class DatabaseTransactionManager(InnoStoreContext context) : IDatabaseTransactionManager
 {
-    public void BeginSerializable()
-    {
-        context.Database.BeginTransaction(IsolationLevel.Serializable);
-    }
-
     public async Task BeginAsync(CancellationToken cancellationToken = default)
     {
         await context.Database.BeginTransactionAsync(cancellationToken);

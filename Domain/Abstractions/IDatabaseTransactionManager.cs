@@ -2,8 +2,6 @@
 
 public interface IDatabaseTransactionManager
 {
-    void BeginSerializable();
-
     Task BeginAsync(CancellationToken cancellationToken = default);
 
     Task CommitAsync(CancellationToken cancellationToken = default);
