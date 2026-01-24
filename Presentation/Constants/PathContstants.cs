@@ -4,6 +4,16 @@ public static class PathConstants
 {
     private const string ApiBase = "api";
 
+    public static class Orders
+    {
+        public const string Controller = ApiBase + "/Orders";
+
+        public const string Create = "";
+        public const string Cancel = "{id:guid}/cancel";
+        public const string GetById = "{id:guid}";
+        public const string GetByUserId = "all/{userId}";
+    }
+    
     public static class Products
     {
         public const string Controller = ApiBase + "/Product";
