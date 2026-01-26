@@ -19,7 +19,7 @@ services:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       MINIO__SpaceUrl: "http://minio:9000" 
-      MINIO__AccessKey: ${MINIO__User}
+      MINIO__AccessKey: ${MINIO_User}
       MINIO__SecretKey: ${MINIO_Password}
       MINIO__BucketName: ${MINIO_Default_Bucket}
       MINIO__EnvironmentSubFolder: ${MINIO_Environment_Sub_Folder}

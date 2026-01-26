@@ -23,11 +23,11 @@ public sealed class FileService : IFileService
         using var memoryStream = new MemoryStream();
         await file.CopyToAsync(memoryStream, cancellationToken);
 
-        var fileurl = await _storageService.UploadProductImageAsync(file.FileName, extension, file.ContentType, memoryStream, cancellationToken);
+        var fileUrl = await _storageService.UploadProductImageAsync(file.FileName, extension, file.ContentType, memoryStream, cancellationToken);
 
         return new UploadFileResponse
         {
-            FileUrl = fileurl
+            FileUrl = fileUrl
         };
     }
 }
