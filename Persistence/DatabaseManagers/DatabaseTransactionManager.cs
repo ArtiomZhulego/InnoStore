@@ -14,7 +14,9 @@ public sealed class DatabaseTransactionManager(InnoStoreContext context) : IData
         var transaction = context.Database.CurrentTransaction;
 
         if (transaction is null)
+        {
             return;
+        }
 
         await transaction.CommitAsync(cancellationToken);
     }
@@ -24,7 +26,9 @@ public sealed class DatabaseTransactionManager(InnoStoreContext context) : IData
         var transaction = context.Database.CurrentTransaction;
 
         if (transaction is null)
+        {
             return;
+        }
 
         await transaction.RollbackAsync(cancellationToken);
     }

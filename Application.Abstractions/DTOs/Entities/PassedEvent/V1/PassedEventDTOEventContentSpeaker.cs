@@ -1,6 +1,6 @@
 ﻿namespace Application.Abstractions.DTOs.Entities.PassedEvent.V1;
 
-public record class PassedEventDTOEventContentSpeaker
+public sealed record PassedEventDTOEventContentSpeaker
 {
-    public required int HrmId { get; set; }
+    public required int HrmId { get; init; }
 }

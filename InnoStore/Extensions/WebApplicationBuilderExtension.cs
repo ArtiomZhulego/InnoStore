@@ -78,15 +78,4 @@ internal static class WebApplicationBuilderExtension
 
         return value;
     }
-
-    private sealed class KafkaCampusConfiguration
-    {
-        public required string Server { get; set; }
-
-        public required string GroupId { get; set; }
-
-        public required string PassedEventTopic { get; set; }
-
-        public required string DeadLetterQueueTopic { get; set; }
-    }
 }

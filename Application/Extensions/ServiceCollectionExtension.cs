@@ -51,8 +51,11 @@ public static class ServiceCollectionExtension
                 q.AddJob<EmployeeSearchJob>(opts => opts.WithIdentity(jobKey));
 
                 var cron = configuration["Quartz:EmployeeSearchJobCron"];
+
                 if (string.IsNullOrWhiteSpace(cron))
+                {
                     throw new InvalidOperationException("Quartz cron expression is not configured.");
+                }
 
                 q.AddTrigger(opts => opts
                     .ForJob(jobKey)
@@ -69,8 +72,11 @@ public static class ServiceCollectionExtension
                 q.AddJob<PassedEventProcessingJob>(opts => opts.WithIdentity(jobKey));
 
                 var cron = configuration["Quartz:PassedEventProcessingJobCron"];
+
                 if (string.IsNullOrWhiteSpace(cron))
+                {
                     throw new InvalidOperationException("Quartz cron expression is not configured.");
+                }
 
                 q.AddTrigger(opts => opts
                     .ForJob(jobKey)

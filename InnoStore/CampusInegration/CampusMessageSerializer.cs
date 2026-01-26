@@ -22,11 +22,13 @@ public class CampusMessageSerializer : IMessageSerializer
 
     public byte[] Write(Envelope envelope)
     {
-        throw new NotImplementedException();
+        var bytesData = WriteMessage(envelope.Message!);
+        return bytesData;
     }
 
     public byte[] WriteMessage(object message)
     {
-        throw new NotImplementedException();
+        var messageAsString = message.ToString();
+        return Encoding.UTF8.GetBytes(messageAsString!);
     }
 }

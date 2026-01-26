@@ -105,7 +105,10 @@ public sealed class PassedEventProcessingJob(
 
             if (passedEventUsers.Length != participantsHrmIds.Length)
             {
-                throw new Exception("Not all participants are present in the system.");
+                var notFoundUsersHrmIds = GetNotFoundUsersHrmIds(passedEventUsers, participantsHrmIds);
+                LogNotFoundUsers(notFoundUsersHrmIds);
+
+                throw new Exception($"Participants with HRM IDs {string.Join(' ', notFoundUsersHrmIds)} are not found in the system.");
             }
 
             foreach (var user in passedEventUsers)
@@ -125,5 +128,24 @@ public sealed class PassedEventProcessingJob(
         await transactionRepository.AddRangeAsync(transactions, cancellationToken);
         var processedEventIds = passedEvents.Select(x => x.Id).ToArray();
         await passedEventRepository.MarkAsProcessedAsync(processedEventIds, cancellationToken);
+    }
+
+    private int[] GetNotFoundUsersHrmIds(User[] foundUsers, int[] participantsHrmIds)
+    {
+        var foundUsersHrmIds = foundUsers.Select(x => x.HrmId).ToArray();
+
+        var notFoundUsersHrmIds = participantsHrmIds
+            .Where(participantHrmId => !foundUsersHrmIds.Contains(participantHrmId))
+            .ToArray();
+
+        return notFoundUsersHrmIds;
+    }
+
+    private void LogNotFoundUsers(int[] hrmIds)
+    {
+        foreach (var hrmId in hrmIds)
+        {
+            logger.LogError("User with HRM ID {HrmId} not found in the system.", hrmId);
+        }
     }
 }

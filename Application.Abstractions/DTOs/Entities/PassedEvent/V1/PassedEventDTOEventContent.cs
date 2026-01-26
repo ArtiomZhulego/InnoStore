@@ -1,16 +1,16 @@
 ﻿namespace Application.Abstractions.DTOs.Entities.PassedEvent.V1;
 
-public record class PassedEventDTOEventContent
+public sealed record PassedEventDTOEventContent
 {
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
-    public required string Title { get; set; }
+    public required string Title { get; init; }
 
-    public required DateTime StartDate { get; set; }
+    public required DateTime StartDate { get; init; }
 
-    public required PassedEventDTOEventContentEventType Type { get; set; }
+    public required PassedEventDTOEventContentEventType Type { get; init; }
 
-    public required PassedEventDTOEventContentSpeaker[] Speakers { get; set; }
+    public required PassedEventDTOEventContentSpeaker[] Speakers { get; init; }
 
-    public required PassedEventDTOEventContentAssistent[] Assistents { get; set; }
+    public required PassedEventDTOEventContentAssistent[] Assistents { get; init; }
 }

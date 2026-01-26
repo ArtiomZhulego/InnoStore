@@ -21,7 +21,9 @@ public sealed class EmployeeService(IEmployeeApiClient employeeApiClient) : IEmp
             result.AddRange(pageResult.Content);
 
             if (pageResult.Content.Count < pageSize)
+            {
                 hasMoreItems = false;
+            }
 
             index++;
         }
