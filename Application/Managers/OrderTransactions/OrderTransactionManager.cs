@@ -23,7 +23,6 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
         {
             OrderId = transaction.Id,
             TransactionId = transaction.Id,
-            TransactionType = OrderTransactionType.Create,
         };
         await orderTransactionsRepository.AddAsync(orderTransaction, cancellationToken);
         

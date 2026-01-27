@@ -29,12 +29,12 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             Price = price,
             Status = OrderStatus.Created
         };
-        var createdOrder = await orderRepository.CreateAsync(order, cancellationToken);
+        await orderRepository.CreateAsync(order, cancellationToken);
         
         await AddTransactionToOrderAsync(order.Id, model.UserId, price, cancellationToken);
         await AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
         
-        return createdOrder.ToDto();
+        return order.ToDto();
     }
 
     public async Task<OrderDto?> CancelOrderAsync(CancelOrderModel cancelOrderModel, CancellationToken cancellationToken = default)
@@ -60,9 +60,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
     public async Task<IEnumerable<OrderDto>> GetOrdersByUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var orders = await orderRepository.GetByUserIdAsync(userId, cancellationToken);
-        return orders?.Any() == true ?
-            orders.Select(order => order.ToDto()) :
-            Enumerable.Empty<OrderDto>();
+        return orders.Select(order => order.ToDto());
     }
     
     private async Task AddTransactionToOrderAsync(Guid orderId, Guid userId, decimal amount, CancellationToken cancellationToken = default)

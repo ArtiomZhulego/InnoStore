@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public sealed class OrderAudit : BaseEntity
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     public Guid CorrelationId { get; set; }
     public Guid OrderId { get; set; }
     public Guid ChangedByUserId { get; set; }

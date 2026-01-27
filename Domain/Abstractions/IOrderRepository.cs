@@ -4,8 +4,8 @@ namespace Domain.Abstractions;
 
 public interface IOrderRepository
 {
-    public Task<Order> CreateAsync(Order order, CancellationToken cancellationToken = default);
-    public Task<Order> UpdateAsync(Order order, CancellationToken cancellationToken = default);
+    public Task CreateAsync(Order order, CancellationToken cancellationToken = default);
+    public Task UpdateAsync(Order order, CancellationToken cancellationToken = default);
     public Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default);
-    public Task<IReadOnlyList<Order>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 }

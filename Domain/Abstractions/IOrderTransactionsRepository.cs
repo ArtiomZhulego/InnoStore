@@ -4,6 +4,6 @@ namespace Domain.Abstractions;
 
 public interface IOrderTransactionsRepository
 {
-    public Task<OrderTransaction> AddAsync(OrderTransaction transaction, CancellationToken cancellationToken = default);
+    public Task AddAsync(OrderTransaction transaction, CancellationToken cancellationToken = default);
     public Task<IEnumerable<OrderTransaction>> GetByOrderId(Guid orderId, CancellationToken cancellationToken = default);
 }
