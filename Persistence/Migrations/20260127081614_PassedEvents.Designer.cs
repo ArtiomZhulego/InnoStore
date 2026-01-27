@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(InnoStoreContext))]
-    [Migration("20260123073943_PassedEvents")]
+    [Migration("20260127081614_PassedEvents")]
     partial class PassedEvents
     {
         /// <inheritdoc />
@@ -42,12 +42,12 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
+                    b.HasIndex("Id");
 
                     b.ToTable("PassedEvents", (string)null);
                 });
@@ -76,10 +76,6 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("HrmId")
                         .HasColumnType("integer");
 
@@ -91,8 +87,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HrmId")
-                        .IsUnique();
+                    b.HasIndex("HrmId");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -286,10 +281,6 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");

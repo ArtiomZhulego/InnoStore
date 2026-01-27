@@ -1,8 +1,10 @@
-﻿using Application.Mappers;
+﻿using Application.Abstractions.Options;
+using Application.Mappers;
 using Domain.Abstractions;
 using Domain.Common;
 using Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace Application.BackgroundJobs;
@@ -13,13 +15,10 @@ public sealed class PassedEventProcessingJob(
     IPassedEventCostRepository passedEventCostRepository,
     ITransactionRepository transactionRepository,
     IDatabaseTransactionManager transactionManager,
+    IOptions<PassedEventProcessingJobOptions> options,
     ILogger<PassedEventProcessingJob> logger
 ) : IJob
 {
-    private const int PassedEventPageSize = 20;
-
-    private const int ProcessingDurationInMilliseconds = 10000;
-
     private static SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
     public async Task Execute(IJobExecutionContext context)
@@ -44,11 +43,11 @@ public sealed class PassedEventProcessingJob(
     {
         var pageNumber = 0;
 
-        var cancellationTokenSource = new CancellationTokenSource(ProcessingDurationInMilliseconds);
+        var cancellationTokenSource = new CancellationTokenSource(options.Value.PassedEventProcessingJobDurationInMilliseconds);
 
         var cancellationToken = cancellationTokenSource.Token;
 
-        var unprocessedEvents = await GetUnprocessedEventsAsync(PassedEventPageSize, pageNumber, cancellationToken);
+        var unprocessedEvents = await GetUnprocessedEventsAsync(options.Value.PassedEventProcessingBatchCount, pageNumber, cancellationToken);
 
         while (unprocessedEvents.Any())
         {
@@ -65,7 +64,7 @@ public sealed class PassedEventProcessingJob(
             }
 
             ++pageNumber;
-            unprocessedEvents = await GetUnprocessedEventsAsync(PassedEventPageSize, pageNumber, cancellationToken);
+            unprocessedEvents = await GetUnprocessedEventsAsync(options.Value.PassedEventProcessingBatchCount, pageNumber, cancellationToken);
         }
     }
 

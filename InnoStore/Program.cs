@@ -12,6 +12,8 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
+builder.ConfigureOptions();
+
 builder.Services.ConfigureCors(builder.Configuration);
 
 builder.Services.AddControllers()

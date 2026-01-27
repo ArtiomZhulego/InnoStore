@@ -62,7 +62,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     EventId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     EventType = table.Column<int>(type: "integer", nullable: false),
                     IsProcessed = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -76,7 +76,6 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
@@ -96,7 +95,6 @@ namespace Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     HrmId = table.Column<int>(type: "integer", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
                     PassedEventId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -119,8 +117,7 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PassedEventParticipants_HrmId",
                 table: "PassedEventParticipants",
-                column: "HrmId",
-                unique: true);
+                column: "HrmId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PassedEventParticipants_Id",
@@ -136,8 +133,7 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PassedEvents_Id",
                 table: "PassedEvents",
-                column: "Id",
-                unique: true);
+                column: "Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_Id",
