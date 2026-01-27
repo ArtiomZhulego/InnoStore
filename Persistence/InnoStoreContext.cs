@@ -14,6 +14,11 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
     public DbSet<ProductSizeLocalization> ProductSizaLocalizations { get; set; }
     public DbSet<ProductGroupLocalization> ProductGroupLocalizations { get; set; }
     public DbSet<ProductLocalization> ProductLocalizations { get; set; }
+    
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderAudit> OrderAudits { get; set; }
+    public DbSet<OrderTransaction> OrderTransactions { get; set; }
+    
     public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
-public sealed class UserRepository(InnoStoreContext context) : IUserRepository
+internal sealed class UserRepository(InnoStoreContext context) : IUserRepository
 {
     public async Task<IEnumerable<int>> GetUserHrmIdsAsync(CancellationToken cancellationToken)
     {
