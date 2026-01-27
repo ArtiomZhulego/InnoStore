@@ -4,18 +4,11 @@ using Persistence.DataInitializers.Abstractions;
 
 namespace Persistence.DataInitializers;
 
-public class ProductGroupInitializer : IDataInitializer
+public class ProductGroupInitializer(InnoStoreContext context) : IDataInitializer
 {
-    private readonly InnoStoreContext _context;
-
-    public ProductGroupInitializer(InnoStoreContext context)
-    {
-        _context = context;
-    }
-
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
-        if (await _context.ProductGroups.AnyAsync(cancellationToken))
+        if (await context.ProductGroups.AnyAsync(cancellationToken))
         {
             return;
         }
@@ -64,7 +57,7 @@ public class ProductGroupInitializer : IDataInitializer
             };
         }).ToArray();
 
-        await _context.Set<ProductGroup>().AddRangeAsync(productGroups, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.ProductGroups.AddRangeAsync(productGroups, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
