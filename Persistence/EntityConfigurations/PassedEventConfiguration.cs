@@ -14,5 +14,8 @@ internal sealed class PassedEventConfiguration : IEntityTypeConfiguration<Passed
         builder.HasIndex(x => x.Id);
 
         builder.HasMany(x => x.Participants);
+
+        builder.Property(x => x.Name)
+            .HasMaxLength(100);
     }
 }

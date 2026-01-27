@@ -7,7 +7,7 @@ using Wolverine.Kafka;
 
 namespace InnoStore.Extensions;
 
-internal static class WebApplicationBuilderExtension
+internal static class CampusConfigurationExtensions
 {
     extension(WebApplicationBuilder builder)
     {
@@ -19,15 +19,15 @@ internal static class WebApplicationBuilderExtension
             {
                 options.Discovery.IncludeAssembly(typeof(PassedEventHandler).Assembly);
 
-                options.UseKafka(configuration.Server)
+                options.UseKafka(configuration.KafkaServer)
                     .ConfigureConsumers(config =>
                     {
-                        config.GroupId = configuration.GroupId;
+                        config.GroupId = configuration.KafkaGroupId;
                     });
 
                 var campusMessageSerializer = new CampusMessageSerializer();
 
-                options.ListenToKafkaTopic(configuration.PassedEventTopic)
+                options.ListenToKafkaTopic(configuration.KafkaEventsTopic)
                     .DefaultSerializer(campusMessageSerializer)
                     .DefaultIncomingMessage<string>()
                     .ReceiveRawJson<string>()
@@ -40,8 +40,8 @@ internal static class WebApplicationBuilderExtension
                     .Discard()
                     .And(async (runtime, context, exception) =>
                     {
-                        runtime.Logger.LogInformation($"Sending to {configuration.DeadLetterQueueTopic}.");
-                        await context.BroadcastToTopicAsync(configuration.DeadLetterQueueTopic, context.Envelope?.Message!);
+                        runtime.Logger.LogInformation($"Sending to {configuration.KafkaEventsDlqTopic}.");
+                        await context.BroadcastToTopicAsync(configuration.KafkaEventsDlqTopic, context.Envelope?.Message!);
                     });
             });
 
@@ -58,10 +58,10 @@ internal static class WebApplicationBuilderExtension
 
         var configuration = new KafkaCampusConfiguration
         {
-            Server = server,
-            GroupId = groupId,
-            PassedEventTopic = passedEventTopic,
-            DeadLetterQueueTopic = deadLetterQueueTopic,
+            KafkaServer = server,
+            KafkaGroupId = groupId,
+            KafkaEventsTopic = passedEventTopic,
+            KafkaEventsDlqTopic = deadLetterQueueTopic,
         };
 
         return configuration;

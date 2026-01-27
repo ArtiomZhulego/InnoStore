@@ -2,11 +2,11 @@
 
 public sealed class KafkaCampusConfiguration
 {
-    public required string Server { get; set; }
+    public required string KafkaServer { get; set; }
 
-    public required string GroupId { get; set; }
+    public required string KafkaGroupId { get; set; }
 
-    public required string PassedEventTopic { get; set; }
+    public required string KafkaEventsTopic { get; set; }
 
-    public required string DeadLetterQueueTopic { get; set; }
+    public required string KafkaEventsDlqTopic { get; set; }
 }

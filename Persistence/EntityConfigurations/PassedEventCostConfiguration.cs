@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
-internal class PassedEventCostConfiguration : IEntityTypeConfiguration<PassedEventCost>
+internal sealed class PassedEventCostConfiguration : IEntityTypeConfiguration<PassedEventCost>
 {
     public void Configure(EntityTypeBuilder<PassedEventCost> builder)
     {
