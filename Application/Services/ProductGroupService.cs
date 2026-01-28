@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.ProductGroupAggregate;
+using Application.Abstractions.StorageAggregate;
 using Application.Extensions;
 using Application.Mappers;
 using Domain.Abstractions;
@@ -9,6 +10,7 @@ namespace Application.Services;
 
 public class ProductGroupService(
     IProductGroupRepository productGroupRepository,
+    IStorageService storageService,
     IValidator<CreateProductGroupModel> createValidator,
     IValidator<UpdateProductGroupModel> updateValidator)
     : IProductGroupService
@@ -33,7 +35,17 @@ public class ProductGroupService(
     public async Task<IEnumerable<ProductGroupDTO>> GetAllAsync(string languageCode, CancellationToken cancellationToken = default)
     {
         var groups = await productGroupRepository.GetAllAsync(languageCode, cancellationToken);
-        return groups.Select(x => x.ToDTO());
+
+        var images = groups.SelectMany(x => x.Products).SelectMany(x => x.Images);
+
+        await Parallel.ForEachAsync(images, cancellationToken, async (image, ct) =>
+        {
+            image.ImageUrl = await storageService.GetQuickAccessUrlAsync(image.ImageUrl);
+        });
+
+        var response = groups.Select(x => x.ToDTO());
+
+        return response;
     }
 
     public async Task<ProductGroupDTO> GetByIdAsync(Guid id, string languageCode, CancellationToken cancellationToken = default)

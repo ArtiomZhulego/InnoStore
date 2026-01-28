@@ -10,9 +10,9 @@ public class ProductGroupLocalizationValidator : AbstractValidator<ProductGroupL
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Product group name is required.")
-            .MaximumLength(ProductGroupLocalizationValidationConstants.ProductGroupNameMaxLength).WithMessage("Product group name must not exceed 200 characters.");
+            .MaximumLength(ValidationConstants.ProductGroupNameMaxLength).WithMessage("Product group name must not exceed 200 characters.");
         RuleFor(x => x.LanguageISOCode)
             .NotEmpty().WithMessage("Language ISO code is required.")
-            .Length(ProductGroupLocalizationValidationConstants.LocalizationIsoMaxLenght).WithMessage("Language ISO code must be exactly 2 characters.");
+            .Length(ValidationConstants.LocalizationIsoMaxLenght).WithMessage("Language ISO code must be exactly 2 characters.");
     }
 }

@@ -1,5 +1,7 @@
-﻿using Application.Abstractions.ProductSizeAggregate;
+﻿using System.Reflection;
+using Application.Abstractions.ProductSizeAggregate;
 using Domain.Entities;
+using Shared.Constants;
 
 namespace Application.Mappers;
 
@@ -10,7 +12,7 @@ public static class ProductSizeMapper
        return new ProductSizeDTO
        {
            Id = productSize.Id,
-           Size = productSize.Size,
+           Size = productSize.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
            ProductId = productSize.ProductId
        };
     }
@@ -22,8 +24,26 @@ public static class ProductSizeMapper
         {
             Id = id,
             ProductId = productId,
-            Size = productSizeDTO.Size,
             Localizations = [.. productSizeDTO.Localizations.Select(loc => loc.ToEntity(id))]
         };
+    }
+
+    public static ProductSize UpdateEntity(this UpdateProductSizeModel productSizeDTO, ProductSize productSize)
+    {
+        foreach (var localizationModel in productSizeDTO.Localizations)
+        {
+            var localization = productSize.Localizations
+                .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
+
+            if (localization is not null)
+            {
+                localization.Name = localizationModel.Name;
+            }
+            else
+            {
+                productSize.Localizations.Add(localizationModel.ToEntity(productSize.Id));
+            }
+        }
+        return productSize;
     }
 }

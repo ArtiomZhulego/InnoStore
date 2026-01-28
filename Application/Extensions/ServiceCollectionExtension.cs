@@ -1,9 +1,10 @@
-﻿using Application.Abstractions.ProductAggregate;
+﻿using Application.Abstractions.FileAggregate;
+using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
+using Application.Abstractions.StorageAggregate;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
-using Application.Validation;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,8 @@ public static class ServiceCollectionExtension
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
+            services.AddScoped<IStorageService, MinioStorageService>();
+            services.AddScoped<IFileService, FileService>();
         }
 
         public void AddQuartzJobs(IConfiguration configuration)

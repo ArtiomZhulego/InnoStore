@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 [Route(PathConstants.Products.Controller)]
 public sealed class ProductController(IProductService productService) : ControllerBase
 {
-    [HttpGet(PathConstants.Products.GetById)]
+    [HttpGet(PathConstants.Products.GetById, Name = "getProductById")]
     [ProducesResponseType(typeof(ProductDTO), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -19,7 +19,7 @@ public sealed class ProductController(IProductService productService) : Controll
         return Ok(product);
     }
 
-    [HttpPost]
+    [HttpPost(Name = "createProduct")]
     [ProducesResponseType(typeof(ProductDTO), 201)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
@@ -30,7 +30,7 @@ public sealed class ProductController(IProductService productService) : Controll
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id, languageCode = "en" }, product);
     }
 
-    [HttpPut(PathConstants.Products.Update)]
+    [HttpPut(PathConstants.Products.Update, Name = "updateProduct")]
     [ProducesResponseType(typeof(ProductDTO), 201)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
@@ -41,7 +41,7 @@ public sealed class ProductController(IProductService productService) : Controll
         return Ok(product);
     }
 
-    [HttpDelete(PathConstants.Products.Delete)]
+    [HttpDelete(PathConstants.Products.Delete, Name = "deleteProduct")]
     [ProducesResponseType( 204)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -51,7 +51,7 @@ public sealed class ProductController(IProductService productService) : Controll
         return NoContent();
     }
 
-    [HttpGet(PathConstants.Products.GetByGroup)]
+    [HttpGet(PathConstants.Products.GetByGroup, Name = "getProductsByGroupId")]
     [ProducesResponseType(typeof(IEnumerable<ProductDTO>), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
