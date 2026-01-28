@@ -63,6 +63,7 @@ public class MinioStorageService : IStorageService
         {
             BucketName = _storageSettings.BucketName,
             Key = key,
+            Protocol = Protocol.HTTP,
             Expires = DateTime.UtcNow.AddHours(1),
         };
         return _amazonS3Client.GetPreSignedURLAsync(request);

@@ -31,7 +31,8 @@ public static class ProductMapper
             Id = product.Id,
             Name = localization?.Name ?? LocalizationConstants.DefaultTranslation,
             Description = localization?.Description ?? LocalizationConstants.DefaultTranslation,
-            Price = product.Price
+            Price = product.Price,
+            ImageUrl = product.Images.FirstOrDefault()?.ImageUrl ?? string.Empty
         };
     }
 

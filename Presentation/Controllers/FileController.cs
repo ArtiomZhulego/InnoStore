@@ -16,7 +16,7 @@ public class FileController : ControllerBase
         _fileService = fileService;
     }
 
-    [HttpPost(PathConstants.Files.Upload)]
+    [HttpPost(PathConstants.Files.Upload, Name = "uploadFile")]
     [ProducesResponseType(typeof(UploadFileResponse), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
