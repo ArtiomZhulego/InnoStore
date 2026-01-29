@@ -120,20 +120,9 @@ namespace Persistence.Migrations
                 column: "HrmId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PassedEventParticipants_Id",
-                table: "PassedEventParticipants",
-                column: "Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PassedEventParticipants_PassedEventId",
                 table: "PassedEventParticipants",
                 column: "PassedEventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PassedEvents_Id",
-                table: "PassedEvents",
-                column: "Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_Id",

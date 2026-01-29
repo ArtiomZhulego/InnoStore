@@ -9,7 +9,7 @@ public interface IPassedEventRepository
 
     Task AddAsync(PassedEvent passedEvent, CancellationToken cancellationToken);
 
-    Task<PassedEvent[]> GetAllUnprocessedAsync(Page page, CancellationToken cancellationToken);
+    Task<PassedEvent[]> GetUnprocessedAsync(Page page, CancellationToken cancellationToken);
 
     Task MarkAsProcessedAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
 }

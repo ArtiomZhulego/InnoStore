@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(InnoStoreContext))]
-    [Migration("20260127081614_PassedEvents")]
+    [Migration("20260129085604_PassedEvents")]
     partial class PassedEvents
     {
         /// <inheritdoc />
@@ -46,8 +46,6 @@ namespace Persistence.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id");
 
                     b.ToTable("PassedEvents", (string)null);
                 });
@@ -88,9 +86,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HrmId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.HasIndex("PassedEventId");
 

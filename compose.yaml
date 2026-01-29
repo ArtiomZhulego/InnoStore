@@ -18,10 +18,10 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KAFKA_SERVER: kafka:${KAFKA_PORT}
-      KAFKA_GROUP_ID: ${KAFKA_INNOSTORE_GROUP_ID}
-      KAFKA_EVENTS_TOPIC: ${KAFKA_EVENTS_TOPIC}
-      KAFKA_EVENTS_DLQ_TOPIC: ${KAFKA_EVENTS_DLQ_TOPIC}
+      KAFKA__Server: kafka:${KAFKA_PORT}
+      KAFKA__GroupId: ${KAFKA_INNOSTORE_GROUP_ID}
+      KAFKA__EventsTopic: ${KAFKA_EVENTS_TOPIC}
+      KAFKA__EventsDlqTopic: ${KAFKA_EVENTS_DLQ_TOPIC}
     networks:
       - innostore-net
     ports:

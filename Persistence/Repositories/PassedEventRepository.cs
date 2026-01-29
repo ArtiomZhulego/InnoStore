@@ -21,7 +21,7 @@ internal sealed class PassedEventRepository(InnoStoreContext context) : IPassedE
         return result;
     }
 
-    public async Task<PassedEvent[]> GetAllUnprocessedAsync(Page page, CancellationToken cancellationToken)
+    public async Task<PassedEvent[]> GetUnprocessedAsync(Page page, CancellationToken cancellationToken)
     {
         var unprocessedEvents = await context.PassedEvents
             .Where(x => !x.IsProcessed)

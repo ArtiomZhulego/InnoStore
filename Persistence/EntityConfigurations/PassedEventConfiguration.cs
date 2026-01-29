@@ -11,8 +11,6 @@ internal sealed class PassedEventConfiguration : IEntityTypeConfiguration<Passed
         builder.ToTable("PassedEvents")
             .HasKey(x => x.Id);
 
-        builder.HasIndex(x => x.Id);
-
         builder.HasMany(x => x.Participants);
 
         builder.Property(x => x.Name)

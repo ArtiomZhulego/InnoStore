@@ -1,4 +1,5 @@
 ﻿using InnoStore.CampusInegration;
+using Microsoft.Extensions.DependencyInjection;
 using Presentation.Exceptions;
 using Presentation.Handlers;
 using Wolverine;
@@ -13,21 +14,22 @@ internal static class CampusConfigurationExtensions
     {
         public WebApplicationBuilder ConfigureCampusHandler()
         {
-            var configuration = GetKafkaCampusConfiguration(builder);
+            builder.ConfigureKafkaCampusConfiguration();
+            var configuration = builder.GetKafkaCampusConfiguration();
 
             builder.Host.UseWolverine(options =>
             {
                 options.Discovery.IncludeAssembly(typeof(PassedEventHandler).Assembly);
 
-                options.UseKafka(configuration.KafkaServer)
+                options.UseKafka(configuration.Server)
                     .ConfigureConsumers(config =>
                     {
-                        config.GroupId = configuration.KafkaGroupId;
+                        config.GroupId = configuration.GroupId;
                     });
 
                 var campusMessageSerializer = new CampusMessageSerializer();
 
-                options.ListenToKafkaTopic(configuration.KafkaEventsTopic)
+                options.ListenToKafkaTopic(configuration.EventsTopic)
                     .DefaultSerializer(campusMessageSerializer)
                     .DefaultIncomingMessage<string>()
                     .ReceiveRawJson<string>()
@@ -40,42 +42,26 @@ internal static class CampusConfigurationExtensions
                     .Discard()
                     .And(async (runtime, context, exception) =>
                     {
-                        runtime.Logger.LogInformation($"Sending to {configuration.KafkaEventsDlqTopic}.");
-                        await context.BroadcastToTopicAsync(configuration.KafkaEventsDlqTopic, context.Envelope?.Message!);
+                        runtime.Logger.LogInformation($"Sending to {configuration.EventsDlqTopic}.");
+                        await context.BroadcastToTopicAsync(configuration.EventsDlqTopic, context.Envelope?.Message!);
                     });
             });
 
             return builder;
         }
-    }
 
-    private static KafkaCampusConfiguration GetKafkaCampusConfiguration(WebApplicationBuilder builder)
-    {
-        var server = GetEnvironmentVariable(builder, "KAFKA_SERVER");
-        var groupId = GetEnvironmentVariable(builder, "KAFKA_GROUP_ID");
-        var passedEventTopic = GetEnvironmentVariable(builder, "KAFKA_EVENTS_TOPIC");
-        var deadLetterQueueTopic = GetEnvironmentVariable(builder, "KAFKA_EVENTS_DLQ_TOPIC");
-
-        var configuration = new KafkaCampusConfiguration
+        private void ConfigureKafkaCampusConfiguration()
         {
-            KafkaServer = server,
-            KafkaGroupId = groupId,
-            KafkaEventsTopic = passedEventTopic,
-            KafkaEventsDlqTopic = deadLetterQueueTopic,
-        };
-
-        return configuration;
-    }
-
-    private static string GetEnvironmentVariable(WebApplicationBuilder builder, string environmentVariableName)
-    {
-        var value = builder.Configuration[environmentVariableName];
-
-        if (string.IsNullOrEmpty(value))
-        {
-            throw new NullReferenceException($"Environment variable ${environmentVariableName} is not set.");
+            builder.Services.Configure<KafkaCampusConfiguration>(builder.Configuration.GetSection(KafkaCampusConfiguration.KafkaSection));
         }
 
-        return value;
+        private KafkaCampusConfiguration GetKafkaCampusConfiguration()
+        {
+            var configuration = builder.Configuration.GetSection(KafkaCampusConfiguration.KafkaSection)
+                    .Get<KafkaCampusConfiguration>()
+                    ?? throw new Exception($"Section {KafkaCampusConfiguration.KafkaSection} are not configured properly.");
+
+            return configuration;
+        }
     }
 }

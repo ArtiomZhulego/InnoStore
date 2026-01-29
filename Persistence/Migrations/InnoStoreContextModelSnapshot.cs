@@ -44,8 +44,6 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
-
                     b.ToTable("PassedEvents", (string)null);
                 });
 
@@ -85,9 +83,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HrmId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.HasIndex("PassedEventId");
 

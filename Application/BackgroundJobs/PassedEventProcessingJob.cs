@@ -76,7 +76,7 @@ public sealed class PassedEventProcessingJob(
             Number = pageNumber
         };
 
-        var unprocessedEvents = await passedEventRepository.GetAllUnprocessedAsync(page, cancellationToken);
+        var unprocessedEvents = await passedEventRepository.GetUnprocessedAsync(page, cancellationToken);
 
         return unprocessedEvents;
     }
@@ -107,7 +107,7 @@ public sealed class PassedEventProcessingJob(
                 var notFoundUsersHrmIds = GetNotFoundUsersHrmIds(passedEventUsers, participantsHrmIds);
                 LogNotFoundUsers(notFoundUsersHrmIds);
 
-                throw new Exception($"Participants with HRM IDs {string.Join(' ', notFoundUsersHrmIds)} are not found in the system.");
+                throw new Exception($"Participants with HRM IDs [{string.Join(", ", notFoundUsersHrmIds)}] are not found in the system.");
             }
 
             foreach (var user in passedEventUsers)
@@ -125,7 +125,7 @@ public sealed class PassedEventProcessingJob(
         }
 
         await transactionRepository.AddRangeAsync(transactions, cancellationToken);
-        var processedEventIds = passedEvents.Select(x => x.Id).ToArray();
+        var processedEventIds = passedEvents.Select(x => x.Id);
         await passedEventRepository.MarkAsProcessedAsync(processedEventIds, cancellationToken);
     }
 

@@ -2,11 +2,13 @@
 
 public sealed class KafkaCampusConfiguration
 {
-    public required string KafkaServer { get; set; }
+    internal const string KafkaSection = "KAFKA";
 
-    public required string KafkaGroupId { get; set; }
+    public required string Server { get; set; }
 
-    public required string KafkaEventsTopic { get; set; }
+    public required string GroupId { get; set; }
 
-    public required string KafkaEventsDlqTopic { get; set; }
+    public required string EventsTopic { get; set; }
+
+    public required string EventsDlqTopic { get; set; }
 }
