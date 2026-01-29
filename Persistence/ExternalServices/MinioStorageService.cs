@@ -2,25 +2,16 @@
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.S3.Util;
-using Application.Abstractions.StorageAggregate;
-using Application.Settings;
+using Domain.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Persistence.Settings;
 
-namespace Application.Services;
+namespace Persistence.ExternalServices;
 
-public class MinioStorageService : IStorageService
+public class MinioStorageService(ILogger<MinioStorageService> logger, IAmazonS3 amazonS3Client, IOptions<MinioStorageSettings> storageSettings) : IStorageService
 {
-    private readonly IAmazonS3 _amazonS3Client;
-    private readonly MinioStorageSettings _storageSettings;
-    private readonly ILogger<MinioStorageService> _logger;
-
-    public MinioStorageService(ILogger<MinioStorageService> logger, IAmazonS3 amazonS3Client, IOptions<MinioStorageSettings> storageSettings)
-    {
-        _logger = logger;
-        _amazonS3Client = amazonS3Client;
-        _storageSettings = storageSettings.Value;
-    }
+    private readonly MinioStorageSettings _storageSettings = storageSettings.Value;
 
     public async Task<Stream> GetFileByUrlAsync(string fileUrl, CancellationToken cancellationToken = default)
     {
@@ -34,29 +25,29 @@ public class MinioStorageService : IStorageService
 
         try
         {
-            var response = await _amazonS3Client.GetObjectAsync(request, cancellationToken);
+            var response = await amazonS3Client.GetObjectAsync(request, cancellationToken);
             return response.ResponseStream;
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Amazon S3 error occurred.");
-            _logger.LogError("Message: {0}", ex.Message);
-            _logger.LogError("ErrorCode: {0}", ex.ErrorCode);
-            _logger.LogError("StatusCode: {0}", ex.StatusCode);
-            _logger.LogError("RequestId: {0}", ex.RequestId);
-            _logger.LogError("AmazonId2: {0}", ex.AmazonId2);
-            _logger.LogError("Response: {0}", ex.ResponseBody);
+            logger.LogError(ex, "Amazon S3 error occurred.");
+            logger.LogError("Message: {0}", ex.Message);
+            logger.LogError("ErrorCode: {0}", ex.ErrorCode);
+            logger.LogError("StatusCode: {0}", ex.StatusCode);
+            logger.LogError("RequestId: {0}", ex.RequestId);
+            logger.LogError("AmazonId2: {0}", ex.AmazonId2);
+            logger.LogError("Response: {0}", ex.ResponseBody);
 
             throw;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unknown error occurred.");
+            logger.LogError(ex, "Unknown error occurred.");
             throw;
         }
     }
 
-    public Task<string> GetQuickAccessUrlAsync(string fileUrl)
+    public Task<string> GetQuickAccessUrlAsync(string fileUrl, CancellationToken cancellationToken = default)
     {
         var key = GetFileKey(fileUrl);
         var request = new GetPreSignedUrlRequest()
@@ -66,7 +57,7 @@ public class MinioStorageService : IStorageService
             Protocol = Protocol.HTTP,
             Expires = DateTime.UtcNow.AddHours(1),
         };
-        return _amazonS3Client.GetPreSignedURLAsync(request);
+        return amazonS3Client.GetPreSignedURLAsync(request);
     }
 
     public async Task<string> UploadProductImageAsync(string imageName, string extension, string contentType, Stream fileStream, CancellationToken cancellationToken = default)
@@ -92,7 +83,7 @@ public class MinioStorageService : IStorageService
                 Key = key
             };
 
-            await _amazonS3Client.GetObjectMetadataAsync(request, cancellationToken);
+            await amazonS3Client.GetObjectMetadataAsync(request, cancellationToken);
             return true;
         }
         catch (AmazonS3Exception ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -101,7 +92,7 @@ public class MinioStorageService : IStorageService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred while checking if file exists: {Url}", url);
+            logger.LogError(ex, "An unexpected error occurred while checking if file exists: {Url}", url);
             throw;
         }
     }
@@ -110,7 +101,7 @@ public class MinioStorageService : IStorageService
     {
         var bucketName = _storageSettings.BucketName;
 
-        bool bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(_amazonS3Client, bucketName);
+        bool bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(amazonS3Client, bucketName);
 
         if (bucketExists)
         {
@@ -124,8 +115,8 @@ public class MinioStorageService : IStorageService
             CannedACL = S3CannedACL.Private
         };
 
-        await _amazonS3Client.PutBucketAsync(putBucketRequest, cancellationToken);
-        _logger.LogInformation("Bucket '{BucketName}' did not exist and was created successfully.", bucketName);
+        await amazonS3Client.PutBucketAsync(putBucketRequest, cancellationToken);
+        logger.LogInformation("Bucket '{BucketName}' did not exist and was created successfully.", bucketName);
     }
 
     private async Task<string> UploadFileAsync(
@@ -143,7 +134,7 @@ public class MinioStorageService : IStorageService
             CannedACL = S3CannedACL.Private
         };
 
-        using var transferUtility = new TransferUtility(_amazonS3Client);
+        using var transferUtility = new TransferUtility(amazonS3Client);
         await transferUtility.UploadAsync(uploadRequest, cancellationToken);
 
         await fileStream.DisposeAsync();

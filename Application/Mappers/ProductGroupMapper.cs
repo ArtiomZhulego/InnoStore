@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.ProductGroupAggregate;
+using Application.Constants;
 using Domain.Entities;
-using Shared.Constants;
 
 namespace Application.Mappers;
 
@@ -28,33 +28,39 @@ public static class ProductGroupMapper
         }
     }
 
-    public static ProductGroup ToEntity(this CreateProductGroupModel model)
+    extension(CreateProductGroupModel model)
     {
-        var id = Guid.NewGuid();    
-        return new ProductGroup
+        public ProductGroup ToEntity()
         {
-            Id = id,
-            Localizations = [.. model.Localizations.Select(x => x.ToEntity(id))]
-        };
+            var id = Guid.NewGuid();
+            return new ProductGroup
+            {
+                Id = id,
+                Localizations = [.. model.Localizations.Select(x => x.ToEntity(id))]
+            };
+        }
     }
 
-    public static ProductGroup UpdateEntity(this UpdateProductGroupModel model, ProductGroup productGroup)
+    extension(UpdateProductGroupModel model)
     {
-        foreach (var localizationModel in model.Localizations)
+        public ProductGroup UpdateEntity(ProductGroup productGroup)
         {
-            var localization = productGroup.Localizations
-                .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
-            
-            if (localization is not null)
+            foreach (var localizationModel in model.Localizations)
             {
-                localization.Name = localizationModel.Name;
-            }
-            else
-            {
-                productGroup.Localizations.Add(localizationModel.ToEntity(productGroup.Id));
-            }
-        }
+                var localization = productGroup.Localizations
+                    .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
 
-        return productGroup;
+                if (localization is not null)
+                {
+                    localization.Name = localizationModel.Name;
+                }
+                else
+                {
+                    productGroup.Localizations.Add(localizationModel.ToEntity(productGroup.Id));
+                }
+            }
+
+            return productGroup;
+        }
     }
 }

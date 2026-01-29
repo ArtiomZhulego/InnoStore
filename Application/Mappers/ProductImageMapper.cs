@@ -5,28 +5,37 @@ namespace Application.Mappers;
 
 public static class ProductImageMapper
 {
-    public static ProductImageDTO ToDTO(this ProductImage productImage)
+    extension(ProductImage productImage)
     {
-        return new ProductImageDTO
+        public ProductImageDTO ToDTO()
         {
-            Id = productImage.Id,
-            ImageUrl = productImage.ImageUrl,
-            ProductId = productImage.ProductId
-        };
+            return new ProductImageDTO
+            {
+                Id = productImage.Id,
+                ImageUrl = productImage.ImageUrl,
+                ProductId = productImage.ProductId
+            };
+        }
     }
 
-    public static ProductImage ToEntity(this CreateProductImageModel createProductImage, Guid productId)
+    extension(CreateProductImageModel createProductImage)
     {
-        return new ProductImage
+        public ProductImage ToEntity(Guid productId)
         {
-            ImageUrl = createProductImage.ImageUrl,
-            ProductId = productId
-        };
+            return new ProductImage
+            {
+                ImageUrl = createProductImage.ImageUrl,
+                ProductId = productId
+            };
+        }
     }
 
-    public static ProductImage UpdateEntity(this UpdateProductImageModel updateProductImage, ProductImage productImage)
+    extension(UpdateProductImageModel updateProductImage)
     {
-        productImage.ImageUrl = updateProductImage.ImageUrl;
-        return productImage;
+        public ProductImage UpdateEntity(ProductImage productImage)
+        {
+            productImage.ImageUrl = updateProductImage.ImageUrl;
+            return productImage;
+        }
     }
 }

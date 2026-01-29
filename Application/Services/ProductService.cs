@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.ProductAggregate;
-using Application.Abstractions.StorageAggregate;
 using Application.Extensions;
 using Application.Mappers;
 using Domain.Abstractions;

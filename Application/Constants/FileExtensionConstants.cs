@@ -1,6 +1,6 @@
-﻿namespace Shared.Constants;
+﻿namespace Application.Constants;
 
-public class FileExtensionConstants
+internal class FileExtensionConstants
 {
     public static readonly string[] ProductImageExtensions = [".JPEG", ".JPG", ".PNG"];
 }

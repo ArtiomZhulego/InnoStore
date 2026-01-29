@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.FileAggregate;
-using Application.Abstractions.StorageAggregate;
 using Application.Helpers;
+using Domain.Abstractions;
 
 namespace Application.Services;
 

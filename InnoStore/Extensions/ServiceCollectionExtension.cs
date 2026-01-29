@@ -1,10 +1,10 @@
 ﻿using Amazon;
 using Amazon.S3;
-using Application.Abstractions.StorageAggregate;
-using Application.Settings;
+using Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.DataInitializers.Abstractions;
+using Persistence.Settings;
 using Serilog;
 
 namespace InnoStore.Extensions;
@@ -62,19 +62,25 @@ public static class ServiceCollectionExtension
 
     extension(IApplicationBuilder app)
     {
-        public async Task<IApplicationBuilder> ApplyMigrations()
+        public async Task<IApplicationBuilder> ExecuteActionsBeforeStart()
         {
             using var scope = app.ApplicationServices.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<InnoStoreContext>();
+            await app.ApplyMigrations(scope.ServiceProvider);
+            await app.ApplyDataInitializers(scope.ServiceProvider);
+            await app.ApplyBlobStorageInitialization(scope.ServiceProvider);
+            return app;
+        }
+        public async Task<IApplicationBuilder> ApplyMigrations(IServiceProvider serviceProvider)
+        {
+            var dbContext = serviceProvider.GetRequiredService<InnoStoreContext>();
             await dbContext.Database.MigrateAsync();
 
             return app;
         }
 
-        public async Task<IApplicationBuilder> ApplyDataInitializers()
+        public async Task<IApplicationBuilder> ApplyDataInitializers(IServiceProvider serviceProvider)
         {
-            using var scope = app.ApplicationServices.CreateScope();
-            var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
+            var dataInitializers = serviceProvider.GetServices<IDataInitializer>();
             foreach (var initializer in dataInitializers)
             {
                 await initializer.InitializeAsync();
@@ -83,10 +89,9 @@ public static class ServiceCollectionExtension
             return app;
         }
 
-        public async Task<IApplicationBuilder> ApplyBlobStorageInitialization()
+        public async Task<IApplicationBuilder> ApplyBlobStorageInitialization(IServiceProvider serviceProvider)
         {
-            using var scope = app.ApplicationServices.CreateScope();
-            var storageService = scope.ServiceProvider.GetRequiredService<IStorageService>();
+            var storageService = serviceProvider.GetRequiredService<IStorageService>();
             await storageService.EnsureBucketExistsAsync();
             return app;
         }

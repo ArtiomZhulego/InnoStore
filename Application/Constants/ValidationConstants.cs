@@ -1,6 +1,6 @@
-namespace Shared.Constants;
+namespace Application.Constants;
 
-public static class ValidationConstants
+internal static class ValidationConstants
 {
     public const int ProductGroupNameMaxLength = 200;
     public const int ProductNameMaxLength = 200;

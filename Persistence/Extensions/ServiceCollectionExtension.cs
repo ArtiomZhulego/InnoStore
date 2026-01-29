@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Persistence.DataInitializers;
 using Persistence.DataInitializers.Abstractions;
+using Persistence.ExternalServices;
 using Persistence.Interceptors;
 using Persistence.Repositories;
 
@@ -35,6 +36,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductGroupRepository, ProductGroupRepository>();
+        services.AddScoped<IStorageService, MinioStorageService>();
     }
 
     public static void AddInterceptors(this IServiceCollection services)

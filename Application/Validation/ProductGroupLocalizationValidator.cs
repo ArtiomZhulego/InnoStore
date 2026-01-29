@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.ProductGroupAggregate;
+using Application.Constants;
 using FluentValidation;
-using Shared.Constants;
 
 namespace Application.Validation;
 

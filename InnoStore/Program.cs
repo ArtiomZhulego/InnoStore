@@ -39,9 +39,7 @@ builder.Services.AddQuartzJobs(builder.Configuration);
 
 var app = builder.Build();
 
-await app.ApplyMigrations();
-await app.ApplyDataInitializers();
-await app.ApplyBlobStorageInitialization();
+await app.ExecuteActionsBeforeStart();
 
 app.UseCors();
 
