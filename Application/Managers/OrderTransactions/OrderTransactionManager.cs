@@ -42,6 +42,7 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
 
         if (totalAmount <= 0)
         {
+            throw new InvalidOperationException($"Order {model.OrderId} has no funds to revert.");
         }
 
         var refundTransaction = new Transaction

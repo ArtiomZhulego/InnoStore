@@ -2,5 +2,8 @@ namespace Domain.ValueModels;
 
 public enum TransactionType : byte
 {
-    Refund,
+    Unspecified = 0,
+    AddForParticipatingInEvent = 1,
+    Pay = 2,
+    Refund = 3,
 }

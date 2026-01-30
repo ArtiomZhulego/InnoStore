@@ -8,6 +8,7 @@ using Application.Managers.OrderTransactions.Models;
 using Application.Mappers;
 using Domain.Abstractions;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.ValueModels;
 
 namespace Application.Services;
@@ -15,11 +16,13 @@ namespace Application.Services;
 internal sealed class OrderService(IOrderRepository orderRepository,
     IProductSizeRepository productSizeRepository,
     IOrderAuditManager orderAuditManager,
-    IOrderTransactionManager orderTransactionManager
+    IOrderTransactionManager orderTransactionManager,
+    IDatabaseTransactionManager transactionManager
     ) : IOrderService
 {
     public async Task<OrderDto> CreateOrderAsync(CreateOrderModel model, CancellationToken cancellationToken = default)
     {
+
         var price = await GetProductPriceAsync(model.ProductSizeId, cancellationToken);
 
         var order = new Order
@@ -29,25 +32,49 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             Price = price,
             Status = OrderStatus.Created
         };
-        await orderRepository.CreateAsync(order, cancellationToken);
-        
-        await AddTransactionToOrderAsync(order.Id, model.UserId, price, cancellationToken);
-        await AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
-        
+
+
+        await transactionManager.BeginAsync(cancellationToken);
+        try
+        {
+            await orderRepository.CreateAsync(order, cancellationToken);
+
+            await AddTransactionToOrderAsync(order.Id, model.UserId, price, cancellationToken);
+            await AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
+
+            await transactionManager.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transactionManager.RollbackAsync(cancellationToken);
+            throw;
+        }
+
         return order.ToDto();
     }
 
     public async Task<OrderDto?> CancelOrderAsync(CancelOrderModel cancelOrderModel, CancellationToken cancellationToken = default)
     {
         var order = await orderRepository.GetByIdAsync(cancelOrderModel.OrderId, cancellationToken);
-        if (order == null) throw new ArgumentNullException(); // TODO
+        if (order == null) throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
 
         order.Status = OrderStatus.Canceled;
-        await orderRepository.UpdateAsync(order, cancellationToken);
-        
-        await AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
-        await RevertOrderTransactionAsync(order, cancellationToken);
-        
+
+        await transactionManager.BeginAsync(cancellationToken);
+        try
+        {
+            await orderRepository.UpdateAsync(order, cancellationToken);
+            await AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
+            await RevertOrderTransactionAsync(order, cancellationToken);
+
+            await transactionManager.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transactionManager.RollbackAsync(cancellationToken);
+            throw;
+        }
+
         return order.ToDto();
     }
 
@@ -69,8 +96,8 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         {
             OrderId = orderId,
             UserId = userId,
-            Amount = amount,
-            TransactionType = TransactionType.Test,
+            Amount = -amount,
+            TransactionType = TransactionType.Pay,
         };
         await orderTransactionManager.AddTransactionToOrderAsync(createTransaction, cancellationToken);
     }
@@ -88,11 +115,11 @@ internal sealed class OrderService(IOrderRepository orderRepository,
     private async Task<decimal> GetProductPriceAsync(Guid productSizeId, CancellationToken cancellationToken = default)
     {
         var productSize = await productSizeRepository.GetProductSizeByIdAsync(productSizeId, cancellationToken);
-        if (productSize == null) throw new ArgumentNullException(); //TODO
+        if (productSize == null) throw new EntityNotFoundException<ProductSize>(productSizeId);
 
         var price = productSize.Product?.Price;
-        if (!price.HasValue) throw new ArgumentNullException(); // TODO
-        
+        if (!price.HasValue) throw new EntityNotFoundException<Product>(productSize.ProductId);
+
         return price.Value;
     }
     

@@ -8,14 +8,23 @@ public sealed class OrderTransactionsConfiguration : IEntityTypeConfiguration<Or
 {
     public void Configure(EntityTypeBuilder<OrderTransaction> builder)
     {
-        builder.HasKey(orderProduct => new { orderProduct.OrderId, orderProduct.TransactionId });
+        builder.ToTable("OrderTransactions");
 
-        builder.HasOne(orderProduct => orderProduct.Order)
-            .WithMany(orderProduct => orderProduct.OrderTransactions)
-            .HasForeignKey(orderProduct => orderProduct.OrderId);
+        builder.Property(orderTransaction => orderTransaction.CreatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("now()");
 
-        builder.HasOne(orderProduct => orderProduct.Transaction)
+        builder.Property(orderTransaction => orderTransaction.UpdatedAt)
+             .IsRequired(false);
+
+        builder.HasKey(orderTransaction => new { orderTransaction.OrderId, orderTransaction.TransactionId });
+
+        builder.HasOne(orderTransaction => orderTransaction.Order)
+            .WithMany(order => order.OrderTransactions)
+            .HasForeignKey(orderTransaction => orderTransaction.OrderId);
+
+        builder.HasOne(orderTransaction => orderTransaction.Transaction)
             .WithMany(transaction => transaction.OrderTransactions)
-            .HasForeignKey(orderProduct => orderProduct.TransactionId);
+            .HasForeignKey(orderTransaction => orderTransaction.TransactionId);
     }
 }

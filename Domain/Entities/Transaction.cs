@@ -9,7 +9,7 @@ public sealed class Transaction : BaseEntity
     public required TransactionType Type { get; init; }
 
     public required Guid UserId { get; init; }
-    
+
     public decimal Amount { get; set; }
 
     public List<OrderTransaction> OrderTransactions { get; set; } = [];
