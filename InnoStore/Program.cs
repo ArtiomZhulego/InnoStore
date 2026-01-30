@@ -30,6 +30,7 @@ builder.Services.AddInitiaizers();
 builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);
+builder.Services.ConfigureMinio(builder.Configuration);
 
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
@@ -38,8 +39,7 @@ builder.Services.AddQuartzJobs(builder.Configuration);
 
 var app = builder.Build();
 
-app.ApplyMigrations();
-await app.ApplyDataInitializers();
+await app.ExecuteActionsBeforeStart();
 
 app.UseCors();
 

@@ -1,29 +1,58 @@
-﻿using Application.Abstractions.ProductSizeAggregate;
+﻿using System.Reflection;
+using Application.Abstractions.ProductSizeAggregate;
+using Application.Constants;
 using Domain.Entities;
 
 namespace Application.Mappers;
 
 public static class ProductSizeMapper
 {
-   public static ProductSizeDTO ToDTO(this ProductSize productSize)
-   {
-       return new ProductSizeDTO
-       {
-           Id = productSize.Id,
-           Size = productSize.Size,
-           ProductId = productSize.ProductId
-       };
+    extension(ProductSize productSize)
+    {
+        public ProductSizeDTO ToDTO()
+        {
+            return new ProductSizeDTO
+            {
+                Id = productSize.Id,
+                Size = productSize.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
+                ProductId = productSize.ProductId
+            };
+        }
     }
 
-    public static ProductSize ToEntity(this CreateProductSizeModel productSizeDTO, Guid productId)
+    extension(CreateProductSizeModel productSizeDTO)
     {
-        var id = Guid.NewGuid();
-        return new ProductSize
+        public ProductSize ToEntity(Guid productId)
         {
-            Id = id,
-            ProductId = productId,
-            Size = productSizeDTO.Size,
-            Localizations = [.. productSizeDTO.Localizations.Select(loc => loc.ToEntity(id))]
-        };
+            var id = Guid.NewGuid();
+            return new ProductSize
+            {
+                Id = id,
+                ProductId = productId,
+                Localizations = [.. productSizeDTO.Localizations.Select(loc => loc.ToEntity(id))]
+            };
+        }
+    }
+
+    extension(UpdateProductSizeModel productSizeDTO)
+    {
+        public ProductSize UpdateEntity(ProductSize productSize)
+        {
+            foreach (var localizationModel in productSizeDTO.Localizations)
+            {
+                var localization = productSize.Localizations
+                    .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
+
+                if (localization is not null)
+                {
+                    localization.Name = localizationModel.Name;
+                }
+                else
+                {
+                    productSize.Localizations.Add(localizationModel.ToEntity(productSize.Id));
+                }
+            }
+            return productSize;
+        }
     }
 }
