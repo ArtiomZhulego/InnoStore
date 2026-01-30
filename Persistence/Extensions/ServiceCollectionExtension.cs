@@ -49,6 +49,7 @@ public static class ServiceCollectionExtension
     public static void AddInitiaizers(this IServiceCollection services)
     {
         services.AddScoped<IDataInitializer, ProductGroupInitializer>();
+        services.AddScoped<IDataInitializer, PassedEventCostInitializer>();
     }
 
     public static void AddDatabaseManagers(this IServiceCollection services)
