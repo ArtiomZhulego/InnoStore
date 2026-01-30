@@ -4,15 +4,8 @@ using Domain.Abstractions;
 
 namespace Application.Services;
 
-public sealed class FileService : IFileService
+public sealed class FileService(IStorageService storageService) : IFileService
 {
-    private readonly IStorageService _storageService;
-
-    public FileService(IStorageService storageService)
-    {
-        _storageService = storageService;
-    }
-
     public async Task<UploadFileResponse> UploadFileAsync(UploadFileModel request, CancellationToken cancellationToken = default)
     {
         var file = request.File;
@@ -23,11 +16,8 @@ public sealed class FileService : IFileService
         using var memoryStream = new MemoryStream();
         await file.CopyToAsync(memoryStream, cancellationToken);
 
-        var fileUrl = await _storageService.UploadProductImageAsync(file.FileName, extension, file.ContentType, memoryStream, cancellationToken);
+        var fileUrl = await storageService.UploadProductImageAsync(file.FileName, extension, file.ContentType, memoryStream, cancellationToken);
 
-        return new UploadFileResponse
-        {
-            FileUrl = fileUrl
-        };
+        return new UploadFileResponse(fileUrl);
     }
 }
