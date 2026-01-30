@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+using Domain.ValueModels;
+
+namespace Domain.Entities;
 
 public sealed class Transaction : BaseEntity
 {
@@ -9,4 +11,6 @@ public sealed class Transaction : BaseEntity
     public required Guid UserId { get; init; }
 
     public decimal Amount { get; set; }
+
+    public List<OrderTransaction> OrderTransactions { get; set; } = [];
 }

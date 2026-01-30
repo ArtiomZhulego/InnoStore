@@ -1,8 +1,8 @@
 ﻿using Application.Abstractions.Options;
-using Application.Mappers;
 using Domain.Abstractions;
 using Domain.Common;
 using Domain.Entities;
+using Domain.ValueModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Quartz;
