@@ -1,4 +1,5 @@
 ﻿using Application.Managers.OrderTransactions.Models;
+using Application.Mappers;
 using Domain.Abstractions;
 using Domain.Entities;
 using Domain.ValueModels;
@@ -6,25 +7,32 @@ using Domain.ValueModels;
 namespace Application.Managers.OrderTransactions;
 
 internal sealed class OrderTransactionManager(ITransactionRepository transactionRepository,
-    IOrderTransactionsRepository orderTransactionsRepository) : IOrderTransactionManager
+    IOrderTransactionsRepository orderTransactionsRepository,
+    IDatabaseTransactionManager databaseTransactionManager) : IOrderTransactionManager
 {
     public async Task<Transaction> AddTransactionToOrderAsync(AddTransactionToOrderModel model, CancellationToken cancellationToken = default)
     {
-        var transaction = new Transaction
-        {
-            Id = Guid.NewGuid(),
-            UserId = model.UserId,
-            Amount = model.Amount,
-            Type = model.TransactionType,
-        };
-        await transactionRepository.AddAsync(transaction, cancellationToken);
+        var transaction = model.ToTransaction();
 
-        var orderTransaction = new OrderTransaction()
+        await databaseTransactionManager.BeginAsync(cancellationToken);
+        try
         {
-            OrderId = model.OrderId,
-            TransactionId = transaction.Id,
-        };
-        await orderTransactionsRepository.AddAsync(orderTransaction, cancellationToken);
+            await transactionRepository.AddAsync(transaction, cancellationToken);
+
+            var orderTransaction = new OrderTransaction()
+            {
+                OrderId = model.OrderId,
+                TransactionId = transaction.Id,
+            };
+            await orderTransactionsRepository.AddAsync(orderTransaction, cancellationToken);
+            
+            await databaseTransactionManager.CommitAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            await databaseTransactionManager.RollbackAsync(cancellationToken);
+            throw;
+        }
         
         return transaction;
     }
@@ -34,10 +42,13 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
         var existingTransactions = await orderTransactionsRepository.GetByOrderId(model.OrderId, cancellationToken);
 
         decimal totalAmount = 0;
-        foreach (var item in existingTransactions)
+        var items = existingTransactions
+            .Where(item => item.Transaction != null)
+            .Select(item => item.Transaction!);
+        
+        foreach (var transaction in items)
         {
-            if (item.Transaction != null)
-                totalAmount += item.Transaction.Amount;
+            totalAmount += transaction.Amount;
         }
 
         if (totalAmount <= 0)

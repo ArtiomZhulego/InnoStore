@@ -2,7 +2,7 @@ using Application.Abstractions.DTOs.ValueModels;
 
 namespace Application.Abstractions.DTOs.Entities;
 
-public sealed class OrderDto
+public sealed record OrderDto
 {
     public required Guid Id { get; init; }
     public required Guid UserId { get; init; }

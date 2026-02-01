@@ -14,7 +14,7 @@ internal sealed class OrderAuditRepository(InnoStoreContext context) : IOrderAud
 
     public async Task CreateRangeAsync(IEnumerable<OrderAudit> audits, CancellationToken cancellationToken = default)
     {
-        await context.OrderAudits.AddRangeAsync(audits.ToArray(), cancellationToken);
+        await context.OrderAudits.AddRangeAsync(audits, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 

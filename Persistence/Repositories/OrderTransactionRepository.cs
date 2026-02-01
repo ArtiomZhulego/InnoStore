@@ -12,7 +12,7 @@ public sealed class OrderTransactionRepository(InnoStoreContext context) : IOrde
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<OrderTransaction>> GetByOrderId(Guid orderId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<OrderTransaction>> GetByOrderId(Guid orderId, CancellationToken cancellationToken = default)
     {
         var result = await context.OrderTransactions
             .Where(item => item.OrderId == orderId)

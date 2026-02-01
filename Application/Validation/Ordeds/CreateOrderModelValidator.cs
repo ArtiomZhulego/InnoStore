@@ -10,7 +10,7 @@ public sealed class CreateOrderModelValidator : AbstractValidator<CreateOrderMod
         this.RuleFor(item => item.UserId)
             .NotEmpty();
 
-        this.RuleFor(item => item.UserId)
+        this.RuleFor(item => item.ProductSizeId)
             .NotEmpty();
     }
 }

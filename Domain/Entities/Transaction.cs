@@ -12,5 +12,5 @@ public sealed class Transaction : BaseEntity
 
     public decimal Amount { get; set; }
 
-    public List<OrderTransaction> OrderTransactions { get; set; } = [];
+    public IEnumerable<OrderTransaction> OrderTransactions { get; set; } = [];
 }

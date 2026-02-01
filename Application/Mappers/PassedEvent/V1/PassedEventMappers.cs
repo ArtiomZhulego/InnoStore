@@ -2,6 +2,7 @@
 using Application.Mappers;
 using Application.Mappers.PassedEvent.V1;
 using Domain.Entities;
+using Domain.ValueModels;
 
 namespace Application.Mappers.PassedEvent.V1;
 
@@ -64,7 +65,7 @@ internal static class PassedEventMappers
             return new PassedEventParticipant
             {
                 HrmId = assistent.HrmId,
-                Role = PassedEventParticipantRole.Assistent,
+                Role = PassedEventParticipantRole.Assistant,
                 PassedEventId = passedEventId,
             };
         }

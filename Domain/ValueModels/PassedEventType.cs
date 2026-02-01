@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities;
+﻿namespace Domain.ValueModels;
 
 public enum PassedEventType
 {

@@ -2,5 +2,6 @@ namespace Application.Abstractions.DTOs.ValueModels;
 
 public enum OrderModelStatus : byte
 {
-    Created = 0,
+    None = 0,
+    Created = 1,
 }
