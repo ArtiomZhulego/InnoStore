@@ -28,7 +28,7 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
             
             await databaseTransactionManager.CommitAsync(cancellationToken);
         }
-        catch (Exception e)
+        catch
         {
             await databaseTransactionManager.RollbackAsync(cancellationToken);
             throw;
