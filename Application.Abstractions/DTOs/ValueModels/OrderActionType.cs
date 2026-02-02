@@ -1,4 +1,4 @@
-namespace Domain.ValueModels;
+﻿namespace Application.Abstractions.DTOs.ValueModels;
 
 public enum OrderActionType : byte
 {

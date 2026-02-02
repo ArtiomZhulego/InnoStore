@@ -1,6 +1,6 @@
 namespace Presentation.Constants;
 
-public static class PathConstants
+internal static class PathConstants
 {
     private const string ApiBase = "api";
 
@@ -34,5 +34,11 @@ public static class PathConstants
         public const string Update = "{productGroupId:guid}";
         public const string Delete = "{productGroupId:guid}";
         public const string GetAll = "{languageCode}";
+    }
+
+    public static class OrderAudits
+    {
+        public const string Controller = ApiBase + "/OrderAudit";
+        public const string GetByOrderId = "{orderId:guid}";
     }
 }
