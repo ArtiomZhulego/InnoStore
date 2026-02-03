@@ -8,7 +8,7 @@ namespace Application.Managers.OrderAudits;
 
 internal sealed class OrderAuditManager(IOrderAuditRepository orderAuditRepository) : IOrderAuditManager
 {
-    public async Task<OrderAudit?> AddChangeOrderStatusAsync(AddChangeOrderStatusModel model, CancellationToken cancellationToken = default)
+    public async Task<OrderAudit> AddChangeOrderStatusAsync(AddChangeOrderStatusModel model, CancellationToken cancellationToken = default)
     {
         var changesPayload = new
         {

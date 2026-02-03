@@ -50,7 +50,7 @@ public sealed class OrderController(IOrderService orderService) : ControllerBase
     [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> GetOrderByUserId(Guid id, CancellationToken cancellationToken)
     {
-        var orders = await orderService.GetOrdersByUserAsync(id, cancellationToken);
+        var orders = await orderService.GetOrdersByUserIdAsync(id, cancellationToken);
         return Ok(orders);
     }
 }

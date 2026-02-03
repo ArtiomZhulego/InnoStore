@@ -1,8 +1,11 @@
-﻿using Application.Abstractions.ProductAggregate;
+﻿using Application.Abstractions.OrderAggregate;
+using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
+using Application.Managers.OrderAudits;
+using Application.Managers.OrderTransactions;
 using Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +23,7 @@ public static class ServiceCollectionExtension
             services.AddHrm(configuration);
 
             services.AddServices();
+            services.AddOrderFlow();
         }
 
         public void AddQuartzJobs(IConfiguration configuration)
@@ -41,6 +45,14 @@ public static class ServiceCollectionExtension
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+        }
+
+        private void AddOrderFlow()
+        {
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderAuditManager, OrderAuditManager>();
+            services.AddScoped<IOrderTransactionManager, OrderTransactionManager>();
+            services.AddScoped<IOrderAuditService, OrderAuditService>();
         }
 
         private void AddEmployeeSearchJob(IConfiguration configuration)

@@ -22,7 +22,6 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 {
     public async Task<OrderDto> CreateOrderAsync(CreateOrderModel model, CancellationToken cancellationToken = default)
     {
-
         var price = await GetProductPriceAsync(model.ProductSizeId, cancellationToken);
 
         var order = new Order
@@ -53,10 +52,10 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         return order.ToDto();
     }
 
-    public async Task<OrderDto?> CancelOrderAsync(CancelOrderModel cancelOrderModel, CancellationToken cancellationToken = default)
+    public async Task<OrderDto> CancelOrderAsync(CancelOrderModel cancelOrderModel, CancellationToken cancellationToken = default)
     {
         var order = await orderRepository.GetByIdAsync(cancelOrderModel.OrderId, cancellationToken);
-        if (order == null) throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
+        if (order is null) throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
 
         order.Status = OrderStatus.Canceled;
 
@@ -78,13 +77,14 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         return order.ToDto();
     }
 
-    public async Task<OrderDto?> GetOrderByIdAsync(Guid orderId, CancellationToken cancellationToken = default)
+    public async Task<OrderDto> GetOrderByIdAsync(Guid orderId, CancellationToken cancellationToken = default)
     {
         var order = await orderRepository.GetByIdAsync(orderId, cancellationToken);
-        return order?.ToDto();
+        if (order is null) throw new EntityNotFoundException<Order>(orderId);
+        return order.ToDto();
     }
 
-    public async Task<IEnumerable<OrderDto>> GetOrdersByUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var orders = await orderRepository.GetByUserIdAsync(userId, cancellationToken);
         return orders.Select(order => order.ToDto());
@@ -115,7 +115,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
     private async Task<decimal> GetProductPriceAsync(Guid productSizeId, CancellationToken cancellationToken = default)
     {
         var productSize = await productSizeRepository.GetProductSizeByIdAsync(productSizeId, cancellationToken);
-        if (productSize == null) throw new EntityNotFoundException<ProductSize>(productSizeId);
+        if (productSize is null) throw new EntityNotFoundException<ProductSize>(productSizeId);
 
         var price = productSize.Product?.Price;
         if (!price.HasValue) throw new EntityNotFoundException<Product>(productSize.ProductId);

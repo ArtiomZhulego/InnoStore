@@ -4,10 +4,10 @@ namespace Application.Abstractions.DTOs.Entities;
 
 public sealed class OrderAuditDto
 {
-    public Guid Id { get; set; }
-    public Guid CorrelationId { get; set; }
-    public Guid OrderId { get; set; }
-    public Guid ChangedByUserId { get; set; }
-    public required OrderActionType ActionType { get; set; }
-    public required string Data { get; set; }
+    public required Guid Id { get; init; }
+    public required Guid CorrelationId { get; init; }
+    public required Guid OrderId { get; init; }
+    public required Guid ChangedByUserId { get; init; }
+    public required OrderActionType ActionType { get; init; }
+    public required string Data { get; init; }
 }

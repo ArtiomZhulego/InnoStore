@@ -28,6 +28,7 @@ internal sealed class OrderRepository(InnoStoreContext context) : IOrderReposito
     public async Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var result = await context.Orders
+            .AsNoTracking()
             .Where(order => order.UserId == userId)
             .ToListAsync(cancellationToken);
         return result;

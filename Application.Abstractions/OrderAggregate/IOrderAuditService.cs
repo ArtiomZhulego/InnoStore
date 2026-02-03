@@ -4,5 +4,5 @@ namespace Application.Abstractions.OrderAggregate;
 
 public interface IOrderAuditService
 {
-    public Task<IEnumerable<OrderAuditDto>> GetAuditByOfferAsync(Guid offerId, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<OrderAuditDto>> GetAuditByOrderAsync(Guid orderId, CancellationToken cancellationToken = default);
 }

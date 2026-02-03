@@ -5,5 +5,5 @@ namespace Application.Managers.OrderAudits;
 
 internal interface IOrderAuditManager
 {
-    public Task<OrderAudit?> AddChangeOrderStatusAsync(AddChangeOrderStatusModel model, CancellationToken cancellationToken = default);
+    public Task<OrderAudit> AddChangeOrderStatusAsync(AddChangeOrderStatusModel model, CancellationToken cancellationToken = default);
 }

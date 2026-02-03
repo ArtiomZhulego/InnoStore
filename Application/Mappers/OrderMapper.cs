@@ -11,7 +11,7 @@ internal static class OrderMapper
     {
         public OrderDto ToDto()
         {
-            if (order == null) throw new ArgumentNullException(nameof(order));
+            if (order is null) throw new ArgumentNullException(nameof(order));
             
             return new OrderDto()
             {

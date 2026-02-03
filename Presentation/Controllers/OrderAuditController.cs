@@ -16,7 +16,7 @@ public sealed class OrderAuditController(IOrderAuditService orderAuditService) :
     [ProducesResponseType(typeof(ErrorDetails), 500)]
     public async Task<IActionResult> GetOrderAuditsByOrderId(Guid orderId, CancellationToken cancellationToken)
     {
-        var audits = await orderAuditService.GetAuditByOfferAsync(orderId, cancellationToken);
+        var audits = await orderAuditService.GetAuditByOrderAsync(orderId, cancellationToken);
         return Ok(audits);
     }
 }

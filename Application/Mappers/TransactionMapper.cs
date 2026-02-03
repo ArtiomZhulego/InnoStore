@@ -11,7 +11,6 @@ internal static class TransactionMapper
         {
             return new Transaction()
             {
-                Id = Guid.NewGuid(),
                 UserId = model.UserId,
                 Amount = model.Amount,
                 Type = model.TransactionType,
