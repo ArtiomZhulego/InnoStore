@@ -37,6 +37,8 @@ internal class ProductGroupRepository : IProductGroupRepository
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.Products)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.Products)
+                .ThenInclude(x => x.Images)
             .ToListAsync(cancellationToken);
     }
 

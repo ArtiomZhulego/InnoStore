@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 [Route(PathConstants.ProductGroups.Controller)]
 public class ProductGroupController(IProductGroupService productGroupService) : ControllerBase
 {
-    [HttpGet(PathConstants.ProductGroups.GetById)]
+    [HttpGet(PathConstants.ProductGroups.GetById, Name = "getGroupById")]
     [ProducesResponseType(typeof(ProductGroupDTO), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -19,7 +19,7 @@ public class ProductGroupController(IProductGroupService productGroupService) : 
         return Ok(productGroup);
     }
 
-    [HttpPost]
+    [HttpPost(Name = "createGroup")]
     [ProducesResponseType(typeof(ProductGroupDTO), 201)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
@@ -30,7 +30,7 @@ public class ProductGroupController(IProductGroupService productGroupService) : 
         return CreatedAtAction(nameof(GetProductGroupById), "ProductGroup", new { id = productGroup.Id, languageCode = "en" }, productGroup);
     }
 
-    [HttpPut(PathConstants.ProductGroups.Update)]
+    [HttpPut(PathConstants.ProductGroups.Update, Name = "updateGroup")]
     [ProducesResponseType(typeof(ProductGroupDTO), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
@@ -41,7 +41,7 @@ public class ProductGroupController(IProductGroupService productGroupService) : 
         return Ok(productGroup);
     }
 
-    [HttpDelete(PathConstants.ProductGroups.Delete)]
+    [HttpDelete(PathConstants.ProductGroups.Delete, Name = "deleteGroup")]
     [ProducesResponseType( 204)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
@@ -52,7 +52,7 @@ public class ProductGroupController(IProductGroupService productGroupService) : 
         return NoContent();
     }
 
-    [HttpGet(PathConstants.ProductGroups.GetAll)]
+    [HttpGet(PathConstants.ProductGroups.GetAll, Name = "getAll")]
     [ProducesResponseType(typeof(IEnumerable<ProductGroupDTO>), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]

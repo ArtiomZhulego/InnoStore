@@ -14,6 +14,7 @@ public class SetEntityDetailsInterceptor : BaseChangedInterceptor
             {
                 case EntityState.Added:
                     entry.Entity.CreatedAt = timestamp;
+                    entry.Entity.UpdatedAt = timestamp;
                     break;
                 case EntityState.Modified:
                     entry.Entity.UpdatedAt = timestamp;

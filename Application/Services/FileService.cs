@@ -1,0 +1,23 @@
+﻿using Application.Abstractions.FileAggregate;
+using Application.Helpers;
+using Domain.Abstractions;
+
+namespace Application.Services;
+
+public sealed class FileService(IStorageService storageService) : IFileService
+{
+    public async Task<UploadFileResponse> UploadFileAsync(UploadFileModel request, CancellationToken cancellationToken = default)
+    {
+        var file = request.File;
+
+        var extension = Path.GetExtension(file.FileName);
+        FileValidationHelper.ValidateProductImageExtension(extension);
+
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream, cancellationToken);
+
+        var fileUrl = await storageService.UploadProductImageAsync(file.FileName, extension, file.ContentType, memoryStream, cancellationToken);
+
+        return new UploadFileResponse(fileUrl);
+    }
+}
