@@ -26,4 +26,10 @@ internal sealed class UserRepository(InnoStoreContext context) : IUserRepository
 
         return users;
     }
+
+    public async Task<bool> IsExistedUserAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var isExistedUser = await context.Users.AnyAsync(x => x.Id == userId, cancellationToken);
+        return isExistedUser;
+    }
 }

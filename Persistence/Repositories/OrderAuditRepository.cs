@@ -8,22 +8,19 @@ internal sealed class OrderAuditRepository(InnoStoreContext context) : IOrderAud
 {
     public async Task CreateAsync(OrderAudit orderAudit, CancellationToken cancellationToken = default)
     {
-        await context.OrderAudits.AddAsync(orderAudit, cancellationToken);
+        context.OrderAudits.Add(orderAudit);
         await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task CreateRangeAsync(IEnumerable<OrderAudit> audits, CancellationToken cancellationToken = default)
     {
-        await context.OrderAudits.AddRangeAsync(audits, cancellationToken);
+        context.OrderAudits.AddRange(audits);
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<OrderAudit>> GetOrderAuditsByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
-    {
-        var result = await context.OrderAudits
+    public async Task<IEnumerable<OrderAudit>> GetOrderAuditsByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default) =>
+        await context.OrderAudits
             .Where(item => item.OrderId == orderId)
             .OrderByDescending(item => item.CreatedAt)
             .ToListAsync(cancellationToken);
-        return result;
-    }
 }

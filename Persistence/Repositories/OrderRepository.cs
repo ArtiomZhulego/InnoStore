@@ -8,7 +8,7 @@ internal sealed class OrderRepository(InnoStoreContext context) : IOrderReposito
 {
     public async Task CreateAsync(Order order, CancellationToken cancellationToken = default)
     {
-        await context.Orders.AddAsync(order, cancellationToken);
+        context.Orders.Add(order);
         await context.SaveChangesAsync(cancellationToken);
     }
 
@@ -18,19 +18,12 @@ internal sealed class OrderRepository(InnoStoreContext context) : IOrderReposito
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default)
-    {
-        var result =
-            await context.Orders.FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
-        return result;
-    }
+    public async Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default) =>
+        await context.Orders.FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
 
-    public async Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
-    {
-        var result = await context.Orders
+    public async Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default) =>
+        await context.Orders
             .AsNoTracking()
             .Where(order => order.UserId == userId)
             .ToListAsync(cancellationToken);
-        return result;
-    }
 }

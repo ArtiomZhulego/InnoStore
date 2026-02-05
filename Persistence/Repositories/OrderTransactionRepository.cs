@@ -8,16 +8,13 @@ public sealed class OrderTransactionRepository(InnoStoreContext context) : IOrde
 {
     public async Task AddAsync(OrderTransaction transaction, CancellationToken cancellationToken = default)
     {
-        await context.OrderTransactions.AddAsync(transaction, cancellationToken);
+        context.OrderTransactions.Add(transaction);
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<OrderTransaction>> GetByOrderId(Guid orderId, CancellationToken cancellationToken = default)
-    {
-        var result = await context.OrderTransactions
+    public async Task<IReadOnlyCollection<OrderTransaction>> GetByOrderId(Guid orderId, CancellationToken cancellationToken = default) =>
+        await context.OrderTransactions
             .AsNoTracking()
             .Where(item => item.OrderId == orderId)
             .ToListAsync(cancellationToken);
-        return result;
-    }
 }

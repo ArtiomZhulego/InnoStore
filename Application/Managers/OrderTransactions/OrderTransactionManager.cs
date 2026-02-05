@@ -13,7 +13,7 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
     public async Task<Transaction> AddTransactionToOrderAsync(AddTransactionToOrderModel model, CancellationToken cancellationToken = default)
     {
         var transaction = model.ToTransaction();
-
+        
         await databaseTransactionManager.BeginAsync(cancellationToken);
         try
         {
@@ -43,12 +43,12 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
 
         decimal totalAmount = 0;
         var items = existingTransactions
-            .Where(item => item.Transaction != null)
             .Select(item => item.Transaction!);
         
         foreach (var transaction in items)
         {
-            totalAmount += transaction.Amount;
+            if (transaction.Type == TransactionType.Refund) totalAmount -= Math.Abs(transaction.Amount);
+            else if (transaction.Type == TransactionType.Pay)  totalAmount += Math.Abs(transaction.Amount);
         }
 
         if (totalAmount <= 0)
@@ -60,19 +60,29 @@ internal sealed class OrderTransactionManager(ITransactionRepository transaction
         {
             Id = Guid.NewGuid(),
             UserId = model.UserId,
-            Amount = -totalAmount,
+            Amount = totalAmount,
             Type = TransactionType.Refund
         };
 
-        await transactionRepository.AddAsync(refundTransaction, cancellationToken);
-
-        var orderTransactionLink = new OrderTransaction
+        await databaseTransactionManager.BeginAsync(cancellationToken);
+        try
         {
-            OrderId = model.OrderId,
-            TransactionId = refundTransaction.Id
-        };
+            await transactionRepository.AddAsync(refundTransaction, cancellationToken);
 
-        await orderTransactionsRepository.AddAsync(orderTransactionLink, cancellationToken);
+            var orderTransactionLink = new OrderTransaction
+            {
+                OrderId = model.OrderId,
+                TransactionId = refundTransaction.Id
+            };
+
+            await orderTransactionsRepository.AddAsync(orderTransactionLink, cancellationToken);
+            await databaseTransactionManager.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await databaseTransactionManager.RollbackAsync(cancellationToken);
+            throw;
+        }
 
         return refundTransaction;
     }

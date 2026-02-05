@@ -1,6 +1,7 @@
 using Application.Abstractions.DTOs.Entities;
 using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.OrderAggregate.Models;
+using Application.Extensions;
 using Application.Managers.OrderAudits;
 using Application.Managers.OrderAudits.Models;
 using Application.Managers.OrderTransactions;
@@ -10,20 +11,27 @@ using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.ValueModels;
+using FluentValidation;
 
 namespace Application.Services;
 
 internal sealed class OrderService(IOrderRepository orderRepository,
     IProductSizeRepository productSizeRepository,
+    IUserRepository userRepository,
     IOrderAuditManager orderAuditManager,
     IOrderTransactionManager orderTransactionManager,
-    IDatabaseTransactionManager transactionManager
-    ) : IOrderService
+    IDatabaseTransactionManager transactionManager,
+    IValidator validator) : IOrderService
 {
     public async Task<OrderDto> CreateOrderAsync(CreateOrderModel model, CancellationToken cancellationToken = default)
     {
+        await validator.EnsureValidAsync(model, cancellationToken: cancellationToken);
+        await ValidateUserAsync(model.UserId, cancellationToken);
+        
         var price = await GetProductPriceAsync(model.ProductSizeId, cancellationToken);
 
+        // TODO: Validate user's amount
+        
         var order = new Order
         {
             Id = Guid.NewGuid(),
@@ -31,8 +39,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             Price = price,
             Status = OrderStatus.Created
         };
-
-
+        
         await transactionManager.BeginAsync(cancellationToken);
         try
         {
@@ -54,8 +61,9 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
     public async Task<OrderDto> CancelOrderAsync(CancelOrderModel cancelOrderModel, CancellationToken cancellationToken = default)
     {
-        var order = await orderRepository.GetByIdAsync(cancelOrderModel.OrderId, cancellationToken);
-        if (order is null) throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
+        await validator.EnsureValidAsync(cancelOrderModel, cancellationToken: cancellationToken);
+        var order = await orderRepository.GetByIdAsync(cancelOrderModel.OrderId, cancellationToken) ??
+                    throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
 
         order.Status = OrderStatus.Canceled;
 
@@ -79,15 +87,22 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
     public async Task<OrderDto> GetOrderByIdAsync(Guid orderId, CancellationToken cancellationToken = default)
     {
-        var order = await orderRepository.GetByIdAsync(orderId, cancellationToken);
-        if (order is null) throw new EntityNotFoundException<Order>(orderId);
+        var order = await orderRepository.GetByIdAsync(orderId, cancellationToken) ??
+                    throw new EntityNotFoundException<Order>(orderId);
         return order.ToDto();
     }
 
     public async Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
+        await ValidateUserAsync(userId, cancellationToken);
         var orders = await orderRepository.GetByUserIdAsync(userId, cancellationToken);
         return orders.Select(order => order.ToDto());
+    }
+
+    private async Task ValidateUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var isExistedUser = await userRepository.IsExistedUserAsync(userId, cancellationToken);
+        if (!isExistedUser) throw new EntityNotFoundException<User>(userId);
     }
     
     private async Task AddTransactionToOrderAsync(Guid orderId, Guid userId, decimal amount, CancellationToken cancellationToken = default)
@@ -96,7 +111,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         {
             OrderId = orderId,
             UserId = userId,
-            Amount = -amount,
+            Amount = amount,
             TransactionType = TransactionType.Pay,
         };
         await orderTransactionManager.AddTransactionToOrderAsync(createTransaction, cancellationToken);
@@ -114,13 +129,15 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
     private async Task<decimal> GetProductPriceAsync(Guid productSizeId, CancellationToken cancellationToken = default)
     {
-        var productSize = await productSizeRepository.GetProductSizeByIdAsync(productSizeId, cancellationToken);
-        if (productSize is null) throw new EntityNotFoundException<ProductSize>(productSizeId);
+        var productSize =
+            await productSizeRepository.GetProductSizeByIdAsync(productSizeId, cancellationToken) ??
+            throw new EntityNotFoundException<ProductSize>(productSizeId);
 
-        var price = productSize.Product?.Price;
-        if (!price.HasValue) throw new EntityNotFoundException<Product>(productSize.ProductId);
+        var price =
+            productSize.Product?.Price ??
+            throw new EntityNotFoundException<Product>(productSize.ProductId);
 
-        return price.Value;
+        return price;
     }
     
     private async Task AddChangeOrderStatusAsync(Guid userId, Order order, CancellationToken cancellationToken = default)
