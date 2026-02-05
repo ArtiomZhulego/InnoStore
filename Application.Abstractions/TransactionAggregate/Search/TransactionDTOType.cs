@@ -1,4 +1,4 @@
-﻿namespace Application.Abstractions.TransactionAggregate;
+﻿namespace Application.Abstractions.TransactionAggregate.Search;
 
 public enum TransactionDTOType
 {

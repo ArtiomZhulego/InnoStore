@@ -2,6 +2,7 @@
 using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
 using Application.Abstractions.TransactionAggregate;
+using Application.Abstractions.UserAggregate;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
@@ -43,6 +44,7 @@ public static class ServiceCollectionExtension
             services.AddScoped<IProductGroupService, ProductGroupService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IUserService,  UserService>();
         }
 
         private void AddEmployeeSearchJob(IConfiguration configuration)

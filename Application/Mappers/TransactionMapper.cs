@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.TransactionAggregate;
+﻿using Application.Abstractions.TransactionAggregate.Search;
 using Domain.Entities;
 
 namespace Application.Mappers;

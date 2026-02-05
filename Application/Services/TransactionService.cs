@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.TransactionAggregate;
+using Application.Abstractions.TransactionAggregate.Search;
 using Application.Contsants;
 using Application.Extensions;
 using Application.Mappers;

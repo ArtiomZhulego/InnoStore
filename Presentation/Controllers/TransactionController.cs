@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.TransactionAggregate;
+using Application.Abstractions.TransactionAggregate.Search;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;
 using Presentation.Models.ErrorModels;

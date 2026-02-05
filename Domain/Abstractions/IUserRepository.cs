@@ -9,4 +9,6 @@ public interface IUserRepository
     Task AddRangeAsync(IEnumerable<User> users, CancellationToken cancellationToken);
 
     Task<User[]> GetAllByHrmIdsAsync(int[] hrmIds, CancellationToken cancellationToken);
+
+    Task<decimal> GetCurrentScoresAmountAsync(Guid id, CancellationToken cancellationToken);
 }

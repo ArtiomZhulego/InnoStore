@@ -30,4 +30,11 @@ internal static class PathConstants
     {
         public const string Controller = ApiBase + "/Transaction";
     }
+
+    public static class User
+    {
+        public const string Controller = ApiBase + "/User";
+
+        public const string GetCurrentScoresAmount = "current-scores-amount";
+    }
 }

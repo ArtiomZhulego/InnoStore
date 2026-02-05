@@ -1,4 +1,6 @@
-﻿namespace Application.Abstractions.TransactionAggregate;
+﻿using Application.Abstractions.TransactionAggregate.Search;
+
+namespace Application.Abstractions.TransactionAggregate;
 
 public interface ITransactionService
 {
