@@ -1,12 +1,12 @@
-using Application.Managers.OrderAudits.Models;
+using System.Text.Json;
+using Application.Services.Internal.OrderAudits.Models;
 using Domain.Abstractions;
 using Domain.Entities;
 using Domain.ValueModels;
-using System.Text.Json;
 
-namespace Application.Managers.OrderAudits;
+namespace Application.Services.Internal.OrderAudits;
 
-internal sealed class OrderAuditManager(IOrderAuditRepository orderAuditRepository) : IOrderAuditManager
+internal sealed class InternalInternalOrderAuditService(IOrderAuditRepository orderAuditRepository) : IInternalOrderAuditService
 {
     public async Task<OrderAudit> AddChangeOrderStatusAsync(AddChangeOrderStatusModel model, CancellationToken cancellationToken = default)
     {

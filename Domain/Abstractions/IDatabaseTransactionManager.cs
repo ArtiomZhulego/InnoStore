@@ -2,9 +2,9 @@
 
 public interface IDatabaseTransactionManager
 {
-    ValueTask BeginAsync(CancellationToken cancellationToken = default);
+    Task BeginAsync(CancellationToken cancellationToken = default);
 
-    ValueTask CommitAsync(CancellationToken cancellationToken = default);
+    Task CommitAsync(CancellationToken cancellationToken = default);
 
-    ValueTask RollbackAsync(CancellationToken cancellationToken = default);
+    Task RollbackAsync(CancellationToken cancellationToken = default);
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
-public sealed class OrderTransactionRepository(InnoStoreContext context) : IOrderTransactionsRepository
+internal sealed class OrderTransactionRepository(InnoStoreContext context) : IOrderTransactionsRepository
 {
     public async Task AddAsync(OrderTransaction transaction, CancellationToken cancellationToken = default)
     {

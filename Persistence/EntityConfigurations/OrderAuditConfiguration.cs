@@ -19,9 +19,7 @@ internal sealed class OrderAuditConfiguration : IEntityTypeConfiguration<OrderAu
             .IsRequired();
 
         builder.Property(audit => audit.ActionType)
-            .IsRequired()
-            .HasConversion<string>()
-            .HasMaxLength(50);
+            .IsRequired();
 
         builder.Property(audit => audit.Data)
             .IsRequired()
@@ -33,8 +31,6 @@ internal sealed class OrderAuditConfiguration : IEntityTypeConfiguration<OrderAu
 
         builder.Property(audit => audit.UpdatedAt)
              .IsRequired(false);
-
-        builder.HasIndex(audit => audit.OrderId);
 
         builder.HasIndex(audit => audit.CorrelationId);
 

@@ -31,7 +31,6 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(order => order.UpdatedAt)
             .IsRequired(false);
 
-        builder.HasIndex(order => order.UserId);
 
         builder.HasOne(order => order.User)
             .WithMany(user => user.Orders)

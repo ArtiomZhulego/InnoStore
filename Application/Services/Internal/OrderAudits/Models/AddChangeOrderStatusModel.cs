@@ -1,6 +1,6 @@
 using Domain.ValueModels;
 
-namespace Application.Managers.OrderAudits.Models;
+namespace Application.Services.Internal.OrderAudits.Models;
 
 internal sealed class AddChangeOrderStatusModel
 {

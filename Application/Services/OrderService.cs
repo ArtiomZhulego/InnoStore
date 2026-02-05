@@ -2,11 +2,9 @@ using Application.Abstractions.DTOs.Entities;
 using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.OrderAggregate.Models;
 using Application.Extensions;
-using Application.Managers.OrderAudits;
-using Application.Managers.OrderAudits.Models;
-using Application.Managers.OrderTransactions;
-using Application.Managers.OrderTransactions.Models;
 using Application.Mappers;
+using Application.Services.Internal.OrderAudits;
+using Application.Services.Internal.OrderAudits.Models;
 using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -18,8 +16,9 @@ namespace Application.Services;
 internal sealed class OrderService(IOrderRepository orderRepository,
     IProductSizeRepository productSizeRepository,
     IUserRepository userRepository,
-    IOrderAuditManager orderAuditManager,
-    IOrderTransactionManager orderTransactionManager,
+    IInternalOrderAuditService internalOrderAuditService,
+    IOrderTransactionsRepository orderTransactionsRepository,
+    ITransactionRepository transactionRepository,
     IDatabaseTransactionManager transactionManager,
     IValidator validator) : IOrderService
 {
@@ -45,7 +44,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         {
             await orderRepository.CreateAsync(order, cancellationToken);
 
-            await AddTransactionToOrderAsync(order.Id, model.UserId, price, cancellationToken);
+            await AddTransactionToOrderAsync(order.Id, model.UserId, price, TransactionType.Pay, cancellationToken);
             await AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
 
             await transactionManager.CommitAsync(cancellationToken);
@@ -101,30 +100,74 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
     private async Task ValidateUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var isExistedUser = await userRepository.IsExistedUserAsync(userId, cancellationToken);
+        var isExistedUser = await userRepository.AnyAsync(userId, cancellationToken);
         if (!isExistedUser) throw new EntityNotFoundException<User>(userId);
     }
     
-    private async Task AddTransactionToOrderAsync(Guid orderId, Guid userId, decimal amount, CancellationToken cancellationToken = default)
+    private async Task<Transaction> AddTransactionToOrderAsync(Guid orderId,
+        Guid userId,
+        decimal amount,
+        TransactionType transactionType,
+        CancellationToken cancellationToken = default)
     {
-        var createTransaction = new AddTransactionToOrderModel
+        var transaction = new Transaction()
         {
-            OrderId = orderId,
             UserId = userId,
             Amount = amount,
-            TransactionType = TransactionType.Pay,
+            Type = transactionType
         };
-        await orderTransactionManager.AddTransactionToOrderAsync(createTransaction, cancellationToken);
+        
+        await transactionRepository.AddAsync(transaction, cancellationToken);
+        
+        var orderTransaction = new OrderTransaction()
+        {
+            OrderId = orderId,
+            TransactionId = transaction.Id,
+        };
+        
+        await orderTransactionsRepository.AddAsync(orderTransaction, cancellationToken);
+        
+        return transaction;
     }
 
-    private async Task RevertOrderTransactionAsync(Order order, CancellationToken cancellationToken = default)
+    private async Task<Transaction> RevertOrderTransactionAsync(Order order, CancellationToken cancellationToken = default)
     {
-        var revertOrderTransaction = new RevertOrderTransactionModel
+        var existingTransactions = await orderTransactionsRepository.GetByOrderId(order.Id, cancellationToken);
+
+        decimal totalAmount = 0;
+        var items = existingTransactions
+            .Select(item => item.Transaction!);
+        
+        foreach (var transaction in items)
         {
-            OrderId = order.Id,
+            if (transaction.Type == TransactionType.Refund) totalAmount -= Math.Abs(transaction.Amount);
+            else if (transaction.Type == TransactionType.Pay)  totalAmount += Math.Abs(transaction.Amount);
+        }
+
+        if (totalAmount <= 0)
+        {
+            throw new InvalidOperationException($"Order {order.Id} has no funds to revert.");
+        }
+
+        var refundTransaction = new Transaction
+        {
+            Id = Guid.NewGuid(),
             UserId = order.UserId,
+            Amount = totalAmount,
+            Type = TransactionType.Refund
         };
-        await orderTransactionManager.RevertOfferTransactionAsync(revertOrderTransaction, cancellationToken);
+
+            await transactionRepository.AddAsync(refundTransaction, cancellationToken);
+
+            var orderTransactionLink = new OrderTransaction
+            {
+                OrderId = order.Id,
+                TransactionId = refundTransaction.Id
+            };
+
+            await orderTransactionsRepository.AddAsync(orderTransactionLink, cancellationToken);
+
+        return refundTransaction;
     }
 
     private async Task<decimal> GetProductPriceAsync(Guid productSizeId, CancellationToken cancellationToken = default)
@@ -149,6 +192,6 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             OrderStatus = order.Status,
         };
         
-        await orderAuditManager.AddChangeOrderStatusAsync(item, cancellationToken);
+        await internalOrderAuditService.AddChangeOrderStatusAsync(item, cancellationToken);
     }
 }

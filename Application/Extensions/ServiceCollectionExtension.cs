@@ -4,9 +4,8 @@ using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
-using Application.Managers.OrderAudits;
-using Application.Managers.OrderTransactions;
 using Application.Services;
+using Application.Services.Internal.OrderAudits;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,8 +49,7 @@ public static class ServiceCollectionExtension
         private void AddOrderFlow()
         {
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IOrderAuditManager, OrderAuditManager>();
-            services.AddScoped<IOrderTransactionManager, OrderTransactionManager>();
+            services.AddScoped<IInternalOrderAuditService, InternalInternalOrderAuditService>();
             services.AddScoped<IOrderAuditService, OrderAuditService>();
         }
 
