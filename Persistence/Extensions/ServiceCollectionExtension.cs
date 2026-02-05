@@ -55,7 +55,7 @@ public static class ServiceCollectionExtension
             services.AddScoped<IDataInitializer, ProductGroupInitializer>();
         }
 
-        public static void AddDatabaseManagers()
+        public void AddDatabaseManagers()
         {
             services.AddScoped<IDatabaseTransactionManager, DatabaseTransactionManager>();
         }
