@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
+using Application.Abstractions.TransactionAggregate;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
@@ -37,10 +38,11 @@ public static class ServiceCollectionExtension
 
         private void AddServices()
         {
-            services.AddTransient<IPassedEventService, PassedEventService>();
+            services.AddScoped<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
 
         private void AddEmployeeSearchJob(IConfiguration configuration)

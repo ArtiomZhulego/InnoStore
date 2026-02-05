@@ -2,6 +2,6 @@ namespace Shared.Constants;
 
 public static class ProductGroupLocalizationValidationConstants
 {
-    public const int ProductGroupNameMaxLength = 200;
-    public const int LocalizationIsoMaxLenght = 2;
+    public static readonly int ProductGroupNameMaxLength = 200;
+    public static readonly int LocalizationIsoMaxLenght = 2;
 }
