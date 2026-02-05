@@ -56,9 +56,4 @@ public static class ServiceCollectionExtension
     {
         services.AddScoped<IDatabaseTransactionManager, DatabaseTransactionManager>();
     }
-
-    public static void AddDatabaseManagers(this IServiceCollection services)
-    {
-        services.AddScoped<IDatabaseTransactionManager, DatabaseTransactionManager>();
-    }
 }
