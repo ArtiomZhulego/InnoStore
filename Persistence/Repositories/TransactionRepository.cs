@@ -20,7 +20,7 @@ internal sealed class TransactionRepository(InnoStoreContext context) : ITransac
 
         if (filter.PageNumber is not null &&  filter.PageSize is not null)
         {
-            query = query.Skip(filter.PageSize.Value * filter.PageNumber.Value)
+            query = query.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1))
                 .Take(filter.PageNumber.Value);
         }
 

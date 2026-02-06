@@ -2,5 +2,5 @@
 
 public interface IUserService
 {
-    Task<decimal> GetCurrentScoresAmountAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<UserBalanceDTO> GetUserBalanceAsync(Guid userId, CancellationToken cancellationToken = default);
 }

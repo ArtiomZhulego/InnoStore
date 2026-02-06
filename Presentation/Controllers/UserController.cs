@@ -10,14 +10,14 @@ namespace Presentation.Controllers;
 [Route(PathConstants.User.Controller)]
 public sealed class UserController(IUserService userService) : ControllerBase
 {
-    [HttpGet(PathConstants.User.GetCurrentScoresAmount)]
+    [HttpGet(PathConstants.User.GetUserBalance)]
     [ProducesResponseType(typeof(decimal), 201)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> GetUserCurrentScoresAmountAsync([FromQuery] Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUserBalanceAsync([FromQuery] Guid userId, CancellationToken cancellationToken)
     {
-        var scoresAmount = await userService.GetCurrentScoresAmountAsync(userId, cancellationToken);
-        return Ok(scoresAmount);
+        var userBalance = await userService.GetUserBalanceAsync(userId, cancellationToken);
+        return Ok(userBalance);
     }
 }

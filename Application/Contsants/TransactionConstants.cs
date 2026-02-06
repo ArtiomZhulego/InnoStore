@@ -4,5 +4,5 @@ internal static class TransactionConstants
 {
     public const int DefaultSearchPageSize = 10;
 
-    public const int DefaultSearchPageNumber = 0;
+    public const int DefaultSearchPageNumber = 1;
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.TransactionAggregate.Search;
+using Application.Contsants;
 using Domain.Entities;
 
 namespace Application.Mappers;
@@ -9,11 +10,20 @@ internal static class TransactionMapper
     {
         public Domain.Queries.TransactionSearchFilter ToDomainQuery()
         {
+            var pageSize = filter.PageSize;
+            var pageNumber = filter.PageNumber;
+
+            if (pageSize is null && pageNumber is null)
+            {
+                pageSize = TransactionConstants.DefaultSearchPageSize;
+                pageNumber = TransactionConstants.DefaultSearchPageNumber;
+            }
+
             return new Domain.Queries.TransactionSearchFilter
             {
                 UserId = filter.UserId,
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
             };
         }
     }

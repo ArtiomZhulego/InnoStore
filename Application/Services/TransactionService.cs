@@ -17,13 +17,6 @@ internal sealed class TransactionService(
     {
         await validator.EnsureValidAsync(filter, cancellationToken);
         var domainFilter = filter.ToDomainQuery();
-
-        if (domainFilter.PageSize is null && domainFilter.PageNumber is null)
-        {
-            domainFilter.PageSize = TransactionConstants.DefaultSearchPageSize;
-            domainFilter.PageNumber = TransactionConstants.DefaultSearchPageNumber;
-        }
-
         var transactions = await transactionRepository.GetByFilterAsync(domainFilter, cancellationToken);
         var transactionDTOs = transactions.Select(x => x.ToDTO()).ToArray();
         return transactionDTOs;

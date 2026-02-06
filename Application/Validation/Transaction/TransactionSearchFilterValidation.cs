@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.TransactionAggregate.Search;
+using Application.Contsants;
 using FluentValidation;
 
 namespace Application.Validation.Transaction;
@@ -9,9 +10,9 @@ public class TransactionSearchFilterValidation : AbstractValidator<TransactionSe
     {
         this.RuleFor(x => x.PageNumber)
             .NotEmpty()
-            .GreaterThanOrEqualTo(0)
+            .GreaterThanOrEqualTo(TransactionConstants.DefaultSearchPageNumber)
             .When(x => x.PageSize is not null)
-            .WithMessage(x => $"You need to define {nameof(x.PageNumber)} >= 0 when {nameof(x.PageSize)} is defined.");
+            .WithMessage(x => $"You need to define {nameof(x.PageNumber)} >= {TransactionConstants.DefaultSearchPageNumber} when {nameof(x.PageSize)} is defined.");
 
         this.RuleFor(x => x.PageSize)
             .NotEmpty()

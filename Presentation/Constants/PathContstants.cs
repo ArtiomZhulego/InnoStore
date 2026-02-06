@@ -35,6 +35,6 @@ internal static class PathConstants
     {
         public const string Controller = ApiBase + "/User";
 
-        public const string GetCurrentScoresAmount = "current-scores-amount";
+        public const string GetUserBalance = "balance";
     }
 }
