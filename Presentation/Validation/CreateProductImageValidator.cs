@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.ProductImageAggregate;
 using FluentValidation;
 
-namespace Application.Validation;
+namespace Presentation.Validation;
 
 public class CreateProductImageValidator : AbstractValidator<CreateProductImageModel>
 {

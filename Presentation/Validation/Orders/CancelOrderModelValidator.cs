@@ -1,7 +1,7 @@
 using Application.Abstractions.OrderAggregate.Models;
 using FluentValidation;
 
-namespace Application.Validation.Orders;
+namespace Presentation.Validation.Orders;
 
 internal sealed class CancelOrderModelValidator : AbstractValidator<CancelOrderModel>
 {

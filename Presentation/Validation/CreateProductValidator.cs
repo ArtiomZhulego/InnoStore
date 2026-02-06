@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.ProductAggregate;
 using FluentValidation;
 
-namespace Application.Validation;
+namespace Presentation.Validation;
 
 public class CreateProductValidator : AbstractValidator<CreateProductModel>
 {

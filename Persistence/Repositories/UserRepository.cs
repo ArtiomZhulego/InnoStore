@@ -27,6 +27,15 @@ internal sealed class UserRepository(InnoStoreContext context) : IUserRepository
         return users;
     }
 
+    public async Task<decimal> GetCurrentScoresAmountAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var scoresAmount = await context.Transactions
+            .Where(x => x.UserId == id)
+            .SumAsync(x => x.Amount);
+
+        return scoresAmount;
+    }
+
     public async Task<bool> AnyAsync(Guid userId, CancellationToken cancellationToken)
     {
         var isExistedUser = await context.Users.AnyAsync(x => x.Id == userId, cancellationToken);

@@ -9,7 +9,6 @@ using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.ValueModels;
-using FluentValidation;
 
 namespace Application.Services;
 
@@ -19,18 +18,17 @@ internal sealed class OrderService(IOrderRepository orderRepository,
     IInternalOrderAuditService internalOrderAuditService,
     IOrderTransactionsRepository orderTransactionsRepository,
     ITransactionRepository transactionRepository,
-    IDatabaseTransactionManager transactionManager,
-    IValidator validator) : IOrderService
+    IDatabaseTransactionManager transactionManager) : IOrderService
 {
     public async Task<OrderDto> CreateOrderAsync(CreateOrderModel model, CancellationToken cancellationToken = default)
     {
-        await validator.EnsureValidAsync(model, cancellationToken: cancellationToken);
         await ValidateUserAsync(model.UserId, cancellationToken);
         
         var price = await GetProductPriceAsync(model.ProductSizeId, cancellationToken);
 
-        // TODO: Validate user's amount
-        
+        var usersAmount = await userRepository.GetCurrentScoresAmountAsync(model.UserId, cancellationToken);
+        if (usersAmount < price) throw new InsufficientFundsException(model.UserId, price, usersAmount);
+
         var order = new Order
         {
             Id = Guid.NewGuid(),
@@ -60,7 +58,6 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
     public async Task<OrderDto> CancelOrderAsync(CancelOrderModel cancelOrderModel, CancellationToken cancellationToken = default)
     {
-        await validator.EnsureValidAsync(cancelOrderModel, cancellationToken: cancellationToken);
         var order = await orderRepository.GetByIdAsync(cancelOrderModel.OrderId, cancellationToken) ??
                     throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
 

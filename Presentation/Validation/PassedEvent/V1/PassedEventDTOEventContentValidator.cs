@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.DTOs.Entities.PassedEvent.V1;
 using FluentValidation;
 
-namespace Application.Validation.PassedEvent.V1;
+namespace Presentation.Validation.PassedEvent.V1;
 
 public class PassedEventDTOEventContentValidator : AbstractValidator<PassedEventDTOEventContent>
 {

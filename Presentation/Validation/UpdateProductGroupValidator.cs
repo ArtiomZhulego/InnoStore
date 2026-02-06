@@ -1,11 +1,11 @@
 ﻿using Application.Abstractions.ProductGroupAggregate;
 using FluentValidation;
 
-namespace Application.Validation;
+namespace Presentation.Validation;
 
-public class CreateProductGroupValidator : AbstractValidator<CreateProductGroupModel>
+public class UpdateProductGroupValidator : AbstractValidator<UpdateProductGroupModel>
 {
-    public CreateProductGroupValidator()
+    public UpdateProductGroupValidator()
     {
         RuleForEach(x => x.Localizations)
             .SetValidator(new ProductGroupLocalizationValidator());

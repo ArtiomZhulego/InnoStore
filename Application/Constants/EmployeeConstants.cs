@@ -1,4 +1,4 @@
-﻿namespace Application.Contsants;
+﻿namespace Application.Constants;
 
 internal static class EmployeeConstants
 {

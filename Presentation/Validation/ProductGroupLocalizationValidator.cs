@@ -1,8 +1,8 @@
 ﻿using Application.Abstractions.ProductGroupAggregate;
-using Application.Constants;
 using FluentValidation;
+using Presentation.Constants;
 
-namespace Application.Validation;
+namespace Presentation.Validation;
 
 public class ProductGroupLocalizationValidator : AbstractValidator<ProductGroupLocalizationModel>
 {

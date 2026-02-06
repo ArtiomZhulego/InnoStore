@@ -1,8 +1,7 @@
 using Application.Abstractions.OrderAggregate.Models;
-using Domain.Abstractions;
 using FluentValidation;
 
-namespace Application.Validation.Orders;
+namespace Presentation.Validation.Orders;
 
 internal sealed class CreateOrderModelValidator : AbstractValidator<CreateOrderModel>
 {

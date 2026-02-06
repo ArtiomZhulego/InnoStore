@@ -3,12 +3,12 @@ using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
+using Application.Abstractions.TransactionAggregate;
+using Application.Abstractions.UserAggregate;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
-using Domain.Abstractions;
 using Application.Services.Internal.OrderAudits;
-using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -35,18 +35,15 @@ public static class ServiceCollectionExtension
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
 
-        public void AddValidators()
-        {
-            services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
-        }
-
         private void AddServices()
         {
-            services.AddTransient<IPassedEventService, PassedEventService>();
+            services.AddScoped<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IUserService,  UserService>();
         }
 
         private void AddOrderFlow()
