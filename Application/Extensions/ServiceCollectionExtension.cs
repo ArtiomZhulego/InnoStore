@@ -1,10 +1,12 @@
-﻿using Application.Abstractions.OrderAggregate;
+﻿using Application.Abstractions.FileAggregate;
+using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
+using Domain.Abstractions;
 using Application.Services.Internal.OrderAudits;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +45,7 @@ public static class ServiceCollectionExtension
             services.AddTransient<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
         }
 

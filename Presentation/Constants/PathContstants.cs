@@ -36,6 +36,12 @@ internal static class PathConstants
         public const string GetAll = "{languageCode}";
     }
 
+    public static class Files
+    {
+        public const string Controller = ApiBase + "/File";
+        public const string Upload = "upload";
+    }
+
     public static class OrderAudits
     {
         public const string Controller = ApiBase + "/OrderAudit";

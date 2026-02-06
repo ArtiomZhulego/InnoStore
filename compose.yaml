@@ -18,6 +18,11 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
+      MINIO__SpaceUrl: "http://minio:9000" 
+      MINIO__AccessKey: ${MINIO_User}
+      MINIO__SecretKey: ${MINIO_Password}
+      MINIO__BucketName: ${MINIO_Default_Bucket}
+      MINIO__EnvironmentSubFolder: ${MINIO_Environment_Sub_Folder}
       KAFKA__Server: kafka:${KAFKA_PORT}
       KAFKA__GroupId: ${KAFKA_INNOSTORE_GROUP_ID}
       KAFKA__EventsTopic: ${KAFKA_EVENTS_TOPIC}
@@ -41,6 +46,24 @@ services:
       - innostore-pg-data:/var/lib/postgresql/data
     ports:
       - "${POSTGRES_PORT}:5432"
+    networks:
+      - innostore-net
+
+  minio:
+    image: minio/minio:latest
+    container_name: blobStorage
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_User}
+      MINIO_ROOT_PASSWORD: ${MINIO_Password}
+    volumes:
+      - minio-data:/data
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
     networks:
       - innostore-net
 
@@ -92,6 +115,7 @@ services:
 
 volumes:
   innostore-pg-data:
+  minio-data:
   kafka-data:
 
 networks:
