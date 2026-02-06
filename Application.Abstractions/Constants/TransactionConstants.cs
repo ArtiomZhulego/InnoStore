@@ -2,7 +2,7 @@
 
 public static class TransactionConstants
 {
-    public const int DefaultSearchPageSize = 10;
+    public static readonly int DefaultSearchPageSize = 10;
 
-    public const int DefaultSearchPageNumber = 1;
+    public static readonly int DefaultSearchPageNumber = 1;
 }

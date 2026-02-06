@@ -22,7 +22,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 {
     public async Task<OrderDto> CreateOrderAsync(CreateOrderModel model, CancellationToken cancellationToken = default)
     {
-        await ValidateUserAsync(model.UserId, cancellationToken);
+        await EnsureUserIsValidAsync(model.UserId, cancellationToken);
         
         var price = await GetProductPriceAsync(model.ProductSizeId, cancellationToken);
 
@@ -68,7 +68,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         {
             await orderRepository.UpdateAsync(order, cancellationToken);
             await AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
-            await RevertOrderTransactionAsync(order, cancellationToken);
+            await RefundOrderTransactionAsync(order, cancellationToken);
 
             await transactionManager.CommitAsync(cancellationToken);
         }
@@ -90,12 +90,12 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
     public async Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        await ValidateUserAsync(userId, cancellationToken);
+        await EnsureUserIsValidAsync(userId, cancellationToken);
         var orders = await orderRepository.GetByUserIdAsync(userId, cancellationToken);
         return orders.Select(order => order.ToDto());
     }
 
-    private async Task ValidateUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    private async Task EnsureUserIsValidAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var isExistedUser = await userRepository.AnyAsync(userId, cancellationToken);
         if (!isExistedUser) throw new EntityNotFoundException<User>(userId);
@@ -127,7 +127,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         return transaction;
     }
 
-    private async Task<Transaction> RevertOrderTransactionAsync(Order order, CancellationToken cancellationToken = default)
+    private async Task<Transaction> RefundOrderTransactionAsync(Order order, CancellationToken cancellationToken = default)
     {
         var existingTransactions = await orderTransactionsRepository.GetByOrderId(order.Id, cancellationToken);
 
@@ -154,15 +154,15 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             Type = TransactionType.Refund
         };
 
-            await transactionRepository.AddAsync(refundTransaction, cancellationToken);
+        await transactionRepository.AddAsync(refundTransaction, cancellationToken);
 
-            var orderTransactionLink = new OrderTransaction
-            {
-                OrderId = order.Id,
-                TransactionId = refundTransaction.Id
-            };
+        var orderTransactionLink = new OrderTransaction
+        {
+            OrderId = order.Id,
+            TransactionId = refundTransaction.Id
+        };
 
-            await orderTransactionsRepository.AddAsync(orderTransactionLink, cancellationToken);
+        await orderTransactionsRepository.AddAsync(orderTransactionLink, cancellationToken);
 
         return refundTransaction;
     }
