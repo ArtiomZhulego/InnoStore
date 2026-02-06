@@ -1,9 +1,8 @@
-using System.Text.Json.Serialization;
 using Application.Extensions;
 using InnoStore.Extensions;
 using InnoStore.Middlewares;
 using Persistence.Extensions;
-using Presentation;
+using Presentation.Extensions;
 using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +15,7 @@ builder.ConfigureOptions();
 
 builder.Services.ConfigureCors(builder.Configuration);
 
-builder.Services.AddControllers()
-                .AddApplicationPart(typeof(AssemblyMarker).Assembly)
-                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddPresentationControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -28,7 +25,6 @@ builder.Services.AddRepositories();
 builder.Services.AddInterceptors();
 builder.Services.AddInitiaizers();
 builder.Services.AddDatabaseManagers();
-builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);
 builder.Services.ConfigureMinio(builder.Configuration);

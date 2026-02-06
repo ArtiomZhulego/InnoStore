@@ -3,21 +3,16 @@ using Application.Extensions;
 using Application.Mappers;
 using Domain.Abstractions;
 using Domain.Exceptions;
-using FluentValidation;
 
 namespace Application.Services;
 
 public class ProductGroupService(
     IProductGroupRepository productGroupRepository,
-    IStorageService storageService,
-    IValidator<CreateProductGroupModel> createValidator,
-    IValidator<UpdateProductGroupModel> updateValidator)
-    : IProductGroupService
+    IStorageService storageService
+    ) : IProductGroupService
 {
     public async Task<ProductGroupDTO> CreateAsync(CreateProductGroupModel createProductGroupModel, CancellationToken cancellationToken = default)
     {
-        await createValidator.EnsureValidAsync(createProductGroupModel, cancellationToken);
-
         var entity = createProductGroupModel.ToEntity();
         await productGroupRepository.CreateAsync(entity,cancellationToken);
 
@@ -56,8 +51,6 @@ public class ProductGroupService(
 
     public async Task<ProductGroupDTO> UpdateAsync(Guid id, UpdateProductGroupModel updateProductGroupModel, CancellationToken cancellationToken = default)
     {
-        await updateValidator.EnsureValidAsync(updateProductGroupModel, cancellationToken);
-
         var entity = await productGroupRepository.GetByIdAsync(id, cancellationToken) ?? throw new ProductGroupNotFoundException(id);
 
         updateProductGroupModel.UpdateEntity(entity);

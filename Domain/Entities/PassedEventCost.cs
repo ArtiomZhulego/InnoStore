@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using Domain.ValueModels;
+
+namespace Domain.Entities;
 
 public sealed class PassedEventCost
 {

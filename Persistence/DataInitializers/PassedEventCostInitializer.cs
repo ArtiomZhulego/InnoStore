@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.ValueModels;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DataInitializers.Abstractions;
 

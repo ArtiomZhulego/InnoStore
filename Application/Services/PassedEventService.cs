@@ -4,13 +4,11 @@ using Application.Extensions;
 using Application.Mappers;
 using Application.Mappers.PassedEvent.V1;
 using Domain.Abstractions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
 internal class PassedEventService(
-    IValidator<PassedEventDTO> passedEventDTOValidator,
     IPassedEventRepository passedEventRepository,
     IDatabaseTransactionManager databaseTransactionManager,
     ILogger<PassedEventService> logger
@@ -18,8 +16,6 @@ internal class PassedEventService(
 {
     public async Task SavePassedEventIdempotentAsync(PassedEventDTO passedEventDTO, CancellationToken cancellationToken)
     {
-        await passedEventDTOValidator.EnsureValidAsync(passedEventDTO, cancellationToken);
-
         var doesEventExist = await passedEventRepository.AnyAsync(passedEventDTO.EventContent.Id, cancellationToken);
 
         if (doesEventExist)
