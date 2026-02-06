@@ -37,4 +37,10 @@ internal static class PathConstants
 
         public const string GetUserBalance = "balance";
     }
+
+    public static class Files
+    {
+        public const string Controller = ApiBase + "/File";
+        public const string Upload = "upload";
+    }
 }

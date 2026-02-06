@@ -30,6 +30,7 @@ internal class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.Images)
             .ToListAsync(cancellationToken);
     }
 
@@ -40,6 +41,9 @@ internal class ProductRepository : IProductRepository
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.ProductGroup)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.Sizes)
+                .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.Images)
             .ToListAsync(cancellationToken);
     }
 
@@ -49,6 +53,9 @@ internal class ProductRepository : IProductRepository
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.ProductGroup)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+             .Include(x => x.Sizes)
+                .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.Images)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
@@ -58,6 +65,9 @@ internal class ProductRepository : IProductRepository
             .Include(x => x.Localizations)
             .Include(x => x.ProductGroup)
                 .ThenInclude(x => x.Localizations)
+            .Include(x => x.Sizes)
+                .ThenInclude(x => x.Localizations)
+            .Include(x => x.Images)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 

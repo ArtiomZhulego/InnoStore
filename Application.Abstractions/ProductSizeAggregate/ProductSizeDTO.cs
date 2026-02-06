@@ -9,6 +9,4 @@ public sealed class ProductSizeDTO
     public required string Size { get; set; } = string.Empty;
     
     public required Guid ProductId { get; set; }
-    
-    public ProductDTO? Product { get; set; }
 }

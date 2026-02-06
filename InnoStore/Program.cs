@@ -31,6 +31,7 @@ builder.Services.AddDatabaseManagers();
 builder.Services.AddValidators();
 
 builder.Services.ConfigureLogger(builder.Configuration);
+builder.Services.ConfigureMinio(builder.Configuration);
 
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
@@ -41,8 +42,7 @@ builder.ConfigureCampusHandler();
 
 var app = builder.Build();
 
-app.ApplyMigrations();
-await app.ApplyDataInitializers();
+await app.ExecuteActionsBeforeStart();
 
 app.UseCors();
 

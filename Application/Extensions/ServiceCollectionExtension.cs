@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.ProductAggregate;
+﻿using Application.Abstractions.FileAggregate;
+using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
 using Application.Abstractions.Services;
 using Application.Abstractions.TransactionAggregate;
@@ -6,6 +7,7 @@ using Application.Abstractions.UserAggregate;
 using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
+using Domain.Abstractions;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +44,7 @@ public static class ServiceCollectionExtension
             services.AddScoped<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductGroupService, ProductGroupService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IUserService,  UserService>();

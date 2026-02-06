@@ -5,23 +5,29 @@ namespace Application.Mappers;
 
 public static class ProductSizeLocalizationMapper
 {
-    public static ProductSizeLocalizationModel ToDTO(this ProductSizeLocalization productSizeLocalization)
+    extension(ProductSizeLocalization productSizeLocalization)
     {
-        return new ProductSizeLocalizationModel
+        public ProductSizeLocalizationModel ToDTO()
         {
-            Name = productSizeLocalization.Name,
-            LanguageISOCode = productSizeLocalization.LanguageISOCode
-        };
+            return new ProductSizeLocalizationModel
+            {
+                Name = productSizeLocalization.Name,
+                LanguageISOCode = productSizeLocalization.LanguageISOCode
+            };
+        }
     }
 
-    public static ProductSizeLocalization ToEntity(this ProductSizeLocalizationModel productSizeLocalization, Guid productSizeId)
+    extension(ProductSizeLocalizationModel productSizeLocalization)
     {
-        return new ProductSizeLocalization
+        public ProductSizeLocalization ToEntity(Guid productSizeId)
         {
-            Id = Guid.NewGuid(),
-            ProductSizeId = productSizeId,
-            Name = productSizeLocalization.Name,
-            LanguageISOCode = productSizeLocalization.LanguageISOCode
-        };
+            return new ProductSizeLocalization
+            {
+                Id = Guid.NewGuid(),
+                ProductSizeId = productSizeId,
+                Name = productSizeLocalization.Name,
+                LanguageISOCode = productSizeLocalization.LanguageISOCode
+            };
+        }
     }
 }

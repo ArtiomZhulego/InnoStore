@@ -5,14 +5,17 @@ namespace Application.Mappers;
 
 public static class ProductGroupLocalizationMapper
 {
-    public static ProductGroupLocalization ToEntity(this ProductGroupLocalizationModel localization, Guid productGroupId)
+    extension(ProductGroupLocalizationModel localization)
     {
-        return new ProductGroupLocalization
+        public ProductGroupLocalization ToEntity(Guid productGroupId)
         {
-            Id = Guid.NewGuid(),
-            ProductGroupId = productGroupId,
-            LanguageISOCode = localization.LanguageISOCode,
-            Name = localization.Name,
-        };
+            return new ProductGroupLocalization
+            {
+                Id = Guid.NewGuid(),
+                ProductGroupId = productGroupId,
+                LanguageISOCode = localization.LanguageISOCode,
+                Name = localization.Name,
+            };
+        }
     }
 }
