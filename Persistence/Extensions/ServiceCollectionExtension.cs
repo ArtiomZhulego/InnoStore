@@ -53,6 +53,7 @@ public static class ServiceCollectionExtension
         public void AddInitiaizers()
         {
             services.AddScoped<IDataInitializer, ProductGroupInitializer>();
+            services.AddScoped<IDataInitializer, PassedEventCostInitializer>();
         }
 
         public void AddDatabaseManagers()
