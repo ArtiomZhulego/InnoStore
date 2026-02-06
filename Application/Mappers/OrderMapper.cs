@@ -11,8 +11,6 @@ internal static class OrderMapper
     {
         public OrderDto ToDto()
         {
-            if (order is null) throw new ArgumentNullException(nameof(order));
-            
             return new OrderDto()
             {
                 Id = order.Id,

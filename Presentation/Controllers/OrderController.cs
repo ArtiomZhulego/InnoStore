@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route(PathConstants.Orders.Controller)]
-public sealed class OrderController(IOrderService orderService) : ControllerBase
+internal sealed class OrderController(IOrderService orderService) : ControllerBase
 {
     [HttpPost(PathConstants.Orders.Create)]
     [ProducesResponseType(typeof(OrderDto), 201)]
@@ -42,15 +42,5 @@ public sealed class OrderController(IOrderService orderService) : ControllerBase
     {
         var order = await orderService.GetOrderByIdAsync(id, cancellationToken);
         return Ok(order);
-    }
-    
-    [HttpGet(PathConstants.Orders.GetByUserId)]
-    [ProducesResponseType(typeof(IEnumerable<OrderDto>), 200)]
-    [ProducesResponseType(typeof(ErrorDetails), 404)]
-    [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> GetOrderByUserId(Guid id, CancellationToken cancellationToken)
-    {
-        var orders = await orderService.GetOrdersByUserIdAsync(id, cancellationToken);
-        return Ok(orders);
     }
 }
