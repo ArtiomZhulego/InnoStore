@@ -19,17 +19,21 @@ public static class ServiceCollectionExtension
     {
         public IServiceCollection AddPersistenceServices(IConfiguration configuration)
         {
-            var builder = new NpgsqlConnectionStringBuilder
-            {
-                Host = configuration["DB_HOST"],
-                Port = int.Parse(configuration["DB_PORT"] ?? "5432"),
-                Database = configuration["DB_NAME"],
-                Username = configuration["DB_USER"],
-                Password = configuration["DB_PASSWORD"]
-            };
+            //var builder = new NpgsqlConnectionStringBuilder
+            //{
+            //    Host = configuration["DB_HOST"],
+            //    Port = int.Parse(configuration["DB_PORT"] ?? "5432"),
+            //    Database = configuration["DB_NAME"],
+            //    Username = configuration["DB_USER"],
+            //    Password = configuration["DB_PASSWORD"]
+            //};
+
+            //services.AddDbContext<InnoStoreContext>(options =>
+            //    options.UseNpgsql(builder.ConnectionString));
 
             services.AddDbContext<InnoStoreContext>(options =>
-                options.UseNpgsql(builder.ConnectionString));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
 
             return services;
         }
@@ -50,7 +54,7 @@ public static class ServiceCollectionExtension
             services.AddScoped<IInterceptor, SetEntityDetailsInterceptor>();
         }
 
-        public static void AddInitiaizers(this IServiceCollection services)
+        public void AddInitiaizers()
         {
             services.AddScoped<IDataInitializer, ProductGroupInitializer>();
             services.AddScoped<IDataInitializer, PassedEventCostInitializer>();
