@@ -50,11 +50,11 @@ public static class ServiceCollectionExtension
             services.AddScoped<IInterceptor, SetEntityDetailsInterceptor>();
         }
 
-    public static void AddInitiaizers(this IServiceCollection services)
-    {
-        services.AddScoped<IDataInitializer, ProductGroupInitializer>();
-        services.AddScoped<IDataInitializer, PassedEventCostInitializer>();
-    }
+        public static void AddInitiaizers(this IServiceCollection services)
+        {
+            services.AddScoped<IDataInitializer, ProductGroupInitializer>();
+            services.AddScoped<IDataInitializer, PassedEventCostInitializer>();
+        }
 
         public void AddDatabaseManagers()
         {
