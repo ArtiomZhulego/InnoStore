@@ -1,4 +1,4 @@
-using Domain.ValueModels;
+using Shared.ValueModels;
 
 namespace Domain.Entities;
 

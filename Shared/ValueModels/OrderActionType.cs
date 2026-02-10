@@ -1,4 +1,4 @@
-namespace Domain.ValueModels;
+namespace Shared.ValueModels;
 
 public enum OrderActionType : byte
 {

@@ -1,4 +1,4 @@
-using Application.Abstractions.DTOs.ValueModels;
+using Shared.ValueModels;
 
 namespace Application.Abstractions.DTOs.Entities;
 

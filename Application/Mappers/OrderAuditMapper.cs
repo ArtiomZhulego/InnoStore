@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.DTOs.Entities;
-using Application.Abstractions.DTOs.ValueModels;
 using Domain.Entities;
 
 namespace Application.Mappers;
@@ -16,7 +15,7 @@ internal static class OrderAuditMapper
                 CorrelationId = orderAudit.CorrelationId,
                 OrderId = orderAudit.OrderId,
                 ChangedByUserId = orderAudit.ChangedByUserId,
-                ActionType = (OrderActionType)orderAudit.ActionType,
+                ActionType = orderAudit.ActionType,
                 Data = orderAudit.Data
             };
         }

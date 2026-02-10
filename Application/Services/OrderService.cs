@@ -9,6 +9,7 @@ using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.ValueModels;
+using Shared.ValueModels;
 
 namespace Application.Services;
 
@@ -43,7 +44,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             await orderRepository.CreateAsync(order, cancellationToken);
 
             await AddTransactionToOrderAsync(order.Id, model.UserId, price, TransactionType.Pay, cancellationToken);
-            await AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
+            await internalOrderAuditService.AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
 
             await transactionManager.CommitAsync(cancellationToken);
         }
@@ -61,13 +62,18 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         var order = await orderRepository.GetByIdAsync(cancelOrderModel.OrderId, cancellationToken) ??
                     throw new EntityNotFoundException<Order>(cancelOrderModel.OrderId);
 
+        if (order is { Status: OrderStatus.Canceled or OrderStatus.Completed })
+        {
+            throw new InvalidOperationException($"Order {order.Id} is already {order.Status} and cannot be canceled.");
+        }
+
         order.Status = OrderStatus.Canceled;
 
         await transactionManager.BeginAsync(cancellationToken);
         try
         {
             await orderRepository.UpdateAsync(order, cancellationToken);
-            await AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
+            await internalOrderAuditService.AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
             await RefundOrderTransactionAsync(order, cancellationToken);
 
             await transactionManager.CommitAsync(cancellationToken);
@@ -110,7 +116,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         var transaction = new Transaction()
         {
             UserId = userId,
-            Amount = amount,
+            Amount = -Math.Abs(amount),
             Type = transactionType
         };
         
@@ -155,6 +161,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         };
 
         await transactionRepository.AddAsync(refundTransaction, cancellationToken);
+        //
 
         var orderTransactionLink = new OrderTransaction
         {
@@ -178,17 +185,5 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             throw new EntityNotFoundException<Product>(productSize.ProductId);
 
         return price;
-    }
-    
-    private async Task AddChangeOrderStatusAsync(Guid userId, Order order, CancellationToken cancellationToken = default)
-    {
-        var item = new AddChangeOrderStatusModel
-        {
-            UserId = userId,
-            OrderId = order.Id,
-            OrderStatus = order.Status,
-        };
-        
-        await internalOrderAuditService.AddChangeOrderStatusAsync(item, cancellationToken);
     }
 }

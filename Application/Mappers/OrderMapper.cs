@@ -1,7 +1,5 @@
 using Application.Abstractions.DTOs.Entities;
-using Application.Abstractions.DTOs.ValueModels;
 using Domain.Entities;
-using Domain.ValueModels;
 
 namespace Application.Mappers;
 
@@ -15,7 +13,7 @@ internal static class OrderMapper
             {
                 Id = order.Id,
                 UserId = order.UserId,
-                Status = (OrderModelStatus)order.Status,
+                Status = order.Status,
             };
         }
     }
