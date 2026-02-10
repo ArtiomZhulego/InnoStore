@@ -11,4 +11,6 @@ public interface IUserRepository
     Task<User[]> GetAllByHrmIdsAsync(int[] hrmIds, CancellationToken cancellationToken);
 
     Task<decimal> GetCurrentScoresAmountAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<bool> AnyAsync(Guid userId, CancellationToken cancellationToken);
 }

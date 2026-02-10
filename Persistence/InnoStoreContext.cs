@@ -28,6 +28,12 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
 
     public DbSet<PassedEventParticipant> PassedEventParticipants { get; set; }
 
+    public DbSet<Order> Orders { get; set; }
+
+    public DbSet<OrderAudit> OrderAudits { get; set; }
+
+    public DbSet<OrderTransaction> OrderTransactions { get; set; }
+    
     public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

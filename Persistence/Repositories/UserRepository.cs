@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
-public sealed class UserRepository(InnoStoreContext context) : IUserRepository
+internal sealed class UserRepository(InnoStoreContext context) : IUserRepository
 {
     public async Task<IEnumerable<int>> GetUserHrmIdsAsync(CancellationToken cancellationToken)
     {
@@ -34,5 +34,11 @@ public sealed class UserRepository(InnoStoreContext context) : IUserRepository
             .SumAsync(x => x.Amount);
 
         return scoresAmount;
+    }
+
+    public async Task<bool> AnyAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var isExistedUser = await context.Users.AnyAsync(x => x.Id == userId, cancellationToken);
+        return isExistedUser;
     }
 }

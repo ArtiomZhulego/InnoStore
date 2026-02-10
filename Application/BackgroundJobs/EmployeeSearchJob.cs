@@ -1,7 +1,7 @@
 using Application.Abstractions.DTOs.Clients.HRM;
 using Application.Abstractions.DTOs.Clients.HRM.Employees;
 using Application.Abstractions.Services;
-using Application.Contsants;
+using Application.Constants;
 using Application.Mappers;
 using Domain.Abstractions;
 using Microsoft.Extensions.Logging;

@@ -39,10 +39,14 @@ public static class ServiceCollectionExtension
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductGroupRepository, ProductGroupRepository>();
+            services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
             services.AddScoped<IStorageService, MinioStorageService>();
             services.AddScoped<IPassedEventRepository, PassedEventRepository>();
             services.AddScoped<IPassedEventCostRepository, PassedEventCostRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderAuditRepository, OrderAuditRepository>();
+            services.AddScoped<IOrderTransactionsRepository, OrderTransactionRepository>();
         }
 
         public void AddInterceptors()

@@ -4,6 +4,23 @@ internal static class PathConstants
 {
     private const string ApiBase = "api";
 
+    public static class Users
+    {
+        public const string Controller = ApiBase + "/user";
+
+        public const string GetUserBalance = "balance";
+        public const string GetOrders = "{id:guid}/orders";
+    }
+
+    public static class Orders
+    {
+        public const string Controller = ApiBase + "/order";
+
+        public const string Create = "";
+        public const string Cancel = "{id:guid}/cancel";
+        public const string GetById = "{id:guid}";
+    }
+    
     public static class Products
     {
         public const string Controller = ApiBase + "/Product";
@@ -31,16 +48,15 @@ internal static class PathConstants
         public const string Controller = ApiBase + "/Transaction";
     }
 
-    public static class User
-    {
-        public const string Controller = ApiBase + "/User";
-
-        public const string GetUserBalance = "balance";
-    }
-
     public static class Files
     {
         public const string Controller = ApiBase + "/File";
         public const string Upload = "upload";
+    }
+
+    public static class OrderAudits
+    {
+        public const string Controller = ApiBase + "/orderAudit";
+        public const string GetByOrderId = "{orderId:guid}";
     }
 }
