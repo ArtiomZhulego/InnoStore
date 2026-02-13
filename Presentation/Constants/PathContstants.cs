@@ -59,4 +59,10 @@ internal static class PathConstants
         public const string Controller = ApiBase + "/orderAudit";
         public const string GetByOrderId = "{orderId:guid}";
     }
+
+    public static class PassedEvents
+    {
+        public const string Controller = ApiBase + "/passedEvent";
+        public const string Save = "";
+    }
 }
