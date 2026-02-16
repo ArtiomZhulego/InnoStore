@@ -8,9 +8,9 @@ internal class ProductImageConfiguration : IEntityTypeConfiguration<ProductImage
 {
     public void Configure(EntityTypeBuilder<ProductImage> builder)
     {
-        builder.HasOne(i => i.Product)
+        builder.HasOne(i => i.ProductColor)
                .WithMany(p => p.Images)
-               .HasForeignKey(pi => pi.ProductId)
+               .HasForeignKey(pi => pi.ProductColorId)
                .OnDelete(DeleteBehavior.Restrict);
     }
 }

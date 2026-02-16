@@ -1,4 +1,4 @@
-namespace Application.Constants;
+namespace Presentation.Constants;
 
 internal static class ValidationConstants
 {

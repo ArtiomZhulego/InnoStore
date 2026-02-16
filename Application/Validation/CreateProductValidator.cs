@@ -13,8 +13,6 @@ public class CreateProductValidator : AbstractValidator<CreateProductModel>
             .NotEmpty().WithMessage("ProductGroupId is required.");
         RuleForEach(x => x.Localizations)
             .SetValidator(new ProductLocalizationValidator());
-        RuleForEach(x => x.Images)
-            .SetValidator(new CreateProductImageValidator());
         RuleForEach(x => x.Sizes)
             .SetValidator(new CreateProductSizeValidator());
     }

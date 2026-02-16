@@ -8,9 +8,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.HasOne(p => p.ProductGroup)
+        builder.HasOne(p => p.ProductCategory)
                .WithMany(pg => pg.Products)
-               .HasForeignKey(p => p.ProductGroupId)
+               .HasForeignKey(p => p.ProductCategoryId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(p => p.Localizations)

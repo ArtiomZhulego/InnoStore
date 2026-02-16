@@ -8,5 +8,5 @@ public sealed class ProductImageDTO
     
     public required string ImageUrl { get; set; } = string.Empty;
     
-    public required Guid ProductId { get; set; }
+    public required Guid ProductColorId { get; set; }
 }

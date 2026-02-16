@@ -9,6 +9,7 @@ using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
 using Application.Services.Internal.OrderAudits;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -19,12 +20,18 @@ public static class ServiceCollectionExtension
 {
     extension(IServiceCollection services)
     {
+        public void AddValidators()
+        {
+            services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
+        }
+
         public void AddApplicationServices(IConfiguration configuration)
         {
             services.AddHrm(configuration);
 
             services.AddServices();
             services.AddOrderFlow();
+            services.AddValidators();
         }
 
         public void AddQuartzJobs(IConfiguration configuration)
@@ -39,7 +46,7 @@ public static class ServiceCollectionExtension
         {
             services.AddScoped<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IProductGroupService, ProductGroupService>();
+            services.AddScoped<IProductCategoryService, ProductGroupService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ITransactionService, TransactionService>();

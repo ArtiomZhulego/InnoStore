@@ -11,8 +11,6 @@ namespace Presentation.Extensions
         {
             public IServiceCollection AddPresentationControllers()
             {
-                services.AddValidators();
-
                 services.AddControllers(options =>
                     {
                         options.Filters.Add<ValidationActionFilter>();
@@ -21,11 +19,6 @@ namespace Presentation.Extensions
                     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
                 return services;
-            }
-
-            private void AddValidators()
-            {
-                services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
             }
         }
     }

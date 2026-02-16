@@ -6,11 +6,11 @@ namespace Application.Mappers;
 
 public static class ProductGroupMapper
 {
-    extension(ProductGroup productGroup)
+    extension(ProductCategory productGroup)
     {
-        public ProductGroupDTO ToDTO()
+        public ProductCategoryDTO ToDTO()
         {
-            return new ProductGroupDTO
+            return new ProductCategoryDTO
             {
                 Id = productGroup.Id,
                 Name = productGroup.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
@@ -18,9 +18,9 @@ public static class ProductGroupMapper
             };
         }
 
-        public ProductGroupInformation ToInformation()
+        public ProductCategoryInformation ToInformation()
         {
-            return new ProductGroupInformation
+            return new ProductCategoryInformation
             {
                 Id = productGroup.Id,
                 Name = productGroup.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation
@@ -28,12 +28,12 @@ public static class ProductGroupMapper
         }
     }
 
-    extension(CreateProductGroupModel model)
+    extension(CreateProductCategoryModel model)
     {
-        public ProductGroup ToEntity()
+        public ProductCategory ToEntity()
         {
             var id = Guid.NewGuid();
-            return new ProductGroup
+            return new ProductCategory
             {
                 Id = id,
                 Localizations = [.. model.Localizations.Select(x => x.ToEntity(id))]
@@ -41,9 +41,9 @@ public static class ProductGroupMapper
         }
     }
 
-    extension(UpdateProductGroupModel model)
+    extension(UpdateProductCategoryModel model)
     {
-        public ProductGroup UpdateEntity(ProductGroup productGroup)
+        public ProductCategory UpdateEntity(ProductCategory productGroup)
         {
             foreach (var localizationModel in model.Localizations)
             {

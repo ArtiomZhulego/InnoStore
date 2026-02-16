@@ -30,20 +30,22 @@ internal class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
-            .Include(x => x.Images)
+            .Include(x => x.Colors)
+                .ThenInclude(x => x.Images)
             .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Product>> GetByGroupIdAsync(Guid groupId, string languageCode, CancellationToken cancellationToken)
     {
         return await _context.Products
-            .Where(x => x.ProductGroupId == groupId)
+            .Where(x => x.ProductCategoryId == groupId)
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
-            .Include(x => x.ProductGroup)
+            .Include(x => x.ProductCategory)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.Sizes)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
-            .Include(x => x.Images)
+            .Include(x => x.Colors)
+                .ThenInclude(x => x.Images)
             .ToListAsync(cancellationToken);
     }
 
@@ -51,11 +53,12 @@ internal class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
-            .Include(x => x.ProductGroup)
+            .Include(x => x.ProductCategory)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
              .Include(x => x.Sizes)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
-            .Include(x => x.Images)
+             .Include(x => x.Colors)
+                .ThenInclude(x => x.Images)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
@@ -63,11 +66,12 @@ internal class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(x => x.Localizations)
-            .Include(x => x.ProductGroup)
+            .Include(x => x.ProductCategory)
                 .ThenInclude(x => x.Localizations)
             .Include(x => x.Sizes)
-                .ThenInclude(x => x.Localizations)
-            .Include(x => x.Images)
+                    .ThenInclude(x => x.Localizations)
+            .Include(x => x.Colors)
+                .ThenInclude(x => x.Images)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 

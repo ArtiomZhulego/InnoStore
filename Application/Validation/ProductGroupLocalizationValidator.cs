@@ -4,7 +4,7 @@ using Presentation.Constants;
 
 namespace Presentation.Validation;
 
-public class ProductGroupLocalizationValidator : AbstractValidator<ProductGroupLocalizationModel>
+public class ProductGroupLocalizationValidator : AbstractValidator<ProductCategoryLocalizationModel>
 {
     public ProductGroupLocalizationValidator()
     {

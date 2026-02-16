@@ -5,14 +5,14 @@ public class Product : BaseEntity
     public Guid Id { get; set; }
     
     public required decimal Price { get; set; }
+
+    public required Guid ProductCategoryId { get; set; }
     
-    public required Guid ProductGroupId { get; set; }
+    public ProductCategory? ProductCategory { get; set; }
     
-    public ProductGroup? ProductGroup { get; set; }
-    
-    public List<ProductImage> Images { get; set; } = [];
+    public List<ProductColor> Colors { get; set; } = [];
     
     public List<ProductSize> Sizes { get; set; } = [];
-    
+
     public List<ProductLocalization> Localizations { get; set; } = [];
 }

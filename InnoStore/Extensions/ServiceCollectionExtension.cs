@@ -73,7 +73,7 @@ public static class ServiceCollectionExtension
         public async Task<IApplicationBuilder> ApplyMigrations(IServiceProvider serviceProvider)
         {
             var dbContext = serviceProvider.GetRequiredService<InnoStoreContext>();
-            await dbContext.Database.MigrateAsync();
+            //await dbContext.Database.MigrateAsync();
 
             return app;
         }

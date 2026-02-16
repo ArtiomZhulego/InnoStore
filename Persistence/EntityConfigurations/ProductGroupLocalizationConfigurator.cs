@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
-public class ProductGroupLocalizationConfigurator : IEntityTypeConfiguration<ProductGroupLocalization>
+public class ProductGroupLocalizationConfigurator : IEntityTypeConfiguration<ProductCategoryLocalization>
 {
-    public void Configure(EntityTypeBuilder<ProductGroupLocalization> builder)
+    public void Configure(EntityTypeBuilder<ProductCategoryLocalization> builder)
     {
         builder.HasIndex(x => new { x.ProductGroupId, x.LanguageISOCode }).IsUnique();
     }

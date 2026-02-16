@@ -13,19 +13,20 @@ public static class ProductImageMapper
             {
                 Id = productImage.Id,
                 ImageUrl = productImage.ImageUrl,
-                ProductId = productImage.ProductId
+                ProductColorId = productImage.ProductColorId
             };
         }
     }
 
     extension(CreateProductImageModel createProductImage)
     {
-        public ProductImage ToEntity(Guid productId)
+        public ProductImage ToEntity(Guid productColorId)
         {
             return new ProductImage
             {
                 ImageUrl = createProductImage.ImageUrl,
-                ProductId = productId
+                ProductColorId = productColorId,
+                OrderNumber = createProductImage.OrderNumber
             };
         }
     }
@@ -35,6 +36,7 @@ public static class ProductImageMapper
         public ProductImage UpdateEntity(ProductImage productImage)
         {
             productImage.ImageUrl = updateProductImage.ImageUrl;
+            productImage.OrderNumber = updateProductImage.OrderNumber;
             return productImage;
         }
     }

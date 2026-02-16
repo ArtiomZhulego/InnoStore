@@ -1,14 +1,16 @@
 ﻿namespace Domain.Entities;
 
-public class ProductGroupLocalization
+public class ProductCategoryLocalization
 {
     public Guid Id { get; set; }
     
-    public required string Name { get; set; } = string.Empty;
-    
+    public required string Name { get; set; }
+
+    public required string Description { get; set; }
+
     public required Guid ProductGroupId { get; set; }
     
-    public ProductGroup? ProductGroup { get; set; }
+    public ProductCategory? ProductGroup { get; set; }
     
     /// <summary>
     /// Two-letter ISO language code (e.g., "en" for English, "fr" for French).

@@ -1,6 +1,6 @@
 ﻿namespace Application.Abstractions.ProductGroupAggregate;
 
-public sealed class ProductGroupInformation
+public sealed class ProductCategoryInformation
 {
     public Guid Id { get; set; }
     

@@ -15,7 +15,7 @@ public static class ProductSizeMapper
             {
                 Id = productSize.Id,
                 Size = productSize.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
-                ProductId = productSize.ProductId
+                ProductColorId = productSize.ProductId
             };
         }
     }

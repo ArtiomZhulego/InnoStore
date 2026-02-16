@@ -4,9 +4,11 @@ public class ProductImage : BaseEntity
 {
     public Guid Id { get; set; }
     
-    public required string ImageUrl { get; set; } = string.Empty;
+    public required string ImageUrl { get; set; } 
+
+    public required int OrderNumber { get; set; }
+
+    public required Guid ProductColorId { get; set; }
     
-    public required Guid ProductId { get; set; }
-    
-    public Product? Product { get; set; }
+    public ProductColor? ProductColor { get; set; }
 }

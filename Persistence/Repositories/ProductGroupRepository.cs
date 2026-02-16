@@ -13,14 +13,14 @@ internal class ProductGroupRepository : IProductGroupRepository
         _context = context;
     }
 
-    public async Task<ProductGroup> CreateAsync(ProductGroup productGroup, CancellationToken cancellationToken)
+    public async Task<ProductCategory> CreateAsync(ProductCategory productGroup, CancellationToken cancellationToken)
     {
         _context.ProductGroups.Add(productGroup);
         await _context.SaveChangesAsync(cancellationToken);
         return productGroup;
     }
 
-    public async Task DeleteAsync(ProductGroup productGroup, CancellationToken cancellationToken)
+    public async Task DeleteAsync(ProductCategory productGroup, CancellationToken cancellationToken)
     {
         _context.ProductGroups.Remove(productGroup);
         await _context.SaveChangesAsync(cancellationToken);
@@ -31,18 +31,19 @@ internal class ProductGroupRepository : IProductGroupRepository
         return await _context.ProductGroups.AnyAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<ProductGroup>> GetAllAsync(string languageCode, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ProductCategory>> GetAllAsync(string languageCode, CancellationToken cancellationToken)
     {
         return await _context.ProductGroups
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.Products)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.Products)
-                .ThenInclude(x => x.Images)
+                .ThenInclude(x => x.Colors)
+                    .ThenInclude(x => x.Images)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<ProductGroup>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<ProductCategory>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.ProductGroups
             .Include(x => x.Localizations)
@@ -51,7 +52,7 @@ internal class ProductGroupRepository : IProductGroupRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ProductGroup?> GetByIdAsync(Guid id, string languageCode, CancellationToken cancellationToken)
+    public async Task<ProductCategory?> GetByIdAsync(Guid id, string languageCode, CancellationToken cancellationToken)
     {
         return await _context.ProductGroups
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
@@ -60,14 +61,14 @@ internal class ProductGroupRepository : IProductGroupRepository
             .FirstOrDefaultAsync(x => x.Id == id,cancellationToken);
     }
 
-    public async Task<ProductGroup?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ProductCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.ProductGroups
             .Include(x => x.Localizations)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<ProductGroup> UpdateAsync(ProductGroup productGroup, CancellationToken cancellationToken)
+    public async Task<ProductCategory> UpdateAsync(ProductCategory productGroup, CancellationToken cancellationToken)
     {
         _context.ProductGroups.Update(productGroup);
         await _context.SaveChangesAsync(cancellationToken);

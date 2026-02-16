@@ -8,7 +8,7 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
 {
     public DbSet<Product> Products { get; set; }
 
-    public DbSet<ProductGroup> ProductGroups { get; set; }
+    public DbSet<ProductCategory> ProductGroups { get; set; }
 
     public DbSet<ProductImage> ProductImages { get; set; }
 
@@ -16,7 +16,7 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
 
     public DbSet<ProductSizeLocalization> ProductSizaLocalizations { get; set; }
 
-    public DbSet<ProductGroupLocalization> ProductGroupLocalizations { get; set; }
+    public DbSet<ProductCategoryLocalization> ProductGroupLocalizations { get; set; }
 
     public DbSet<ProductLocalization> ProductLocalizations { get; set; }
 

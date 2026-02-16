@@ -34,23 +34,25 @@ public class ProductGroupInitializer(InnoStoreContext context) : IDataInitialize
         var productGroups = productNames.Select(p =>
         {
             var id = Guid.NewGuid();
-            return new ProductGroup
+            return new ProductCategory
             {
                 Id = id,
                 Localizations =
                 [
-                    new ProductGroupLocalization
+                    new ProductCategoryLocalization
                     {
                         Id = Guid.NewGuid(),
                         ProductGroupId = id,
                         LanguageISOCode = "ru",
+                        Description = string.Empty,
                         Name = p.Ru
                     },
-                    new ProductGroupLocalization
+                    new ProductCategoryLocalization
                     {
                         Id = Guid.NewGuid(),
                         ProductGroupId = id,
                         LanguageISOCode = "en",
+                        Description = string.Empty,
                         Name = p.En
                     }
                 ]

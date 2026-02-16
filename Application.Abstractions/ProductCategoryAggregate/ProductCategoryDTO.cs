@@ -2,7 +2,7 @@
 
 namespace Application.Abstractions.ProductGroupAggregate;
 
-public sealed class ProductGroupDTO
+public sealed class ProductCategoryDTO
 {
     public Guid Id { get; set; }
     

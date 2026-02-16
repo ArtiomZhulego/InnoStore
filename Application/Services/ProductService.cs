@@ -20,7 +20,8 @@ public class ProductService(IProductRepository productRepository,
             throw new ProductGroupNotFoundException(createProductModel.ProductGroupId);
         }
 
-        foreach(var image in createProductModel.Images)
+        var images = createProductModel.Colors.SelectMany(c => c.Images);
+        foreach (var image in images)
         {
             var imageExists = await storageService.ExistsAsync(image.ImageUrl, cancellationToken);
             if (imageExists)
@@ -34,7 +35,7 @@ public class ProductService(IProductRepository productRepository,
         var product = createProductModel.ToEntity();
         await productRepository.CreateAsync(product, cancellationToken);
 
-        await FillImageUrlsAsync(product.Images, cancellationToken);
+        await FillImageUrlsAsync(product.Colors, cancellationToken);
 
         return product.ToDTO();
     }
@@ -56,8 +57,8 @@ public class ProductService(IProductRepository productRepository,
 
         var products = await productRepository.GetByGroupIdAsync(groupId, languageCode, cancellationToken) ?? throw new ProductNotFoundException(groupId);
 
-        var images = products.SelectMany(p => p.Images);
-        await FillImageUrlsAsync(images, cancellationToken);
+        var colors = products.SelectMany(p => p.Colors);
+        await FillImageUrlsAsync(colors, cancellationToken);
 
         return products.Select(x => x.ToDTO());
     }
@@ -66,7 +67,7 @@ public class ProductService(IProductRepository productRepository,
     {
         var product = await productRepository.GetByIdAsync(id, languageCode, cancellationToken) ?? throw new ProductNotFoundException(id);
 
-        await FillImageUrlsAsync(product.Images, cancellationToken);
+        await FillImageUrlsAsync(product.Colors, cancellationToken);
         return product.ToDTO();
     }
 
@@ -97,11 +98,14 @@ public class ProductService(IProductRepository productRepository,
         return product.ToDTO();
     }
 
-    private async Task FillImageUrlsAsync(IEnumerable<ProductImage> images, CancellationToken cancellationToken)
+    private async Task FillImageUrlsAsync(IEnumerable<ProductColor> colors, CancellationToken cancellationToken)
     {
-        await Parallel.ForEachAsync(images, cancellationToken, async (image, ct) =>
+        await Parallel.ForEachAsync(colors, cancellationToken, async (color, ct) =>
         {
-            image.ImageUrl = await storageService.GetQuickAccessUrlAsync(image.ImageUrl);
+            foreach (var image in color.Images)
+            {
+                image.ImageUrl = await storageService.GetQuickAccessUrlAsync(image.ImageUrl);
+            }
         });
     }
 }

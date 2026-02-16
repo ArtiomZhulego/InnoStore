@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Application.Abstractions.ProductAggregate;
+using Application.Abstractions.ProductBatchAggregate;
 using Application.Constants;
 using Domain.Entities;
 
@@ -18,10 +19,10 @@ public static class ProductMapper
                 Name = localization?.Name ?? LocalizationConstants.DefaultTranslation,
                 Description = localization?.Description ?? LocalizationConstants.DefaultTranslation,
                 Price = product.Price,
-                ProductGroupId = product.ProductGroupId,
-                ProductGroup = product.ProductGroup?.ToInformation(),
-                Images = product.Images.Select(image => image.ToDTO()),
-                Sizes = product.Sizes.Select(size => size.ToDTO())
+                ProductCategoryId = product.ProductCategoryId,
+                ProductCategory = product.ProductCategory?.ToInformation(),
+                Sizes = product.Sizes.Select(size => size.ToDTO()),
+                Colors = product.Colors.Select(color => color.ToDTO())
             };
         }
 
@@ -34,7 +35,22 @@ public static class ProductMapper
                 Name = localization?.Name ?? LocalizationConstants.DefaultTranslation,
                 Description = localization?.Description ?? LocalizationConstants.DefaultTranslation,
                 Price = product.Price,
-                ImageUrl = product.Images.FirstOrDefault()?.ImageUrl ?? string.Empty
+                ImageUrl = product.Colors.FirstOrDefault()?.Images.FirstOrDefault()?.ImageUrl ?? string.Empty
+            };
+        }
+    }
+
+    extension(ProductModel productModel)
+    {
+        public CreateProductModel ToCreateModel(Guid productGroupId)
+        {
+            return new CreateProductModel
+            {
+                Price = productModel.Price,
+                ProductGroupId = productGroupId,
+                Localizations = productModel.Localizations,
+                Sizes = productModel.Sizes,
+                Colors = productModel.Colors
             };
         }
     }
@@ -48,10 +64,10 @@ public static class ProductMapper
             {
                 Id = id,
                 Price = model.Price,
-                ProductGroupId = model.ProductGroupId,
+                ProductCategoryId = model.ProductGroupId,
                 Localizations = [.. model.Localizations.Select(loc => loc.ToEntity(id))],
                 Sizes = [.. model.Sizes.Select(size => size.ToEntity(id))],
-                Images = [.. model.Images.Select(image => image.ToEntity(id))],
+                Colors = [.. model.Colors.Select(color => color.ToEntity(id))],
             };
         }
     }
@@ -61,7 +77,7 @@ public static class ProductMapper
         public Product UpdateEntity(Product product)
         {
             product.Price = model.Price;
-            product.ProductGroupId = model.ProductGroupId;
+            product.ProductCategoryId = model.ProductGroupId;
 
             foreach (var localizationModel in model.Localizations)
             {

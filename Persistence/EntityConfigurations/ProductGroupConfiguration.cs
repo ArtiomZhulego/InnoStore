@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
-internal class ProductGroupConfiguration : IEntityTypeConfiguration<ProductGroup>
+internal class ProductGroupConfiguration : IEntityTypeConfiguration<ProductCategory>
 {
-    public void Configure(EntityTypeBuilder<ProductGroup> builder)
+    public void Configure(EntityTypeBuilder<ProductCategory> builder)
     {
         builder.HasMany(p => p.Localizations)
            .WithOne(pl => pl.ProductGroup)
