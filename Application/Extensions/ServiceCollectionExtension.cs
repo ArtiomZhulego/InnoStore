@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.FileAggregate;
 using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.ProductAggregate;
-using Application.Abstractions.ProductGroupAggregate;
+using Application.Abstractions.ProductCategoryAggregate;
 using Application.Abstractions.Services;
 using Application.Abstractions.TransactionAggregate;
 using Application.Abstractions.UserAggregate;
@@ -46,7 +46,7 @@ public static class ServiceCollectionExtension
         {
             services.AddScoped<IPassedEventService, PassedEventService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IProductCategoryService, ProductGroupService>();
+            services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ITransactionService, TransactionService>();

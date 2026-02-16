@@ -8,16 +8,16 @@ using Domain.Exceptions;
 namespace Application.Services;
 
 public class ProductService(IProductRepository productRepository,
-                            IProductGroupRepository productGroupRepository,
+                            IProductCategoryRepository productCategoryRepository,
                             IStorageService storageService) : IProductService
 {
     public async Task<ProductDTO> CreateAsync(CreateProductModel createProductModel, CancellationToken cancellationToken = default)
     {
-        var productGroupExist = await productGroupRepository.ExistAsync(createProductModel.ProductGroupId, cancellationToken);
+        var productCategoryExist = await productCategoryRepository.ExistAsync(createProductModel.ProductCategoryId, cancellationToken);
 
-        if (!productGroupExist)
+        if (!productCategoryExist)
         {
-            throw new ProductGroupNotFoundException(createProductModel.ProductGroupId);
+            throw new ProductCategoryNotFoundException(createProductModel.ProductCategoryId);
         }
 
         var images = createProductModel.Colors.SelectMany(c => c.Images);
@@ -49,10 +49,10 @@ public class ProductService(IProductRepository productRepository,
 
     public async Task<IEnumerable<ProductDTO>> GetByGroupAsync(Guid groupId, string languageCode, CancellationToken cancellationToken = default)
     {
-        var productGroupExist = await productGroupRepository.ExistAsync(groupId, cancellationToken);
-        if (!productGroupExist)
+        var productCategoryExist = await productCategoryRepository.ExistAsync(groupId, cancellationToken);
+        if (!productCategoryExist)
         {
-            throw new ProductGroupNotFoundException(groupId);
+            throw new ProductCategoryNotFoundException(groupId);
         }
 
         var products = await productRepository.GetByGroupIdAsync(groupId, languageCode, cancellationToken) ?? throw new ProductNotFoundException(groupId);
@@ -73,13 +73,14 @@ public class ProductService(IProductRepository productRepository,
 
     public async Task<ProductDTO> UpdateAsync(Guid id, UpdateProductModel updateProductModel, CancellationToken cancellationToken = default)
     {
-        var productGroupExist = await productGroupRepository.ExistAsync(updateProductModel.ProductGroupId, cancellationToken);
-        if (!productGroupExist)
+        var productCategoryExist = await productCategoryRepository.ExistAsync(updateProductModel.ProductCategoryId, cancellationToken);
+        if (!productCategoryExist)
         {
-            throw new ProductGroupNotFoundException(updateProductModel.ProductGroupId);
+            throw new ProductCategoryNotFoundException(updateProductModel.ProductCategoryId);
         }
 
-        foreach (var image in updateProductModel.Images)
+        var images = updateProductModel.Colors.SelectMany(c => c.Images);
+        foreach (var image in images)
         {
             var imageExists = await storageService.ExistsAsync(image.ImageUrl, cancellationToken);
             if (imageExists)

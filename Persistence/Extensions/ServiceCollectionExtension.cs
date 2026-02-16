@@ -38,7 +38,7 @@ public static class ServiceCollectionExtension
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductGroupRepository, ProductGroupRepository>();
+            services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
             services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
             services.AddScoped<IStorageService, MinioStorageService>();
             services.AddScoped<IPassedEventRepository, PassedEventRepository>();
@@ -56,7 +56,7 @@ public static class ServiceCollectionExtension
 
         public void AddInitiaizers()
         {
-            services.AddScoped<IDataInitializer, ProductGroupInitializer>();
+            services.AddScoped<IDataInitializer, ProductCategoryInitializer>();
             services.AddScoped<IDataInitializer, PassedEventCostInitializer>();
         }
 

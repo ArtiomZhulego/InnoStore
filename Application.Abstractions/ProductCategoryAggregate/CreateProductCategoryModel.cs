@@ -1,4 +1,4 @@
-﻿namespace Application.Abstractions.ProductGroupAggregate;
+﻿namespace Application.Abstractions.ProductCategoryAggregate;
 
 public sealed class CreateProductCategoryModel
 {

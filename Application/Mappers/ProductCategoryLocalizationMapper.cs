@@ -1,18 +1,18 @@
-﻿using Application.Abstractions.ProductGroupAggregate;
+﻿using Application.Abstractions.ProductCategoryAggregate;
 using Domain.Entities;
 
 namespace Application.Mappers;
 
-public static class ProductGroupLocalizationMapper
+public static class ProductCategoryLocalizationMapper
 {
     extension(ProductCategoryLocalizationModel localization)
     {
-        public ProductCategoryLocalization ToEntity(Guid productGroupId)
+        public ProductCategoryLocalization ToEntity(Guid productCategoryId)
         {
             return new ProductCategoryLocalization
             {
                 Id = Guid.NewGuid(),
-                ProductGroupId = productGroupId,
+                ProductCategoryId = productCategoryId,
                 LanguageISOCode = localization.LanguageISOCode,
                 Name = localization.Name,
                 Description = localization.Description

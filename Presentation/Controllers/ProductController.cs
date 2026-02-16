@@ -51,7 +51,7 @@ public sealed class ProductController(IProductService productService) : Controll
         return NoContent();
     }
 
-    [HttpGet(PathConstants.Products.GetByGroup, Name = "getProductsByGroupId")]
+    [HttpGet(PathConstants.Products.GetByCategory, Name = "getProductsByGroupId")]
     [ProducesResponseType(typeof(IEnumerable<ProductDTO>), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]

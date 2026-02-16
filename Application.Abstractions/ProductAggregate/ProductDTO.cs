@@ -1,5 +1,5 @@
-﻿using Application.Abstractions.ProductColorAggregate;
-using Application.Abstractions.ProductGroupAggregate;
+﻿using Application.Abstractions.ProductCategoryAggregate;
+using Application.Abstractions.ProductColorAggregate;
 using Application.Abstractions.ProductSizeAggregate;
 
 namespace Application.Abstractions.ProductAggregate;

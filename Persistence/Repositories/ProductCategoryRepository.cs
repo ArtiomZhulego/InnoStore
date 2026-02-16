@@ -4,36 +4,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
-internal class ProductGroupRepository : IProductGroupRepository
+internal class ProductCategoryRepository : IProductCategoryRepository
 {
     private readonly InnoStoreContext _context;
 
-    public ProductGroupRepository(InnoStoreContext context)
+    public ProductCategoryRepository(InnoStoreContext context)
     {
         _context = context;
     }
 
     public async Task<ProductCategory> CreateAsync(ProductCategory productGroup, CancellationToken cancellationToken)
     {
-        _context.ProductGroups.Add(productGroup);
+        _context.ProductCategories.Add(productGroup);
         await _context.SaveChangesAsync(cancellationToken);
         return productGroup;
     }
 
     public async Task DeleteAsync(ProductCategory productGroup, CancellationToken cancellationToken)
     {
-        _context.ProductGroups.Remove(productGroup);
+        _context.ProductCategories.Remove(productGroup);
         await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<bool> ExistAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.ProductGroups.AnyAsync(x => x.Id == id, cancellationToken);
+        return await _context.ProductCategories.AnyAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<IEnumerable<ProductCategory>> GetAllAsync(string languageCode, CancellationToken cancellationToken)
     {
-        return await _context.ProductGroups
+        return await _context.ProductCategories
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.Products)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
@@ -45,7 +45,7 @@ internal class ProductGroupRepository : IProductGroupRepository
 
     public async Task<IEnumerable<ProductCategory>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _context.ProductGroups
+        return await _context.ProductCategories
             .Include(x => x.Localizations)
             .Include(x => x.Products)
                 .ThenInclude(x => x.Localizations)
@@ -54,7 +54,7 @@ internal class ProductGroupRepository : IProductGroupRepository
 
     public async Task<ProductCategory?> GetByIdAsync(Guid id, string languageCode, CancellationToken cancellationToken)
     {
-        return await _context.ProductGroups
+        return await _context.ProductCategories
             .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
             .Include(x => x.Products)
                 .ThenInclude(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
@@ -63,14 +63,14 @@ internal class ProductGroupRepository : IProductGroupRepository
 
     public async Task<ProductCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.ProductGroups
+        return await _context.ProductCategories
             .Include(x => x.Localizations)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<ProductCategory> UpdateAsync(ProductCategory productGroup, CancellationToken cancellationToken)
     {
-        _context.ProductGroups.Update(productGroup);
+        _context.ProductCategories.Update(productGroup);
         await _context.SaveChangesAsync(cancellationToken);
         return productGroup;
     }

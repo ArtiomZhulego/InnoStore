@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Application.Abstractions.ProductAggregate;
+﻿using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductBatchAggregate;
 using Application.Constants;
 using Domain.Entities;
@@ -42,12 +41,12 @@ public static class ProductMapper
 
     extension(ProductModel productModel)
     {
-        public CreateProductModel ToCreateModel(Guid productGroupId)
+        public CreateProductModel ToCreateModel(Guid productCategoryId)
         {
             return new CreateProductModel
             {
                 Price = productModel.Price,
-                ProductGroupId = productGroupId,
+                ProductCategoryId = productCategoryId,
                 Localizations = productModel.Localizations,
                 Sizes = productModel.Sizes,
                 Colors = productModel.Colors
@@ -64,7 +63,7 @@ public static class ProductMapper
             {
                 Id = id,
                 Price = model.Price,
-                ProductCategoryId = model.ProductGroupId,
+                ProductCategoryId = model.ProductCategoryId,
                 Localizations = [.. model.Localizations.Select(loc => loc.ToEntity(id))],
                 Sizes = [.. model.Sizes.Select(size => size.ToEntity(id))],
                 Colors = [.. model.Colors.Select(color => color.ToEntity(id))],
@@ -77,7 +76,7 @@ public static class ProductMapper
         public Product UpdateEntity(Product product)
         {
             product.Price = model.Price;
-            product.ProductCategoryId = model.ProductGroupId;
+            product.ProductCategoryId = model.ProductCategoryId;
 
             foreach (var localizationModel in model.Localizations)
             {

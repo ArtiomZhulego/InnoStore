@@ -9,8 +9,8 @@ public class CreateProductValidator : AbstractValidator<CreateProductModel>
     {
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Price must be greater than zero.");
-        RuleFor(x => x.ProductGroupId)
-            .NotEmpty().WithMessage("ProductGroupId is required.");
+        RuleFor(x => x.ProductCategoryId)
+            .NotEmpty().WithMessage($"{nameof(CreateProductModel.ProductCategoryId)} is required.");
         RuleForEach(x => x.Localizations)
             .SetValidator(new ProductLocalizationValidator());
         RuleForEach(x => x.Sizes)

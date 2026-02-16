@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Application.Abstractions.ProductSizeAggregate;
+﻿using Application.Abstractions.ProductSizeAggregate;
 using Application.Constants;
 using Domain.Entities;
 

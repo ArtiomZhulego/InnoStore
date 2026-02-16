@@ -8,9 +8,9 @@ public class ProductCategoryLocalization
 
     public required string Description { get; set; }
 
-    public required Guid ProductGroupId { get; set; }
+    public required Guid ProductCategoryId { get; set; }
     
-    public ProductCategory? ProductGroup { get; set; }
+    public ProductCategory? ProductCategory { get; set; }
     
     /// <summary>
     /// Two-letter ISO language code (e.g., "en" for English, "fr" for French).

@@ -1,20 +1,20 @@
-﻿using Application.Abstractions.ProductGroupAggregate;
+﻿using Application.Abstractions.ProductCategoryAggregate;
 using Application.Constants;
 using Domain.Entities;
 
 namespace Application.Mappers;
 
-public static class ProductGroupMapper
+public static class ProductCategoryMapper
 {
-    extension(ProductCategory productGroup)
+    extension(ProductCategory productCategory)
     {
         public ProductCategoryDTO ToDTO()
         {
             return new ProductCategoryDTO
             {
-                Id = productGroup.Id,
-                Name = productGroup.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
-                Products = productGroup.Products.Select(x => x.ToInformation())
+                Id = productCategory.Id,
+                Name = productCategory.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation,
+                Products = productCategory.Products.Select(x => x.ToInformation())
             };
         }
 
@@ -22,8 +22,8 @@ public static class ProductGroupMapper
         {
             return new ProductCategoryInformation
             {
-                Id = productGroup.Id,
-                Name = productGroup.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation
+                Id = productCategory.Id,
+                Name = productCategory.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation
             };
         }
     }
@@ -43,11 +43,11 @@ public static class ProductGroupMapper
 
     extension(UpdateProductCategoryModel model)
     {
-        public ProductCategory UpdateEntity(ProductCategory productGroup)
+        public ProductCategory UpdateEntity(ProductCategory productCategory)
         {
             foreach (var localizationModel in model.Localizations)
             {
-                var localization = productGroup.Localizations
+                var localization = productCategory.Localizations
                     .FirstOrDefault(x => x.LanguageISOCode == localizationModel.LanguageISOCode);
 
                 if (localization is not null)
@@ -56,11 +56,11 @@ public static class ProductGroupMapper
                 }
                 else
                 {
-                    productGroup.Localizations.Add(localizationModel.ToEntity(productGroup.Id));
+                    productCategory.Localizations.Add(localizationModel.ToEntity(productCategory.Id));
                 }
             }
 
-            return productGroup;
+            return productCategory;
         }
     }
 }

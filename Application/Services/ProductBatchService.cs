@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductBatchAggregate;
-using Application.Abstractions.ProductGroupAggregate;
+using Application.Abstractions.ProductCategoryAggregate;
 using Application.Mappers;
 
 namespace Application.Services;
@@ -8,22 +8,22 @@ namespace Application.Services;
 public sealed class ProductBatchService : IProductBatchService
 {
     private readonly IProductService _productService;
-    private readonly IProductCategoryService _productGroupService;
+    private readonly IProductCategoryService _productCategoryService;
 
-    public ProductBatchService(IProductService productService, IProductCategoryService productGroupService)
+    public ProductBatchService(IProductService productService, IProductCategoryService productCategoryService)
     {
         _productService = productService;
-        _productGroupService = productGroupService;
+        _productCategoryService = productCategoryService;
     }
 
     public async Task<IEnumerable<ProductDTO>> CreateBatchAsync(CreateProductBatchModel createProductModel, CancellationToken cancellationToken = default)
     {
-        var productGroup = await _productGroupService.CreateAsync(createProductModel.ProductGroup, cancellationToken);
+        var productCategory = await _productCategoryService.CreateAsync(createProductModel.ProductCategory, cancellationToken);
 
         var products = new List<ProductDTO>();
         foreach (var product in createProductModel.Products)
         {
-            var createModel = product.ToCreateModel(productGroup.Id);
+            var createModel = product.ToCreateModel(productCategory.Id);
             var createdProduct = await _productService.CreateAsync(createModel, cancellationToken);
             products.Add(createdProduct);
         }

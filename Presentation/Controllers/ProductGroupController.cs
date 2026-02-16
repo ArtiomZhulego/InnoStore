@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.ProductGroupAggregate;
+﻿using Application.Abstractions.ProductCategoryAggregate;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;
 using Presentation.Models.ErrorModels;
@@ -6,59 +6,59 @@ using Presentation.Models.ErrorModels;
 namespace Presentation.Controllers;
 
 [ApiController]
-[Route(PathConstants.ProductGroups.Controller)]
-public class ProductGroupController(IProductCategoryService productGroupService) : ControllerBase
+[Route(PathConstants.ProductCategories.Controller)]
+public class ProductCategoryController(IProductCategoryService productCategoryService) : ControllerBase
 {
-    [HttpGet(PathConstants.ProductGroups.GetById, Name = "getGroupById")]
+    [HttpGet(PathConstants.ProductCategories.GetById, Name = "getCategoryById")]
     [ProducesResponseType(typeof(ProductCategoryDTO), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> GetProductGroupById(Guid id, string languageCode, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProductCategoryById(Guid id, string languageCode, CancellationToken cancellationToken)
     {
-        var productGroup = await productGroupService.GetByIdAsync(id, languageCode, cancellationToken);
-        return Ok(productGroup);
+        var productCategory = await productCategoryService.GetByIdAsync(id, languageCode, cancellationToken);
+        return Ok(productCategory);
     }
 
-    [HttpPost(Name = "createGroup")]
+    [HttpPost(Name = "createCategory")]
     [ProducesResponseType(typeof(ProductCategoryDTO), 201)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> CreateProductGroup([FromBody] CreateProductCategoryModel createProductGroupModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateProductCategory([FromBody] CreateProductCategoryModel createProductCategoryModel, CancellationToken cancellationToken)
     {
-        var productGroup = await productGroupService.CreateAsync(createProductGroupModel, cancellationToken);
-        return CreatedAtAction(nameof(GetProductGroupById), "ProductGroup", new { id = productGroup.Id, languageCode = "en" }, productGroup);
+        var productCategory = await productCategoryService.CreateAsync(createProductCategoryModel, cancellationToken);
+        return CreatedAtAction(nameof(GetProductCategoryById), "ProductCategory", new { id = productCategory.Id, languageCode = "en" }, productCategory);
     }
 
-    [HttpPut(PathConstants.ProductGroups.Update, Name = "updateGroup")]
+    [HttpPut(PathConstants.ProductCategories.Update, Name = "updateCategory")]
     [ProducesResponseType(typeof(ProductCategoryDTO), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> UpdateProductGroup([FromRoute] Guid productGroupId, [FromBody] UpdateProductCategoryModel updateProductGroupModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateProductCategory([FromRoute] Guid productCategoryId, [FromBody] UpdateProductCategoryModel updateProductCategoryModel, CancellationToken cancellationToken)
     {
-        var productGroup = await productGroupService.UpdateAsync(productGroupId, updateProductGroupModel, cancellationToken);
-        return Ok(productGroup);
+        var productCategory = await productCategoryService.UpdateAsync(productCategoryId, updateProductCategoryModel, cancellationToken);
+        return Ok(productCategory);
     }
 
-    [HttpDelete(PathConstants.ProductGroups.Delete, Name = "deleteGroup")]
+    [HttpDelete(PathConstants.ProductCategories.Delete, Name = "deleteCategory")]
     [ProducesResponseType( 204)]
     [ProducesResponseType(typeof(ErrorDetails), 400)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> DeleteProductGroup([FromRoute] Guid productGroupId, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteProductCategory([FromRoute] Guid productCategoryId, CancellationToken cancellationToken)
     {
-        await productGroupService.DeleteAsync(productGroupId, cancellationToken);
+        await productCategoryService.DeleteAsync(productCategoryId, cancellationToken);
         return NoContent();
     }
 
-    [HttpGet(PathConstants.ProductGroups.GetAll, Name = "getAll")]
+    [HttpGet(PathConstants.ProductCategories.GetAll, Name = "getAll")]
     [ProducesResponseType(typeof(IEnumerable<ProductCategoryDTO>), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> GetAllProductGroups(string languageCode, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllProductCategorys(string languageCode, CancellationToken cancellationToken)
     {
-        var productGroups = await productGroupService.GetAllAsync(languageCode, cancellationToken);
-        return Ok(productGroups);
+        var productCategorys = await productCategoryService.GetAllAsync(languageCode, cancellationToken);
+        return Ok(productCategorys);
     }
 }

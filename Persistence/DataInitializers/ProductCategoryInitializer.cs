@@ -4,11 +4,11 @@ using Persistence.DataInitializers.Abstractions;
 
 namespace Persistence.DataInitializers;
 
-public class ProductGroupInitializer(InnoStoreContext context) : IDataInitializer
+public class ProductCategoryInitializer(InnoStoreContext context) : IDataInitializer
 {
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
-        if (await context.ProductGroups.AnyAsync(cancellationToken))
+        if (await context.ProductCategories.AnyAsync(cancellationToken))
         {
             return;
         }
@@ -31,7 +31,7 @@ public class ProductGroupInitializer(InnoStoreContext context) : IDataInitialize
             ("Оплата курса", "Course Payment")
         };
 
-        var productGroups = productNames.Select(p =>
+        var productCategories = productNames.Select(p =>
         {
             var id = Guid.NewGuid();
             return new ProductCategory
@@ -42,7 +42,7 @@ public class ProductGroupInitializer(InnoStoreContext context) : IDataInitialize
                     new ProductCategoryLocalization
                     {
                         Id = Guid.NewGuid(),
-                        ProductGroupId = id,
+                        ProductCategoryId = id,
                         LanguageISOCode = "ru",
                         Description = string.Empty,
                         Name = p.Ru
@@ -50,7 +50,7 @@ public class ProductGroupInitializer(InnoStoreContext context) : IDataInitialize
                     new ProductCategoryLocalization
                     {
                         Id = Guid.NewGuid(),
-                        ProductGroupId = id,
+                        ProductCategoryId = id,
                         LanguageISOCode = "en",
                         Description = string.Empty,
                         Name = p.En
@@ -59,7 +59,7 @@ public class ProductGroupInitializer(InnoStoreContext context) : IDataInitialize
             };
         }).ToArray();
 
-        await context.ProductGroups.AddRangeAsync(productGroups, cancellationToken);
+        await context.ProductCategories.AddRangeAsync(productCategories, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

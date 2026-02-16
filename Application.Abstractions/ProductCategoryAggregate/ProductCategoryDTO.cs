@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.ProductAggregate;
 
-namespace Application.Abstractions.ProductGroupAggregate;
+namespace Application.Abstractions.ProductCategoryAggregate;
 
 public sealed class ProductCategoryDTO
 {
