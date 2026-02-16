@@ -34,8 +34,6 @@ builder.Services.AddLogging();
 
 builder.Services.AddQuartzJobs(builder.Configuration);
 
-builder.ConfigureCampusHandler();
-
 var app = builder.Build();
 
 await app.ExecuteActionsBeforeStart();
