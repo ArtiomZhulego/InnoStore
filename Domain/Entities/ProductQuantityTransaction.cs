@@ -9,7 +9,6 @@ public sealed class ProductQuantityTransaction : BaseEntity
     public required int OperationAmount { get; init; }
     public required Guid UserId { get; init; }
     public required Guid ProductSizeId { get; init; }
-    public Guid? OrderProductQuantityTransactionId {get; init; }
 
     public User? User { get; set; }
     public ProductSize? ProductSize { get; set; }

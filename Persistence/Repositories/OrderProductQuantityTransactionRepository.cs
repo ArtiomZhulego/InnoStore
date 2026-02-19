@@ -13,8 +13,15 @@ internal sealed class OrderProductQuantityTransactionRepository(InnoStoreContext
     }
 
     public async Task<OrderProductQuantityTransaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await context.OrderProductQuantityTransactions.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+        await context.OrderProductQuantityTransactions
+            .Include(item => item.Order)
+            .Include(item => item.ProductQuantityTransaction)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
     public async Task<IEnumerable<OrderProductQuantityTransaction>> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default) =>
-        await context.OrderProductQuantityTransactions.Where(item => item.OrderId == orderId).ToListAsync(cancellationToken);
+        await context.OrderProductQuantityTransactions
+            .Where(item => item.OrderId == orderId)
+            .Include(item => item.Order)
+            .Include(item => item.ProductQuantityTransaction)
+            .ToListAsync(cancellationToken);
 }

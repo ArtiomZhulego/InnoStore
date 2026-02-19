@@ -35,7 +35,7 @@ internal class OrderProductQuantityTransactionConfiguration : IEntityTypeConfigu
 
         builder.HasOne(transaction => transaction.ProductQuantityTransaction)
             .WithOne(productQuantity => productQuantity.OrderProductQuantityTransaction)
-            .HasForeignKey(nameof(OrderProductQuantityTransaction))
+            .HasForeignKey<OrderProductQuantityTransaction>(transaction => transaction.ProductQuantityTransactionId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
