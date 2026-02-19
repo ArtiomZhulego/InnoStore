@@ -20,6 +20,8 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
 
     public DbSet<ProductLocalization> ProductLocalizations { get; set; }
 
+    public DbSet<ProductQuantityTransaction> ProductQuantityTransactions { get; set; }
+
     public DbSet<PassedEvent> PassedEvents { get; set; }
 
     public DbSet<PassedEventCost> PassedEventCosts { get; set; }
@@ -33,7 +35,10 @@ public class InnoStoreContext(DbContextOptions options, IEnumerable<IInterceptor
     public DbSet<OrderAudit> OrderAudits { get; set; }
 
     public DbSet<OrderTransaction> OrderTransactions { get; set; }
-    
+
+    public DbSet<OrderProductQuantityTransaction> OrderProductQuantityTransactions { get; set; }
+
+
     public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
