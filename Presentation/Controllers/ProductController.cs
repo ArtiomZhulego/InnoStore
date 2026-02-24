@@ -51,13 +51,13 @@ public sealed class ProductController(IProductService productService) : Controll
         return NoContent();
     }
 
-    [HttpGet(PathConstants.Products.GetByCategory, Name = "getProductsByGroupId")]
+    [HttpGet(PathConstants.Products.Get, Name = "getProducts")]
     [ProducesResponseType(typeof(IEnumerable<ProductDTO>), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> GetProducts(Guid groupId, string languageCode, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
     {
-        var product = await productService.GetByGroupAsync(groupId, languageCode, cancellationToken);
+        var product = await productService.GetAsync(cancellationToken);
         return Ok(product);
     }
 }

@@ -53,12 +53,12 @@ public class ProductCategoryController(IProductCategoryService productCategorySe
     }
 
     [HttpGet(PathConstants.ProductCategories.GetAll, Name = "getAll")]
-    [ProducesResponseType(typeof(IEnumerable<ProductCategoryDTO>), 200)]
+    [ProducesResponseType(typeof(IEnumerable<ProductCategoryInformation>), 200)]
     [ProducesResponseType(typeof(ErrorDetails), 404)]
     [ProducesResponseType(typeof(ErrorDetails), 500)]
-    public async Task<IActionResult> GetAllProductCategorys(string languageCode, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllProductCategorys(CancellationToken cancellationToken)
     {
-        var productCategorys = await productCategoryService.GetAllAsync(languageCode, cancellationToken);
+        var productCategorys = await productCategoryService.GetAllAsync(cancellationToken);
         return Ok(productCategorys);
     }
 }

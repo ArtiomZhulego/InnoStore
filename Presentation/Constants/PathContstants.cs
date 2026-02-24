@@ -29,7 +29,7 @@ internal static class PathConstants
         public const string Create = "";
         public const string Update = "{productId}";
         public const string Delete = "{productId}";
-        public const string GetByCategory = "{languageCode}/category/{categoryId}";
+        public const string Get = "";
     }
 
     public static class ProductCategories
@@ -40,7 +40,7 @@ internal static class PathConstants
         public const string Create = "";
         public const string Update = "{productCategoryId:guid}";
         public const string Delete = "{productCategoryId:guid}";
-        public const string GetAll = "{languageCode}";
+        public const string GetAll = "";
     }
 
     public static class Transactions

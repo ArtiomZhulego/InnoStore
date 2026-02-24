@@ -47,8 +47,6 @@ internal class ProductCategoryRepository : IProductCategoryRepository
     {
         return await _context.ProductCategories
             .Include(x => x.Localizations)
-            .Include(x => x.Products)
-                .ThenInclude(x => x.Localizations)
             .ToListAsync(cancellationToken);
     }
 

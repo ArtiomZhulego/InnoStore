@@ -47,15 +47,9 @@ public class ProductService(IProductRepository productRepository,
         await productRepository.DeleteAsync(product, cancellationToken);
     }
 
-    public async Task<IEnumerable<ProductDTO>> GetByGroupAsync(Guid groupId, string languageCode, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ProductDTO>> GetAsync(CancellationToken cancellationToken = default)
     {
-        var productCategoryExist = await productCategoryRepository.ExistAsync(groupId, cancellationToken);
-        if (!productCategoryExist)
-        {
-            throw new ProductCategoryNotFoundException(groupId);
-        }
-
-        var products = await productRepository.GetByGroupIdAsync(groupId, languageCode, cancellationToken) ?? throw new ProductNotFoundException(groupId);
+        var products = await productRepository.GetAllAsync(cancellationToken);
 
         var colors = products.SelectMany(p => p.Colors);
         await FillImageUrlsAsync(colors, cancellationToken);

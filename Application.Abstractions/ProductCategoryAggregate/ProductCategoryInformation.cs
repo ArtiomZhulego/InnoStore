@@ -4,5 +4,5 @@ public sealed class ProductCategoryInformation
 {
     public Guid Id { get; set; }
     
-    public required string Name { get; set; }
+    public required IEnumerable<ProductCategoryLocalizationModel> Localizations { get; set; }
 }

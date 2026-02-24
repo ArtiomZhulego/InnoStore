@@ -23,7 +23,7 @@ public static class ProductCategoryMapper
             return new ProductCategoryInformation
             {
                 Id = productCategory.Id,
-                Name = productCategory.Localizations.FirstOrDefault()?.Name ?? LocalizationConstants.DefaultTranslation
+                Localizations = productCategory.Localizations.Select(x => x.ToModel())
             };
         }
     }

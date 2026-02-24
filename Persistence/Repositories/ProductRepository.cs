@@ -26,10 +26,10 @@ internal class ProductRepository : IProductRepository
         return _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync(string languageCode, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Products
-            .Include(x => x.Localizations.Where(x => x.LanguageISOCode == languageCode))
+            .Include(x => x.Localizations)
             .Include(x => x.Colors)
                 .ThenInclude(x => x.Images)
             .ToListAsync(cancellationToken);

@@ -7,8 +7,7 @@ using Domain.Exceptions;
 namespace Application.Services;
 
 public class ProductCategoryService(
-    IProductCategoryRepository productCategoryRepository,
-    IStorageService storageService
+    IProductCategoryRepository productCategoryRepository
     ) : IProductCategoryService
 {
     public async Task<ProductCategoryDTO> CreateAsync(CreateProductCategoryModel createProductCategoryModel, CancellationToken cancellationToken = default)
@@ -26,18 +25,11 @@ public class ProductCategoryService(
         await productCategoryRepository.DeleteAsync(entity, cancellationToken);
     }
 
-    public async Task<IEnumerable<ProductCategoryDTO>> GetAllAsync(string languageCode, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ProductCategoryInformation>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var groups = await productCategoryRepository.GetAllAsync(languageCode, cancellationToken);
+        var groups = await productCategoryRepository.GetAllAsync(cancellationToken);
 
-        var images = groups.SelectMany(x => x.Products).SelectMany(x => x.Colors).SelectMany(x => x.Images);
-
-        await Parallel.ForEachAsync(images, cancellationToken, async (image, ct) =>
-        {
-            image.ImageUrl = await storageService.GetQuickAccessUrlAsync(image.ImageUrl, ct);
-        });
-
-        var response = groups.Select(x => x.ToDTO());
+        var response = groups.Select(x => x.ToInformation());
 
         return response;
     }

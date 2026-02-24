@@ -19,4 +19,17 @@ public static class ProductCategoryLocalizationMapper
             };
         }
     }
+
+    extension(ProductCategoryLocalization localization)
+    {
+        public ProductCategoryLocalizationModel ToModel()
+        {
+            return new ProductCategoryLocalizationModel
+            {
+                LanguageISOCode = localization.LanguageISOCode,
+                Name = localization.Name,
+                Description = localization.Description
+            };
+        }
+    }
 }
