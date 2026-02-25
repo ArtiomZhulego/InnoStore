@@ -1,10 +1,9 @@
 using Application.Abstractions.DTOs.Entities;
 using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.OrderAggregate.Models;
-using Application.Extensions;
 using Application.Mappers;
 using Application.Services.Internal.OrderAudits;
-using Application.Services.Internal.OrderAudits.Models;
+using Application.Services.Internal.ProductQuantities;
 using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -19,6 +18,7 @@ internal sealed class OrderService(IOrderRepository orderRepository,
     IInternalOrderAuditService internalOrderAuditService,
     IOrderTransactionsRepository orderTransactionsRepository,
     ITransactionRepository transactionRepository,
+    IInternalProductQuantityService productQuantityService,
     IDatabaseTransactionManager transactionManager) : IOrderService
 {
     public async Task<OrderDto> CreateOrderAsync(CreateOrderModel model, CancellationToken cancellationToken = default)
@@ -30,6 +30,9 @@ internal sealed class OrderService(IOrderRepository orderRepository,
         var usersAmount = await userRepository.GetCurrentScoresAmountAsync(model.UserId, cancellationToken);
         if (usersAmount < price) throw new InsufficientFundsException(model.UserId, price, usersAmount);
 
+        var availableProductQuantity = await productQuantityService.GetAvailableQuantityAsync(model.ProductSizeId, cancellationToken);
+        if (availableProductQuantity == 0) throw new InsufficientFundsException(model.UserId, price, usersAmount);
+        
         var order = new Order
         {
             Id = Guid.NewGuid(),
@@ -38,21 +41,14 @@ internal sealed class OrderService(IOrderRepository orderRepository,
             Status = OrderStatus.Created
         };
         
-        await transactionManager.BeginAsync(cancellationToken);
-        try
-        {
-            await orderRepository.CreateAsync(order, cancellationToken);
+        await using var transaction = await transactionManager.BeginTransactionAsync(cancellationToken);
 
-            await AddTransactionToOrderAsync(order.Id, model.UserId, price, TransactionType.Pay, cancellationToken);
-            await internalOrderAuditService.AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
-
-            await transactionManager.CommitAsync(cancellationToken);
-        }
-        catch
-        {
-            await transactionManager.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await orderRepository.CreateAsync(order, cancellationToken);
+        await AddTransactionToOrderAsync(order.Id, model.UserId, price, TransactionType.Pay, cancellationToken);
+        await internalOrderAuditService.AddChangeOrderStatusAsync(model.UserId, order, cancellationToken);
+        await productQuantityService.ReduceQuantityForOrderAsync(order.Id, model.ProductSizeId, model.UserId, 1, cancellationToken);
+        
+        await transaction.CommitAsync(cancellationToken);
 
         return order.ToDto();
     }
@@ -69,20 +65,12 @@ internal sealed class OrderService(IOrderRepository orderRepository,
 
         order.Status = OrderStatus.Canceled;
 
-        await transactionManager.BeginAsync(cancellationToken);
-        try
-        {
-            await orderRepository.UpdateAsync(order, cancellationToken);
-            await internalOrderAuditService.AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
-            await RefundOrderTransactionAsync(order, cancellationToken);
+        await using var transaction = await transactionManager.BeginTransactionAsync(cancellationToken);
+        await orderRepository.UpdateAsync(order, cancellationToken);
+        await internalOrderAuditService.AddChangeOrderStatusAsync(cancelOrderModel.RevertedByUserId, order, cancellationToken);
+        await RefundOrderTransactionAsync(order, cancellationToken);
 
-            await transactionManager.CommitAsync(cancellationToken);
-        }
-        catch
-        {
-            await transactionManager.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await transaction.CommitAsync(cancellationToken);
 
         return order.ToDto();
     }

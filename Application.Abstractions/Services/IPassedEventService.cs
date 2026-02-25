@@ -4,5 +4,5 @@ namespace Application.Abstractions.Services;
 
 public interface IPassedEventService
 {
-    Task SavePassedEventIdempotentAsync(PassedEventDTO passedEvent, CancellationToken cancellationToken = default);
+    Task SavePassedEventIdempotentAsync(PassedEventDTO passedEventDto, CancellationToken cancellationToken = default);
 }

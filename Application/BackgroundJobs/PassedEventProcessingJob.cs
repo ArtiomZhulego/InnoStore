@@ -51,17 +51,9 @@ public sealed class PassedEventProcessingJob(
 
         while (unprocessedEvents.Any())
         {
-            try
-            {
-                await transactionManager.BeginAsync(cancellationToken);
-                await ProcessEventsAsync(unprocessedEvents, cancellationToken);
-                await transactionManager.CommitAsync(cancellationToken);
-            }
-            catch
-            {
-                await transactionManager.RollbackAsync(cancellationToken);
-                throw;
-            }
+            await using var transaction = await transactionManager.BeginTransactionAsync(cancellationToken);
+            await ProcessEventsAsync(unprocessedEvents, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
 
             ++pageNumber;
             unprocessedEvents = await GetUnprocessedEventsAsync(options.Value.PassedEventProcessingBatchCount, pageNumber, cancellationToken);
