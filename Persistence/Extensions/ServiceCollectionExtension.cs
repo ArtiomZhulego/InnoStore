@@ -47,6 +47,8 @@ public static class ServiceCollectionExtension
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderAuditRepository, OrderAuditRepository>();
             services.AddScoped<IOrderTransactionsRepository, OrderTransactionRepository>();
+            services.AddScoped<IProductQuantityTransactionRepository, ProductQuantityTransactionRepository>();
+            services.AddScoped<IOrderProductQuantityTransactionRepository, OrderProductQuantityTransactionRepository>();
         }
 
         public void AddInterceptors()
