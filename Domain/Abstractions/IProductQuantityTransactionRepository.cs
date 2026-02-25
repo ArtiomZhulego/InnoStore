@@ -2,10 +2,9 @@
 
 namespace Domain.Abstractions;
 
-public interface IProductQuantityTransactionRepositiory
+public interface IProductQuantityTransactionRepository
 {
     public Task AddAsync(ProductQuantityTransaction productQuantityTransaction, CancellationToken cancellationToken = default);
-
     public Task<IEnumerable<ProductQuantityTransaction>> GetByProductSizeIdAsync(Guid productSizeId, CancellationToken cancellationToken = default);
-    public Task<ProductQuantityTransaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task<int> GetTotalQuantityByProductSizeIdAsync(Guid productSizeId, CancellationToken cancellationToken = default);
 }

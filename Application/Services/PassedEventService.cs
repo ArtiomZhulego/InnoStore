@@ -14,29 +14,20 @@ internal class PassedEventService(
     ILogger<PassedEventService> logger
 ) : IPassedEventService
 {
-    public async Task SavePassedEventIdempotentAsync(PassedEventDTO passedEventDTO, CancellationToken cancellationToken)
+    public async Task SavePassedEventIdempotentAsync(PassedEventDTO passedEventDto, CancellationToken cancellationToken = default)
     {
-        var doesEventExist = await passedEventRepository.AnyAsync(passedEventDTO.EventContent.Id, cancellationToken);
+        var doesEventExist = await passedEventRepository.AnyAsync(passedEventDto.EventContent.Id, cancellationToken);
 
         if (doesEventExist)
         {
-            logger.LogInformation("Event with ID {PassedEventId} already exists. Skipping save operation.", passedEventDTO.EventContent.Id);
+            logger.LogInformation("Event with ID {PassedEventId} already exists. Skipping save operation.", passedEventDto.EventContent.Id);
             return;
         }
 
-        var passedEvent = passedEventDTO.ToPassedEvent();
+        var passedEvent = passedEventDto.ToPassedEvent();
 
-        await databaseTransactionManager.BeginAsync();
-
-        try
-        {
-            await passedEventRepository.AddAsync(passedEvent, cancellationToken);
-            await databaseTransactionManager.CommitAsync();
-        }
-        catch
-        {
-            await databaseTransactionManager.RollbackAsync();
-            throw;
-        }
+        await using var transaction = await databaseTransactionManager.BeginTransactionAsync(cancellationToken);
+        await passedEventRepository.AddAsync(passedEvent, cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
     }
 }
