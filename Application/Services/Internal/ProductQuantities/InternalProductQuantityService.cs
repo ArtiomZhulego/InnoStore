@@ -1,6 +1,6 @@
 using Domain.Abstractions;
 using Domain.Entities;
-using Domain.ValueModels;
+using Shared.ValueModels;
 
 namespace Application.Services.Internal.ProductQuantities;
 
@@ -97,5 +97,10 @@ internal sealed class InternalProductQuantityService(
             await orderQuantityRepository.AddAsync(newOrderLink, cancellationToken);
         }
         await dbTransaction.CommitAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<ProductQuantityTransaction>> GetChangeHistoryAsync(Guid productSizeId, CancellationToken cancellationToken = default)
+    {
+        return await quantityRepository.GetByProductSizeIdAsync(productSizeId, cancellationToken);
     }
 }
