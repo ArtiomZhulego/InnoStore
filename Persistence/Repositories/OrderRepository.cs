@@ -19,7 +19,8 @@ internal sealed class OrderRepository(InnoStoreContext context) : IOrderReposito
     }
 
     public async Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default) =>
-        await context.Orders.FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
+        await context.Orders
+            .FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
 
     public async Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default) =>
         await context.Orders

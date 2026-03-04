@@ -17,9 +17,7 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasPrecision(18, 2);
 
         builder.Property(order => order.Status)
-            .IsRequired()
-            .HasConversion<string>()
-            .HasMaxLength(50);
+            .IsRequired();
 
         builder.Property(order => order.UserId)
             .IsRequired();
@@ -30,7 +28,6 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.Property(order => order.UpdatedAt)
             .IsRequired(false);
-
 
         builder.HasOne(order => order.User)
             .WithMany(user => user.Orders)

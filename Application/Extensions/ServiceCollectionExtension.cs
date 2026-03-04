@@ -2,6 +2,7 @@
 using Application.Abstractions.OrderAggregate;
 using Application.Abstractions.ProductAggregate;
 using Application.Abstractions.ProductGroupAggregate;
+using Application.Abstractions.ProductQuantittyAggreate;
 using Application.Abstractions.Services;
 using Application.Abstractions.TransactionAggregate;
 using Application.Abstractions.UserAggregate;
@@ -9,6 +10,8 @@ using Application.BackgroundJobs;
 using Application.Clients.HRM;
 using Application.Services;
 using Application.Services.Internal.OrderAudits;
+using Application.Services.Internal.ProductQuantities;
+using Domain.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -44,6 +47,8 @@ public static class ServiceCollectionExtension
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IUserService,  UserService>();
+            services.AddScoped<IInternalProductQuantityService, InternalProductQuantityService>();
+            services.AddScoped<IProductQuantityService, ProductQuantityService>();
         }
 
         private void AddOrderFlow()

@@ -12,4 +12,5 @@ public sealed class Order : BaseEntity
     public User? User { get; set; }
     public IEnumerable<OrderTransaction> OrderTransactions { get; set; } = [];
     public IEnumerable<OrderAudit> Audits { get; set; } = [];
+    public IEnumerable<OrderProductQuantityTransaction> OrderProductQuantityTransactions { get; set; } = [];
 }

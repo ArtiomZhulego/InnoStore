@@ -16,5 +16,6 @@ internal sealed class OrderTransactionRepository(InnoStoreContext context) : IOr
         await context.OrderTransactions
             .AsNoTracking()
             .Where(item => item.OrderId == orderId)
+            .Include(item => item.Transaction)
             .ToListAsync(cancellationToken);
 }

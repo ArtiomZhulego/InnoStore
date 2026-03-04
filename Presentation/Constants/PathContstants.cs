@@ -1,3 +1,5 @@
+using Polly.CircuitBreaker;
+
 namespace Presentation.Constants;
 
 internal static class PathConstants
@@ -58,5 +60,14 @@ internal static class PathConstants
     {
         public const string Controller = ApiBase + "/orderAudit";
         public const string GetByOrderId = "{orderId:guid}";
+    }
+
+    public static class ProductQuantity
+    {
+        public const string Controller = ApiBase + "/productQuantity";
+        public const string GetAvailable = "available/{productSizeId:guid}";
+        public const string GetHistory = "history/{productSizeId:guid}";
+        public const string Add = "";
+
     }
 }

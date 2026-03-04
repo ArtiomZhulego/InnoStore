@@ -22,5 +22,6 @@ internal sealed class OrderAuditRepository(InnoStoreContext context) : IOrderAud
         await context.OrderAudits
             .Where(item => item.OrderId == orderId)
             .OrderByDescending(item => item.CreatedAt)
+            .Include(item => item.Order)
             .ToListAsync(cancellationToken);
 }

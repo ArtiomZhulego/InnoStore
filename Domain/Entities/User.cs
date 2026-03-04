@@ -33,4 +33,5 @@ public sealed class User
     public DateTime? UpdatedAt { get; init; }
 
     public List<Order> Orders { get; init; }
+    public List<ProductQuantityTransaction> ProductQuantityTransactions { get; init; }
 }

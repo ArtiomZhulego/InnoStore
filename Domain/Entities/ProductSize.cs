@@ -9,4 +9,5 @@ public class ProductSize : BaseEntity
     public Product? Product { get; set; }
     
     public List<ProductSizeLocalization> Localizations { get; set; } = [];
+    public List<ProductQuantityTransaction> ProductQuantityTransactions { get; set; } = [];
 }
