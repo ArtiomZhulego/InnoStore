@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route(PathConstants.Orders.Controller)]
-internal sealed class OrderController(IOrderService orderService) : ControllerBase
+public sealed class OrderController(IOrderService orderService) : ControllerBase
 {
     [HttpPost(PathConstants.Orders.Create)]
     [ProducesResponseType(typeof(OrderDto), 201)]

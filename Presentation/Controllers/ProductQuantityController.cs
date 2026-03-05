@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route(PathConstants.ProductQuantity.Controller)]
-internal sealed class ProductQuantityController(IProductQuantityService inventoryService) : ControllerBase
+public sealed class ProductQuantityController(IProductQuantityService inventoryService) : ControllerBase
 {
     [HttpPost(PathConstants.ProductQuantity.Add)]
     [ProducesResponseType(typeof(ProductQuantityTransactionDto), 200)]

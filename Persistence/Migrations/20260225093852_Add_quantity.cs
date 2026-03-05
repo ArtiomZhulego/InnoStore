@@ -11,6 +11,16 @@ namespace Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql(@"
+                ALTER TABLE ""Orders"" 
+                ALTER COLUMN ""Status"" TYPE smallint 
+                USING CASE ""Status""
+                    WHEN 'Created' THEN 1
+                    WHEN 'Canceled' THEN 2
+                    WHEN 'Completed' THEN 3
+                    ELSE 0 -- Fallback to None
+                END;");
+
             migrationBuilder.AlterColumn<byte>(
                 name: "Status",
                 table: "Orders",

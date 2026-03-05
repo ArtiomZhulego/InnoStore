@@ -1,5 +1,3 @@
-using Polly.CircuitBreaker;
-
 namespace Presentation.Constants;
 
 internal static class PathConstants
