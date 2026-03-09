@@ -7,5 +7,7 @@ namespace Persistence.Repositories;
 internal sealed class ProductSizeRepository(InnoStoreContext context) : IProductSizeRepository
 {
     public async Task<ProductSize?> GetProductSizeByIdAsync(Guid productSizeId, CancellationToken cancellationToken = default) =>
-        await context.ProductSizes.FirstOrDefaultAsync(item => item.Id == productSizeId, cancellationToken);
+        await context.ProductSizes
+            .Include(item => item.Product)
+            .FirstOrDefaultAsync(item => item.Id == productSizeId, cancellationToken);
 }
