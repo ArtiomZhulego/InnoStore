@@ -10,7 +10,7 @@ public sealed class Order : BaseEntity
     public required decimal Price { get; init; }
 
     public User? User { get; set; }
-    public IEnumerable<OrderTransaction> OrderTransactions { get; set; } = [];
-    public IEnumerable<OrderAudit> Audits { get; set; } = [];
-    public IEnumerable<OrderProductQuantityTransaction> OrderProductQuantityTransactions { get; set; } = [];
+    public ICollection<OrderTransaction> OrderTransactions { get; set; } = [];
+    public ICollection<OrderAudit> Audits { get; set; } = [];
+    public ICollection<OrderProductQuantityTransaction> OrderProductQuantityTransactions { get; set; } = [];
 }
